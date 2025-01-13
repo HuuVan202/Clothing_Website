@@ -1,7 +1,7 @@
 <%-- 
     Document   : producDetails
     Created on : Jan 13, 2025, 9:53:43 AM
-    Author     : Dinh_Hau
+    Author     : 
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
