@@ -1,8 +1,4 @@
-<%-- 
-    Document   : search
-    Created on : Jan 12, 2025, 10:43:43 AM
-    Author     : 
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
