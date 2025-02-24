@@ -20,6 +20,13 @@ public class Feedback {
     private String comment;
     private Date feedback_date;
 
+    public Feedback(int feedback_id, int rating, String comment, Date feedback_date) {
+        this.feedback_id = feedback_id;
+        this.rating = rating;
+        this.comment = comment;
+        this.feedback_date = feedback_date;
+    }
+
     public Feedback(int feedback_id, int order_id, int pro_id, int cus_id, int rating, String comment, Date feedback_date) {
         this.feedback_id = feedback_id;
         this.order_id = order_id;
@@ -89,6 +96,14 @@ public class Feedback {
     @Override
     public String toString() {
         return "Feedback{" + "feedback_id=" + feedback_id + ", order_id=" + order_id + ", pro_id=" + pro_id + ", cus_id=" + cus_id + ", rating=" + rating + ", comment=" + comment + ", feedback_date=" + feedback_date + '}';
+    }
+
+    public void add(Customer customer) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public void add(Product product) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

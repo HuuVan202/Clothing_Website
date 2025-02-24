@@ -32,6 +32,12 @@ public class Product {
     public Product() {
     }
 
+    public Product(String pro_name, String image) {
+        this.pro_name = pro_name;
+        this.image = image;
+    }
+
+
     public Product(int pro_id, String pro_name, BigDecimal price, int stock, String image, String size, String gender, String brand, int cat_id, String status, int discount, BigDecimal discountedPrice) {
         this.pro_id = pro_id;
         this.pro_name = pro_name;
