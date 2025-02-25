@@ -4,9 +4,14 @@ import java.sql.*;
 
 public class DBcontext {
 
-    private final String jdbcURL = "jdbc:sqlserver://localhost\\SQLEXPRESS:1433;databaseName=clothingShopDB;encrypt=false";
-    private final String jdbcUsername = "SA";
-    private final String jdbcPassword = "1";
+    private final String jdbcURL = "jdbc:sqlserver://localhost\\ADMIN:1433;databaseName=ClothingShopDB;encrypt=false";
+    private final String jdbcUsername = "sa";
+    private final String jdbcPassword = "12345";
+
+
+    protected Connection connection;
+    protected PreparedStatement statement;
+    protected ResultSet resultSet;
 
     public Connection getConnection() {
         Connection connection = null;
@@ -19,6 +24,7 @@ public class DBcontext {
         return connection;
     }
 
+    
     public static void main(String[] args) {
         try {
             System.out.println(new DBcontext().getConnection());

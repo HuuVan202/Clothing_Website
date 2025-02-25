@@ -23,13 +23,28 @@ public class Product {
     private String gender;
     private String brand;
     private int cat_id;
+    private int type_id;
     private String status;
     private int discount;
-    private BigDecimal discountedPrice;
+    private BigDecimal discountedPrice, salePrice;
 
     private static final NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
 
     public Product() {
+    }
+
+
+    public Product(int pro_id, String pro_name, BigDecimal price, int stock, String image, String size, String gender, String brand, String status, int discount) {
+        this.pro_id = pro_id;
+        this.pro_name = pro_name;
+        this.price = price;
+        this.stock = stock;
+        this.image = image;
+        this.size = size;
+        this.gender = gender;
+        this.brand = brand;
+        this.status = status;
+        this.discount = discount;
     }
 
     public Product(int pro_id, String pro_name, BigDecimal price, int stock, String image, String size, String gender, String brand, int cat_id, String status, int discount, BigDecimal discountedPrice) {
@@ -41,10 +56,26 @@ public class Product {
         this.size = size;
         this.gender = gender;
         this.brand = brand;
-        this.cat_id = cat_id;
+        this.type_id = type_id;
         this.status = status;
         this.discount = discount;
         this.discountedPrice = discountedPrice;
+    }
+    
+    public Product(int pro_id, String pro_name, BigDecimal price, int stock, 
+            String image, String size, String gender, String brand, int type_id, 
+            String status, int discount) {
+        this.pro_id = pro_id;
+        this.pro_name = pro_name;
+        this.price = price;
+        this.stock = stock;
+        this.image = image;
+        this.size = size;
+        this.gender = gender;
+        this.brand = brand;
+        this.type_id = type_id;
+        this.status = status;
+        this.discount = discount;
     }
 
     public int getPro_id() {
@@ -111,12 +142,12 @@ public class Product {
         this.brand = brand;
     }
 
-    public int getCat_id() {
-        return cat_id;
+    public int getType_id() {
+        return type_id;
     }
 
-    public void setCat_id(int cat_id) {
-        this.cat_id = cat_id;
+    public void setType_id(int cat_id) {
+        this.type_id = type_id;
     }
 
     public String getStatus() {
@@ -143,7 +174,8 @@ public class Product {
         this.discountedPrice = discountedPrice;
     }
 
-    public String getFormattedPrice() {
+    
+       public String getFormattedPrice() {
         return formatter.format(price);
     }
 
@@ -151,9 +183,19 @@ public class Product {
         return formatter.format(discountedPrice);
     }
 
+    public BigDecimal getSalePrice() {
+        if (price != null && discount > 0) {
+            BigDecimal discountAmount = price.multiply(BigDecimal.valueOf(discount)).divide(BigDecimal.valueOf(100));
+            salePrice = price.subtract(discountAmount);
+        } else {
+            salePrice = price;
+        }
+        return salePrice;
+    }
+
     @Override
     public String toString() {
-        return "Product{" + "pro_id=" + pro_id + ", pro_name=" + pro_name + ", price=" + price + ", stock=" + stock + ", image=" + image + ", size=" + size + ", gender=" + gender + ", brand=" + brand + ", cat_id=" + cat_id + ", status=" + status + ", discount=" + discount + '}';
+        return "Product{" + "pro_id=" + pro_id + ", pro_name=" + pro_name + ", price=" + price + ", stock=" + stock + ", image=" + image + ", size=" + size + ", gender=" + gender + ", brand=" + brand + ", type_id=" + type_id + ", status=" + status + ", discount=" + discount + '}';
     }
 
 }

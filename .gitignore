@@ -2,3 +2,9 @@
 nbproject/private/
 nbproject/nbactions.xml
 nbproject/nb-configuration.xml
+<<<<<<< HEAD
+/dist/
+=======
+src/src/java/shop/context/
+src/java/shop/context/
+>>>>>>> 51f0b7ca97c7fa46ee54905ffeb2e96913eac7cc

@@ -14,20 +14,26 @@ public class Customer {
     private String cus_name;
     private String email;
     private String username;
-
     private String phone;
     private String address;
 
-    public Customer(int cus_id, String cus_name, String email, String username, String password, String phone, String address) {
+    public Customer(int cus_id, String cus_name, String email, String username, String phone, String address) {
         this.cus_id = cus_id;
         this.cus_name = cus_name;
         this.email = email;
         this.username = username;
-
         this.phone = phone;
         this.address = address;
     }
 
+    public Customer(String cus_name, String email, String username, String phone, String address) {
+        this.cus_name = cus_name;
+        this.email = email;
+        this.username = username;
+        this.phone = phone;
+        this.address = address;
+    }
+    
     public int getCus_id() {
         return cus_id;
     }

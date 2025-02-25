@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package shop.DAO.guest.products;
+package shop.controller.guest.productDetails;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,10 +15,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author Dinh_Hau
+ * @author ASUS
  */
-@WebServlet(name="newServlet", urlPatterns={"/newServlet"})
-public class newServlet extends HttpServlet {
+@WebServlet(name="FeedbackServlet", urlPatterns={"/FeedbackServlet"})
+public class FeedbackServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -35,10 +35,10 @@ public class newServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet newServlet</title>");  
+            out.println("<title>Servlet FeedbackServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet newServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet FeedbackServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }

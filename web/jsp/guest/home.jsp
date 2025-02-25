@@ -61,6 +61,13 @@
                                             <div class="discount-price">${p.formattedPrice} VND</div>
                                         </c:if>
                                     </div>
+                                    <div>
+                                        <form method="post" action="cartServlet?id=${p.pro_id}" >
+                                            <input type="hidden" name="pro_id" value="${p.pro_id}"/>
+                                            <input type="hidden" name="action" value="add" />
+                                            <button type="submit">Buy</button>
+                                        </form>       
+                                    </div>
                                 </div>
                             </div>
                         </c:forEach>
@@ -102,6 +109,13 @@
                                         <c:if test="${p.discount == 0}">
                                             <div class="discount-price">${p.formattedPrice} VND</div>
                                         </c:if>
+                                    </div>
+                                    <div>
+                                        <form method="post" action="cartServlet?id=${p.pro_id}" >
+                                            <input type="hidden" name="pro_id" value="${p.pro_id}"/>
+                                            <input type="hidden" name="action" value="add" />
+                                            <button type="submit">Buy</button>
+                                        </form>       
                                     </div>
                                 </div>
                             </div>
@@ -145,6 +159,13 @@
                                             <div class="discount-price">${p.formattedPrice} VND</div>
                                         </c:if>
                                     </div>
+                                    <div>
+                                        <form action="cartServlet?id=${p.pro_id}" method="post">
+                                            <input type="hidden" name="pro_id" value="${p.pro_id}"/>
+                                            <input type="hidden" name="action" value="add" />
+                                            <button type="submit">Buy</button>
+                                        </form>       
+                                    </div>
                                 </div>
                             </div>
                         </c:forEach>
@@ -187,6 +208,13 @@
                                             <div class="discount-price">${p.formattedPrice} VND</div>
                                         </c:if>
                                     </div>
+                                    <div>
+                                        <form action="cartServlet?id=${p.pro_id}" method="post">
+                                            <input type="hidden" name="pro_id" value="${p.pro_id}"/>
+                                            <input type="hidden" name="action" value="add" />
+                                            <button type="submit">Buy</button>
+                                        </form>       
+                                    </div>
                                 </div>
                             </div>
                         </c:forEach>
@@ -212,7 +240,7 @@
                 }
             }
         </script>
-      
+
         <title>JSP Page</title>
     </head>
 </html>
