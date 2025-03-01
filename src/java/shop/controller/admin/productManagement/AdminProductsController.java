@@ -55,20 +55,44 @@ public class AdminProductsController extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        AdminProductsDAO productDAO = new AdminProductsDAO();
-        List<Product> productList = productDAO.getAllProducts();
 
-        request.setAttribute("productList", productList);
-        if (productList.isEmpty()) {
-            request.setAttribute("productListMessage", "No product found in the database.");
+//        List<Product> productList = productDAO.getAllProducts();
+        int page = 1;  // Mặc định trang đầu tiên
+        int recordsPerPage = 10; // Số sản phẩm mỗi trang
+        int maxPageDisplay = 10; // Hiển thị tối đa 10 trang
+
+        // Kiểm tra nếu có tham số "page"
+        if (request.getParameter("page") != null) {
+            page = Integer.parseInt(request.getParameter("page"));
         }
+
+        // Truy vấn danh sách sản phẩm với giới hạn phân trang
+        AdminProductsDAO productDAO = new AdminProductsDAO();
+        List<Product> productList = productDAO.getProductsByPage((page - 1) * recordsPerPage, recordsPerPage);
+        int totalRecords = productDAO.getTotalProductCount();
+        int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
+
+        int startPage = Math.max(1, page - maxPageDisplay / 2);
+        int endPage = Math.min(totalPages, startPage + maxPageDisplay - 1);
+        if (endPage - startPage < maxPageDisplay) {
+            startPage = Math.max(1, endPage - maxPageDisplay + 1);
+        }
+        // Truyền dữ liệu sang JSP
+        request.setAttribute("productList", productList);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("startPage", startPage);
+        request.setAttribute("endPage", endPage);
+        
+        // Chuyển hướng đến trang JSP
         request.getRequestDispatcher("/jsp/admin/productManagement.jsp").forward(request, response);
     }
-//        if (productList != null) {
-//            request.getRequestDispatcher("/jsp/admin/productManagement.jsp").forward(request, response);
-//        } else {
+//        request.setAttribute("productList", productList);
+//        if (productList.isEmpty()) {
 //            request.setAttribute("productListMessage", "No product found in the database.");
 //        }
+//        request.getRequestDispatcher("/jsp/admin/productManagement.jsp").forward(request, response);
+//    }
 
     /**
      * Handles the HTTP <code>POST</code> method.

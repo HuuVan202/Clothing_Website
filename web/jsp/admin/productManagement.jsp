@@ -97,77 +97,107 @@
                 <div class="col-md-3">
                     <input type="text" id="search" class="form-control" placeholder="Search">
                 </div>
+                <div class="col-md-6"> </div>
+                <div class="col-md-3 text-end">
+                    <a href="" class="btn btn-primary">Add New</a>
+                </div>
             </div>
 
             <!-- Product Table -->
             <table class="table table-bordered text-center">
-    <thead class="table-dark">
-        <tr>
-            <th class="align-middle">ID</th>
-            <th class="align-middle">Product</th>
-            <th class="align-middle">Size</th>
-            <th class="align-middle">Gender</th>
-            <th class="align-middle">Brand</th>
-            <th class="align-middle">Type</th>
-            <th class="align-middle">Price</th>
-            <th class="align-middle">Discount</th>
-            <th class="align-middle">Stock</th>
-            <th class="align-middle">Status</th>
-            <th class="align-middle">Action</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        <c:choose>
-            <c:when test="${not empty productList}">
-                <c:forEach items="${productList}" var="p">
+                <thead class="table-dark">
                     <tr>
-                        <td class="align-middle">${p.pro_id}</td>
-                        <td class="align-middle">
-                            <div class="row align-items-center">
-                                <div class="col-md-5 text-center">
-                                    <img src="${p.image}" alt="${p.pro_name}" class="img-fluid rounded">
-                                </div>
-                                <div class="col-md-7">
-                                    <div class="product-name">${p.pro_name}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="align-middle">${p.size}</td>
-                        <td class="align-middle">${p.gender}</td>
-                        <td class="align-middle">${p.brand}</td>
-                        <td class="align-middle">${p.type.type_name}</td>
-                        <td class="align-middle">${p.formattedPrice}</td>
-                        <td class="align-middle">${p.discount}%</td>
-                        <td class="align-middle">${p.stock}</td>
-                        <td class="align-middle">${p.status}</td>
-                        <td class="align-middle">
-                            <a href="#"> Update </a>
-                        </td>
+                        <th>ID</th>
+                        <th>Product</th>
+                        <th>Size</th>
+                        <th>Gender</th>
+                        <th>Brand</th>
+                        <th>Type</th>
+                        <th>Price</th>
+                        <th>Discount</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                        <th>Action</th>
                     </tr>
-                </c:forEach>
-            </c:when>
-            <c:otherwise>
-                <tr>
-                    <td colspan="11" class="text-center text-muted align-middle">${productListMessage}</td>
-                </tr>
-            </c:otherwise>
-        </c:choose>
-    </tbody>
-</table>
+                </thead>
+                <tbody>
+                    <c:choose>
+                        <c:when test="${not empty productList}">
+                            <c:forEach items="${productList}" var="p">
+                                <tr>
+                                    <td class="align-middle">${p.pro_id}</td>
+                                    <td class="align-middle">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-5 text-center">
+                                                <img src="${p.image}" alt="${p.pro_name}" class="img-fluid rounded" width="100">
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div class="product-name">${p.pro_name}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">${p.size}</td>
+                                    <td class="align-middle">${p.gender}</td>
+                                    <td class="align-middle">${p.brand}</td>
+                                    <td class="align-middle">${p.type.type_name}</td>
+                                    <td class="align-middle">${p.formattedPrice}</td>
+                                    <td class="align-middle">${p.discount}%</td>
+                                    <td class="align-middle">${p.stock}</td>
+                                    <td class="align-middle">${p.status}</td>
+                                    <td class="align-middle">
+                                        <a href="updateProduct.jsp?id=${p.pro_id}" class="btn btn-warning">Update</a>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <tr>
+                                <p class="text-muted text-center">${productListMessage}</p>
+                            </tr>
+                        </c:otherwise>
+                    </c:choose>
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <c:if test="${currentPage > 1}">
+                        <li class="page-item">
+                            <a class="page-link" href="productsManagement?page=1">&laquo;</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="productsManagement?page=${currentPage-1}">&lt;</a>
+                        </li>
+                    </c:if>
+                    <c:forEach begin="${startPage}" end="${endPage}" var="i">
+                        <li class="page-item ${i == currentPage ? 'active' : ''}">
+                            <a class="page-link" href="productsManagement?page=${i}">${i}</a>
+                        </li>
+                    </c:forEach>
+                    <c:if test="${currentPage < totalPages}">
+                        <li class="page-item">
+                            <a class="page-link" href="productsManagement?page=${currentPage+1}">&gt;</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="productsManagement?page=${totalPages}">&raquo;</a>
+                        </li>
+                    </c:if>
+                </ul>
+            </nav>
 
         </div>
         <!-- Footer -->
         <jsp:include page="../common/layout/footer.jsp" />
 
         <script>
-            function upda                                                                                                                teLabel() {
-            let genderSelect = document.getElementById("gend                                                                                erFilter");
-            if (genderSelect.valu                                                                                e === "") {
-            genderSelect.firstElementChild.hidd                                                                                en = false;
-            } else {
-            genderSelect.firstElementChild.hid                                                                                den = true;
-            }
+            function updateLabel() {
+                let filterSelect = document.getElementById("filterFilter");
+                if (filterSelect.value === "") {
+                    genderSelect.firstElementChild.hidden = false;
+                } else {
+                    genderSelect.firstElementChild.hidden = true;
+                }
             }
         </script>
     </body>
