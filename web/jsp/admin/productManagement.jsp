@@ -100,65 +100,62 @@
             </div>
 
             <!-- Product Table -->
-            <table class="table table-bordered">
-                <thead class="table-dark">
+            <table class="table table-bordered text-center">
+    <thead class="table-dark">
+        <tr>
+            <th class="align-middle">ID</th>
+            <th class="align-middle">Product</th>
+            <th class="align-middle">Size</th>
+            <th class="align-middle">Gender</th>
+            <th class="align-middle">Brand</th>
+            <th class="align-middle">Type</th>
+            <th class="align-middle">Price</th>
+            <th class="align-middle">Discount</th>
+            <th class="align-middle">Stock</th>
+            <th class="align-middle">Status</th>
+            <th class="align-middle">Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <c:choose>
+            <c:when test="${not empty productList}">
+                <c:forEach items="${productList}" var="p">
                     <tr>
-                        <th>ID</th>
-                        <th>Product</th>
-                        <th>Size</th>
-                        <th>Gender</th>
-                        <th>Brand</th>
-                        <th>Type</th>
-                        <th>Price</th>
-                        <th>Discount</th>
-                        <th>Stock</th>
-                        <th>Status</th>
-                        <th>Action</th>
-
+                        <td class="align-middle">${p.pro_id}</td>
+                        <td class="align-middle">
+                            <div class="row align-items-center">
+                                <div class="col-md-5 text-center">
+                                    <img src="${p.image}" alt="${p.pro_name}" class="img-fluid rounded">
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="product-name">${p.pro_name}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="align-middle">${p.size}</td>
+                        <td class="align-middle">${p.gender}</td>
+                        <td class="align-middle">${p.brand}</td>
+                        <td class="align-middle">${p.type.type_name}</td>
+                        <td class="align-middle">${p.formattedPrice}</td>
+                        <td class="align-middle">${p.discount}%</td>
+                        <td class="align-middle">${p.stock}</td>
+                        <td class="align-middle">${p.status}</td>
+                        <td class="align-middle">
+                            <a href="#"> Update </a>
+                        </td>
                     </tr>
-                </thead>
+                </c:forEach>
+            </c:when>
+            <c:otherwise>
+                <tr>
+                    <td colspan="11" class="text-center text-muted align-middle">${productListMessage}</td>
+                </tr>
+            </c:otherwise>
+        </c:choose>
+    </tbody>
+</table>
 
-                <tbody>
-                    <c:choose>
-                        <c:when test="${not empty productList}">
-                            <c:forEach items="${productList}" var="p">
-                                <tr>
-                                    <td>${p.pro_id}</td>
-                                    <td>
-                                        <div class="row align-items-center">
-                                            <div class="col-md-5 text-center">
-                                                <img src="${p.image}" alt="${p.pro_name}" class="img-fluid rounded">
-                                            </div>
-                                            <div class="col-md-7">
-                                                <div class="product-name">${p.pro_name}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-
-                                    <td>${p.size}</td>
-                                    <td>${p.gender}</td>
-                                    <td>${p.brand}</td>
-                                    <td>${p.type.type_name}</td>
-                                    <td>${p.price}</td>
-                                    <td>${p.discount}</td>
-                                    <td>${p.stock}</td>
-                                    <td>${p.status}</td>
-                                    <td>
-                                        <a href="#"> Update </a>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                        </c:when>
-                        <c:otherwise>
-                            <tr>
-                                <td colspan="11" class="text-center text-muted">${productListMessage}</td>
-                            </tr>
-                        </c:otherwise>
-                    </c:choose>
-                </tbody>
-
-
-            </table>
         </div>
         <!-- Footer -->
         <jsp:include page="../common/layout/footer.jsp" />
