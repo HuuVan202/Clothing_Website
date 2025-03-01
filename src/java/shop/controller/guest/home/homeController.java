@@ -23,7 +23,7 @@ import shop.model.Product;
  * @author Dinh_Hau
  */
 @WebServlet(name = "home", urlPatterns = {"/home"})
-public class HomeController extends HttpServlet {
+public class homeController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
