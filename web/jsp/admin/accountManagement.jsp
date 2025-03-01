@@ -1,79 +1,94 @@
-<%-- 
-    Document   : accountManagement
-    Created on : Feb 17, 2025, 10:03:02 AM
-    Author     : NhatQuy
---%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Customer Account Management</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-</head>
-<body>
-<div class="container mt-4">
-    <h2 class="text-center">Customer Account Management</h2>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Dashboard - Customer Account Management</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/admin/managerLayout.css"/>
+    </head>
+    <body>
+        <div class="d-flex h-100">
+            <!-- Sidebar -->
+            <jsp:include page="../common/layout/managerSidebar.jsp"></jsp:include>
 
-    <!-- Success message -->
-    <c:if test="${param.updateSuccess == 'true'}">
-        <div class="alert alert-success">Account updated successfully!</div>
-    </c:if>
+                <!-- Main Content -->
+                <div class="flex-grow-1">
+                    <!-- Header -->
+                <jsp:include page="../common/layout/managerHeaderAccount.jsp"></jsp:include>
+                    <div class="content-area">
+                        <!-- Content Area -->
+                        <div class="container mt-4">
+                            <h2 class="text-center">Customer Account Management</h2>
 
-    <!-- Search & Filters -->
-    <div class="d-flex mb-3">
-        <input type="text" id="search" class="form-control me-2" placeholder="Search">
-        <select id="roleFilter" class="form-select me-2">
-            <option value="">Select role</option>
-            <option value="Admin">Admin</option>
-            <option value="Customer">Customer</option>
-        </select>
-        <select id="statusFilter" class="form-select">
-            <option value="">All Statuses</option>
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-        </select>
-    </div>
+                            <!-- Success message -->
+                        <c:if test="${param.updateSuccess == 'true'}">
+                            <div class="alert alert-success">Account updated successfully!</div>
+                        </c:if>
 
-    <!-- Account & Customer Table -->
-    <table class="table table-bordered">
-        <thead class="table-dark">
-            <tr>
-                <th>Customer ID</th>
-                <th>Customer Name</th>
-                <th>Username</th>
-                <th>Password</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Address</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <c:forEach var="entry" items="${accounts}">
-                <tr>
-                    <td>${entry[0].cus_id}</td>
-                    <td>${entry[0].cus_name}</td>
-                    <td>${entry[1].username}</td>
-                    <td>${entry[1].password}</td>
-                    <td>${entry[0].email}</td>
-                    <td>${entry[0].phone}</td>
-                    <td>${entry[0].address}</td>
-                    <td>${entry[1].role}</td>
-                    <td>${entry[1].acc_status}</td>
-                    <td>
-                        <a href="#"> Update </a>
-                    </td>
-                </tr>
-            </c:forEach>
-        </tbody>
-    </table>
-</div>
+                        <!-- Search & Filters -->
+                        <form action="searchAccountManagement" method="get" class="d-flex mb-3">
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+
+
+                            <select name="status" class="form-select">
+                                <option value="">All Statuses</option>
+                                <option value="Active" ${status == 'Active' ? 'selected' : ''}>Active</option>
+                                <option value="Inactive" ${status == 'Inactive' ? 'selected' : ''}>Inactive</option>
+                            </select>
+                            <input type="text" name="username" class="form-control me-2" placeholder="Search Username"
+                                   value="${search}">
+                            <button type="submit" class="btn btn-primary ms-2">Search </button>
+
+                        </form>
+
+                        <!-- Account & Customer Table -->
+                        <table class="table table-bordered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Customer ID</th>
+                                    <th>Customer Name</th>
+                                    <th>Username</th>
+                                    <th>Password</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Address</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="entry" items="${accounts}">
+                                    <c:set var="customer" value="${entry[0]}" />
+                                    <c:set var="account" value="${entry[1]}" />
+                                    <tr>
+                                        <td>${customer.cus_id}</td>
+                                        <td>${customer.cus_name}</td>
+                                        <td>${account.username}</td>
+                                        <td>${account.password}</td>
+                                        <td>${customer.email}</td>
+                                        <td>${customer.phone}</td>
+                                        <td>${customer.address}</td>
+                                        <td>${account.role}</td>
+                                        <td>${account.acc_status}</td>
+                                        <td>
+                                            <a href="updateAccountManagement?cus_id=${customer.cus_id}" class="btn btn-primary btn-sm">Update</a>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+                            
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
 </html>
-

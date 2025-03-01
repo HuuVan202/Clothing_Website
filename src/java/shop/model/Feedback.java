@@ -30,6 +30,13 @@ public class Feedback {
         this.comment = comment;
         this.feedback_date = feedback_date;
     }
+
+    public Feedback(int feedback_id, int rating, String comment, Date feedback_date) {
+        this.feedback_id = feedback_id;
+        this.rating = rating;
+        this.comment = comment;
+        this.feedback_date = feedback_date;
+    }
     
     public Feedback(int feedback_id, int pro_id, int cus_id, String cus_name, int rating, String comment, Date feedback_date) {
         this.feedback_id = feedback_id;

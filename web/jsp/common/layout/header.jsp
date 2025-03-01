@@ -169,7 +169,7 @@
                         <c:otherwise>
                             <!-- Khi đã đăng nhập -->
                             <li id="profileItem" >
-                                <a class="dropdown-item" href="#">Profile</a>
+                                <a class="dropdown-item" href="profile">Profile</a>
                             </li>
                             <li id="logoutItem">
                                 <a class="dropdown-item" href="Logout">Logout</a>

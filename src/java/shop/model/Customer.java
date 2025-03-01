@@ -26,6 +26,10 @@ public class Customer {
         this.address = address;
     }
 
+    public Customer(String cus_name) {
+        this.cus_name = cus_name;
+    }
+
     public Customer(String cus_name, String email, String username, String phone, String address) {
         this.cus_name = cus_name;
         this.email = email;
@@ -33,6 +37,8 @@ public class Customer {
         this.phone = phone;
         this.address = address;
     }
+
+  
     
     public int getCus_id() {
         return cus_id;

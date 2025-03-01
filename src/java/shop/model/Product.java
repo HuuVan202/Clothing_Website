@@ -63,6 +63,11 @@ public class Product {
         this.discountedPrice = discountedPrice;
     }
 
+    public Product(String pro_name, String image) {
+        this.pro_name = pro_name;
+        this.image = image;
+    }
+
     public Product(int pro_id, String pro_name, BigDecimal price, int stock,
             String image, String size, String gender, String brand, int type_id,
             String status, int discount) {
@@ -78,6 +83,8 @@ public class Product {
         this.status = status;
         this.discount = discount;
     }
+
+
 
     public int getPro_id() {
         return pro_id;
