@@ -4,15 +4,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/web/jsp/admin/productManagement.jsp</file>
-            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/web/jsp/admin/accountManagement.jsp</file>
-            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/web/CSS/guest/home.css</file>
-            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/src/java/shop/controller/admin/accountManagement/accountHome.java</file>
-            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/src/java/shop/controller/guest/productDetails/ProductDetailsController.java</file>
             <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/src/java/shop/DAO/admin/productManagement/AdminProductsDAO.java</file>
             <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/web/jsp/guest/home.jsp</file>
             <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/src/java/shop/controller/admin/productManagement/AdminProductsController.java</file>
-            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/src/java/shop/DAO/admin/accountManagement/accountDAO.java</file>
-            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/web/jsp/guest/productDetails.jsp</file>
+            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/web/CSS/common/layout/layout.css</file>
+            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/web/CSS/admin/managerLayout.css</file>
         </group>
     </open-files>
 </project-private>

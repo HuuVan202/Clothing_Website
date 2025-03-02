@@ -14,66 +14,152 @@ body {
     background-color: #f5f6fa;
 }
 
+/* Admin Layout Styles */
 .sidebar {
-    width: 280px;
-    min-height: 100vh;
-    background: linear-gradient(180deg, var(--bg-color) 0%, #233446 100%);
-    color: var(--font-color);
-    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.sidebar h3 {
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    padding: 20px 0;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-}
-
-.nav-link {
-    transition: all 0.3s ease;
-    margin: 8px 0;
-    border-radius: 10px;
-}
-
-.nav-link:hover {
-    background-color: var(--hover-color) !important;
-    transform: translateX(5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.header {
-    background: linear-gradient(90deg, var(--bg-color) 0%, #233446 100%);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.navbar-brand {
-    font-size: 1.5rem;
-    font-weight: 600;
-}
-
-.dropdown-toggle {
-    background-color: rgba(255, 255, 255, 0.1);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    background-color: #343a40;
     color: white;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.sidebar a:hover {
+    color: #007bff;
+}
+
+.main-content {
+    margin-left: 200px;
+    padding: 20px;
+}
+
+.card {
     border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.dropdown-toggle:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: white;
-}
-
-.nav-link i {
-    margin-right: 10px;
-}
-
-.content-area {
-    background-color: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+.card-body {
     padding: 25px;
     margin: 20px;
 }
 
+/* Product Management Table Styles */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table {
+    min-width: 100%;
+    table-layout: fixed;
+}
+
+.table th, .table td {
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+/* Column widths */
+.table th:nth-child(1) { width: 3%; }  /* ID */
+.table th:nth-child(2) { width: 25%; } /* Product */
+.table th:nth-child(3) { width: 6%; } /* Type */
+.table th:nth-child(4) { width: 4%; } /* Size */
+.table th:nth-child(5) { width: 5%; }  /* Gender */
+.table th:nth-child(6) { width: 5%; } /* Brand */
+.table th:nth-child(7) { width: 6%; }  /* Price */
+.table th:nth-child(8) { width: 5%; }  /* Discount */
+.table th:nth-child(9) { width: 4%; }  /* Stock */
+.table th:nth-child(10) { width: 5%; } /* Status */
+.table th:nth-child(11) { width: 6%; } /* Action */
+
+/* Product Cell Styles */
+.product-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.product-image {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.product-name {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    flex-grow: 1;
+}
+
+/* Modal Styles */
+.modal-dialog {
+    max-width: 500px;
+}
+
+.modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* Form Element Styles */
+.status-radio {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.status-radio input[type="radio"] {
+    margin-right: 5px;
+}
+
+.number-input {
+    min-width: 80px;
+}
+
+.product-id-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.product-id-value {
+    font-weight: normal;
+    margin: 0;
+}
+
+/* Size Options Styles */
+.clothing-sizes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.accessory-size {
+    display: none;
+}
+
+/* Current Image Style */
+.img-fluid.rounded.mb-2 {
+    max-height: 100px;
+}
+
+/* Status Colors */
+.status-active {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.status-inactive {
+    color: #dc3545;
+    font-weight: bold;
+}
