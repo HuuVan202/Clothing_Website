@@ -3,12 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/web/jsp/admin/productManagement.jsp</file>
-            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/src/java/shop/DAO/admin/productManagement/AdminProductsDAO.java</file>
-            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/web/jsp/guest/home.jsp</file>
-            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/src/java/shop/controller/admin/productManagement/AdminProductsController.java</file>
-            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/web/CSS/common/layout/layout.css</file>
-            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite27-2_2/Clothing_Website/web/CSS/admin/managerLayout.css</file>
+            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite2-3/Clothing_Website/src/java/shop/DAO/admin/productManagement/AdminProductsDAO.java</file>
+            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite2-3/Clothing_Website/src/java/shop/controller/admin/accountManagement/accountHome.java</file>
+            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite2-3/Clothing_Website/web/CSS/admin/managerLayout.css</file>
+            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite2-3/Clothing_Website/web/jsp/admin/accountManagement.jsp</file>
+            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite2-3/Clothing_Website/web/jsp/admin/dashboard.jsp</file>
+            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite2-3/Clothing_Website/web/jsp/common/layout/managerSidebar.jsp</file>
+            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite2-3/Clothing_Website/src/java/shop/controller/admin/productManagement/AdminProductsController.java</file>
+            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/ClothingWebsite2-3/Clothing_Website/web/jsp/admin/productManagement.jsp</file>
         </group>
     </open-files>
 </project-private>
