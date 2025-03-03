@@ -12,7 +12,7 @@ import shop.DAO.guest.productDetails.ProductDetailsDAO;
 import shop.model.Product;
 import shop.model.Feedback;
 
-@WebServlet(name = "ProductDetailController", urlPatterns = {"/detail"})
+@WebServlet(name = "ProductDetailServlet", urlPatterns = {"/detail"})
 public class ProductDetailsController extends HttpServlet {
 
     /**

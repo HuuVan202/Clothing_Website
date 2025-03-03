@@ -12,7 +12,7 @@
         <title>Shopping Cart</title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/common/layout/layout.css"/>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/common/home.css"/>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/guest/cart.css"/>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/customer/cart.css"/>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous"/>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     </head>
@@ -41,21 +41,23 @@
                 <c:forEach items="${o.items}" var="i" varStatus="loop">
                     <tr>
                         <td class="no_product">${loop.index+1}</td>
-                        <td class="name_product">${i.product.pro_name}</td>
+                        <td class="name_product"><a href="detail?id=${i.product.pro_id}" style="text-decoration: none;color: black">${i.product.pro_name}</a></td>
                         <td class="img_product">
-                            <img src="${pageContext.request.contextPath}/${i.product.image}" alt="${i.product.pro_name}" style="height: 100px; width: 100px"/>
+                            <a href="detail?id=${i.product.pro_id}">
+                                <img src="${pageContext.request.contextPath}/${i.product.image}" alt="${i.product.pro_name}" style="height: 100px; width: 100px"/>
+                            </a>
                         </td>
-                        <td class="price_product"><fmt:formatNumber value="${i.product.salePrice}" /></td>
+                        <td class="price_product"><fmt:formatNumber value="${i.product.salePrice}" /> VND</td>
                         <td class="quantity_product">
-                            <form action="${pageContext.request.contextPath}/cartServlet" method="POST">
+                            <form action="Cart" method="POST">
                                 <input type="hidden" name="pro_id" value="${i.product.pro_id}" />
                                 <input type="hidden" name="action" value="updateQuantity"/>
-                                <input type="number" name="quantity" value="${i.quantity}" min="0" max="${i.product.stock}" onchange="this.form.submit()" />
+                                <input type="number" name="quantity" value="${i.quantity}" min="1" max="${i.product.stock}" onchange="this.form.submit()" />
                             </form>                         
                         </td>
-                        <td class="total_product"><fmt:formatNumber value="${i.product.salePrice * i.quantity}" /></td>
+                        <td class="total_product"><fmt:formatNumber value="${i.product.salePrice * i.quantity}" /> VND</td>
                         <td class="remove_product"> 
-                            <form action="${pageContext.request.contextPath}/cartServlet" method="POST">
+                            <form action="Cart" method="POST">
                                 <input type="hidden" name="pro_id" value="${i.product.pro_id}" />
                                 <input type="hidden" name="action" value="delete"/>
                                 <input type="submit" value="Delete" onclick="return confirmDelete();"/>
@@ -68,11 +70,15 @@
             <c:forEach items="${o.items}" var="i">
                 <c:set var="total" value="${total + (i.quantity * i.product.salePrice)}"/>
             </c:forEach>
-            <h3 style="font-family: inherit">TOTAL: <fmt:formatNumber value="${total}" /></h3>
-            <form action="checkoutServlet" method="post">
+            <h3 style="font-family: inherit">TOTAL: <fmt:formatNumber value="${total}" /> VND</h3>
                 <div class="checkout_btn">
-                    <button class="btn btn-success" type="submit"><h3>Check out</h3></button>
+                    <form action="Checkout">
+                        <button style="border-radius: 20px" class="btn btn-success" type="submit">
+                            <h3>Check Out</h3>
+                        </button>
+                    </form>
                 </div>
+
             </form>
         </c:if>
 

@@ -20,7 +20,7 @@ import java.io.File;
  *
  * @author ASUS
  */
-@WebServlet(name = "AdminProductsController", urlPatterns = {"/productsManagement", "/addProduct", "/updateProduct"})
+@WebServlet(name = "AdminProductsController", urlPatterns = {"/productM", "/addProduct", "/updateProduct"})
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024, // 1 MB
     maxFileSize = 1024 * 1024 * 10,  // 10 MB
@@ -220,7 +220,7 @@ public class AdminProductsController extends HttpServlet {
             boolean success = productDAO.addProduct(newProduct);
             if (success) {
                 System.out.println("Debug - Product added successfully. Redirecting...");
-                response.sendRedirect(request.getContextPath() + "/productsManagement");
+                response.sendRedirect(request.getContextPath() + "/productM");
             } else {
                 request.setAttribute("errorMessage", "Failed to save product. Please try again.");
                 request.getRequestDispatcher("/jsp/admin/productManagement.jsp").forward(request, response);
@@ -319,7 +319,7 @@ public class AdminProductsController extends HttpServlet {
             // Update product in database
             boolean success = productDAO.updateProduct(updatedProduct);
             if (success) {
-                response.sendRedirect(request.getContextPath() + "/productsManagement?updateSuccess=true");
+                response.sendRedirect(request.getContextPath() + "/productM?updateSuccess=true");
             } else {
                 request.setAttribute("errorMessage", "Failed to update product. Please try again.");
                 request.getRequestDispatcher("/jsp/admin/productManagement.jsp").forward(request, response);

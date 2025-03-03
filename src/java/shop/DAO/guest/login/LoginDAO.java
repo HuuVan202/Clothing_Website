@@ -14,7 +14,7 @@ import shop.model.Customer;
  *
  * @author Admin
  */
-public class LoginDAO extends DBcontext{
+public class LoginDAO extends DBcontext {
 
     public Account checkLoginAccount(String userName, String passWord) {
         Account account = null;
@@ -90,10 +90,47 @@ public class LoginDAO extends DBcontext{
         return customer;
     }
 
+    public Customer getCustomerByEmail(String emailInput) {
+        Customer customer = null;
+        connection = getConnection();
+
+        try {
+            String sql = """
+                         SELECT [cus_id]
+                               ,[cus_name]
+                               ,[email]
+                               ,[username]
+                               ,[phone]
+                               ,[address]
+                           FROM [dbo].[Customer]
+                           WHERE [email] = ?""";
+
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, emailInput);
+
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                String name = resultSet.getString(2);
+                String email = resultSet.getString(3);
+                String username = resultSet.getString(4);
+                String phone = resultSet.getString(5);
+                String address = resultSet.getString(6);
+                customer = new Customer(id, name, email, username, phone, address);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return customer;
+    }
+
     public static void main(String[] args) {
         LoginDAO loginDAO = new LoginDAO();
-        Account c = loginDAO.checkLoginAccount("test1", "Huuvan@2004");
-
+//        Account c = loginDAO.checkLoginAccount("test1", "Huuvan@2004");
+        Customer c = loginDAO.getCustomerByEmail("donatellophan@gmail.com");
+        
         if (c != null) {
             System.out.println("Đăng nhập thành công!");
         } else {

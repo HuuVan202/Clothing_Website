@@ -18,101 +18,17 @@
                 >
                 <li class="nav-item">
                     <a
-                        class="nav-link px-2 link-dark main-link"
+                        class="nav-link px-2 link-dark main-link border rounded-3"
                         id="allProducts"
                         href="products"
                         >
                         All Products
                     </a>
                 </li>
-
-                <li class="nav-item dropdown">
-                    <a
-                        class="nav-link dropdown-toggle px-2 link-dark main-link"
-                        id="topDropdown"
-                        >
-                        Top
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="#">Shirts</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">T-Shirt</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Jacket</a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="nav-item dropdown">
-                    <a
-                        class="nav-link dropdown-toggle px-2 link-dark main-link"
-                        id="bottomDropdown"
-                        >
-                        Bottom
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="#">Pants</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Shorts</a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="nav-item dropdown">
-                    <a
-                        class="nav-link dropdown-toggle px-2 link-dark main-link"
-                        id="accessoriesDropdown"
-                        >
-                        Accessories
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="#">Sunglasses</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Wallet</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Bag</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Hat</a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="nav-item dropdown">
-                    <a
-                        class="nav-link dropdown-toggle px-2 link-dark main-link"
-                        id="accessoriesDropdown"
-                        >
-                        Gender
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="#">Male</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#"
-                               >Female</a
-                            >
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#"
-                               >Unisex</a
-                            >
-                        </li>
-                    </ul>
-                </li>
             </ul>
 
             <div class="cart me-3">
-                <a href="${pageContext.request.contextPath}/jsp/customer/cart.jsp" class="d-block link-dark text-decoration-none" style="color: white">
+                <a href="Cart" class="d-block link-dark text-decoration-none" style="color: white">
                     <img
                         class="border"
 
@@ -122,7 +38,9 @@
 
                         alt="cart-icon"
                         />
-                    ${size}
+                    <c:if test="${not empty sessionScope.customer}">
+                        <span>${size}</span>
+                    </c:if>
                 </a>
             </div>
 

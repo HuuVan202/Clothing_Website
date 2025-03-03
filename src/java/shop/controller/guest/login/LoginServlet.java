@@ -12,8 +12,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import shop.DAO.customer.cart.CartDAO;
 import shop.DAO.guest.login.LoginDAO;
 import shop.model.Account;
+import shop.model.CartUtil;
 import shop.model.Customer;
 
 /**
@@ -66,6 +68,10 @@ public class LoginServlet extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("customer", customer);
 
+            //lay gio hang tu db
+            CartUtil cart = CartDAO.getCartByCustomerId(customer.getCus_id());
+            session.setAttribute("cart", cart);
+            session.setAttribute("size", cart.getItems().size()); 
             Cookie userNameCookie = new Cookie("cUserName", username);
             userNameCookie.setMaxAge(60 * 60 * 24 * 30 * 2); //3 months
 

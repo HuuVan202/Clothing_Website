@@ -28,6 +28,11 @@ header {
     color: var(--layout-font-color) !important;
 }
 
+.nav-link:hover {
+    background-color: var(--layout-font-color) !important;
+    color: var(--layout-bg) !important;
+}
+
 .dropdown:hover .dropdown-menu {
     display: block;
 }

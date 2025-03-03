@@ -7,6 +7,7 @@ package shop.model;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import shop.DAO.customer.cart.CartDAO;
 
 /**
  *
@@ -15,62 +16,60 @@ import java.util.List;
 public class CartUtil {
 
     private List<CartItem> items;
+    private int customerId;
 
     public CartUtil() {
         items = new ArrayList<>();
+
     }
 
-    public CartUtil(List<CartItem> items) {
-        this.items = items;
+    public CartUtil(int customerId) {
+        this.customerId = customerId;
+        this.items = new ArrayList<>();
+        showCart();
     }
 
-    public List<CartItem> getItems() {
-        return items;
+    public void showCart() {
+        this.items = CartDAO.getCartItemsByCustomerId(customerId);
     }
 
     public void setItems(List<CartItem> items) {
         this.items = items;
     }
 
-    public CartItem getItemById(int pro_id) {
+    public void addItemToCart(CartItem item) {
+        CartDAO.addCartItem(customerId, item);
+        items.add(item);
+
+    }
+
+    public void removeItemToCart(int productId) {
+        CartDAO.removeCartItem(customerId, productId);
+        items.removeIf(i -> i.getProduct().getPro_id() == productId);
+
+    }
+
+    public void updateItemToCart(int productId, int quantity) {
+        CartDAO.updateCartItem(customerId, productId, quantity);
         for (CartItem item : items) {
-            if (item.getProduct().getPro_id() == pro_id) {
-                return item;
+            if (item.getProduct().getPro_id() == productId) {
+                item.setQuantity(quantity);
+                break;
             }
         }
-        return null;
     }
 
-    public int getQuantityById(int pro_id) {
-        CartItem item = getItemById(pro_id);
-        return (item != null) ? item.getQuantity() : 0;
+    public int getItemQuantity(int productId) {
+        for (CartItem item : items) {
+            if (item.getProduct().getPro_id() == productId) {
+                return item.getQuantity();
+            }
+        }
+        return 0;
     }
 
-    public void addItemToCart(CartItem item) {
-        if (item == null || item.getProduct() == null) {
-            throw new IllegalArgumentException("Item or Product cannot be null");
-        }
-
-        CartItem existingItem = getItemById(item.getProduct().getPro_id());
-        if (existingItem != null) {
-            existingItem.setQuantity(existingItem.getQuantity() + item.getQuantity());
-        } else {
-            items.add(item);
-        }
-    }
-
-    public void updateQuantity(int pro_id, int quantity) {
-        CartItem item = getItemById(pro_id);
-        if (item != null) {
-            item.setQuantity(quantity);
-        }
-    }
-
-    public void removeItem(int pro_id) {
-        CartItem item = getItemById(pro_id);
-        if (item != null) {
-            items.remove(item);
-        }
+    public List<CartItem> getItems() {
+        return items;
     }
 
 }

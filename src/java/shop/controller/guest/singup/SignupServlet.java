@@ -21,8 +21,8 @@ import shop.model.Customer;
  */
 @WebServlet(name = "SignupServlet", urlPatterns = {"/Signup"})
 public class SignupServlet extends HttpServlet {
-    
-     private final String SIGNUP = "jsp/guest/signup.jsp";
+
+    private final String SIGNUP = "jsp/guest/signup.jsp";
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -35,7 +35,7 @@ public class SignupServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       request.getRequestDispatcher(SIGNUP).forward(request, response);
+        request.getRequestDispatcher(SIGNUP).forward(request, response);
     }
 
     /**
@@ -47,7 +47,7 @@ public class SignupServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-     protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String fullName = request.getParameter("txtFullName");
         String userName = request.getParameter("txtUserName");
@@ -73,14 +73,19 @@ public class SignupServlet extends HttpServlet {
         } // Check email exists
         else if (signupDAO.checkEmailExist(email)) {
             message = "Email already exists!";
-        }else if(!passWord.equals(passwordSecond)){
+        } else if (!passWord.equals(passwordSecond)) {
             message = "Passwords do not match! Please re-enter!";
-        }else if (!isValidPassword(passWord)) { // Check strong passwords
+        } else if (!isValidPassword(passWord)) { // Check strong passwords
             message = "Password must be at least 8 characters, including uppercase and special characters!";
         }
-        
+
         if (message != null) {
             request.setAttribute("message", message);
+            request.setAttribute("fullName", fullName);
+            request.setAttribute("userName", userName);
+            request.setAttribute("email", email);
+            request.setAttribute("phone", phone);
+            request.setAttribute("address", address);
             request.getRequestDispatcher(SIGNUP).forward(request, response);
             return;
         }
@@ -95,9 +100,9 @@ public class SignupServlet extends HttpServlet {
         }
     }
 
-      private boolean isValidPassword(String password) {
+    private boolean isValidPassword(String password) {
         String regex = "^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
         return Pattern.matches(regex, password);
     }
-     
+
 }

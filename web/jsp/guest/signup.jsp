@@ -1,9 +1,3 @@
-<%-- 
-    Document   : signup
-    Created on : Feb 17, 2025, 10:06:38 AM
-    Author     : HuuVan
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -18,11 +12,14 @@
             <form action="Signup" method="POST" id="signup-form">
                 <p>
                     <label for="txtFullName">Full Name</label><br>
-                    <input type="text" id="txtFullName" name="txtFullName" value="">
+                    <input type="text" id="txtFullName" name="txtFullName" 
+                           value="${not empty requestScope.fullName ? requestScope.fullName : (not empty requestScope.accountGG.given_name ? requestScope.accountGG.given_name : '')} 
+                           ${not empty requestScope.accountGG.family_name ? requestScope.accountGG.family_name : ''}">
                 </p>
                 <p>
                     <label for="txtUserName">Username</label><br>
-                    <input type="text" id="txtUserName" name="txtUserName" value="">
+                    <input type="text" id="txtUserName" name="txtUserName" 
+                           value="${not empty requestScope.userName ? requestScope.userName : (not empty requestScope.accountGG.email ? requestScope.accountGG.email : '')}">
                 </p>
                 <p>
                     <label for="txtPassword">Password</label><br>
@@ -42,23 +39,40 @@
 
                 <p>
                     <label for="txtEmail">Email</label><br>
-                    <input type="text" id="txtEmail" name="txtEmail" value="">
+                    <input type="text" id="txtEmail" name="txtEmail" 
+                           value="${not empty requestScope.email ? requestScope.email : (not empty requestScope.accountGG.email ? requestScope.accountGG.email : '')}">
                 </p>
                 <p>
                     <label for="txtPhone">Phone</label><br>
-                    <input type="text" id="txtPhone" name="txtPhone" value="">
+                    <input type="text" id="txtPhone" name="txtPhone" 
+                           value="${not empty requestScope.phone ? requestScope.phone : ''}">
                 </p>
                 <p>
                     <label for="txtAddress">Address</label><br>
-                    <input type="text" id="txtAddress" name="txtAddress" value="">
+                    <input type="text" id="txtAddress" name="txtAddress" 
+                           value="${not empty requestScope.address ? requestScope.address : ''}">
                 </p>
-                <h7 style="color: red">${requestScope.message}</h7>
+
+                <!-- Hiển thị thông báo lỗi nếu có -->
+                <p style="color: red">${requestScope.message}</p>
+
                 <button type="submit" name="btnAction" value="signup">Sign Up</button>
             </form>
+            <a href="home">Back to Home</a>
         </div>
 
         <script src="${pageContext.request.contextPath}/JS/guest/login.js"></script>
+        <script>
+                            function togglePassword(fieldId, element) {
+                                let input = document.getElementById(fieldId);
+                                if (input.type === "password") {
+                                    input.type = "text";
+                                    element.textContent = "🙈";
+                                } else {
+                                    input.type = "password";
+                                    element.textContent = "👁️";
+                                }
+                            }
+        </script>
     </body>
 </html>
-
-

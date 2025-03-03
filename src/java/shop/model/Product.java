@@ -48,20 +48,20 @@ public class Product {
         this.discount = discount;
     }
 
-//    public Product(int pro_id, String pro_name, BigDecimal price, int stock, String image, String size, String gender, String brand, int cat_id, String status, int discount, BigDecimal discountedPrice) {
-//        this.pro_id = pro_id;
-//        this.pro_name = pro_name;
-//        this.price = price;
-//        this.stock = stock;
-//        this.image = image;
-//        this.size = size;
-//        this.gender = gender;
-//        this.brand = brand;
-//        this.type_id = type_id;
-//        this.status = status;
-//        this.discount = discount;
-//        this.discountedPrice = discountedPrice;
-//    }
+    public Product(int pro_id, String pro_name, BigDecimal price, int stock, String image, String size, String gender, String brand, int cat_id, String status, int discount, BigDecimal discountedPrice) {
+        this.pro_id = pro_id;
+        this.pro_name = pro_name;
+        this.price = price;
+        this.stock = stock;
+        this.image = image;
+        this.size = size;
+        this.gender = gender;
+        this.brand = brand;
+        this.type_id = type_id;
+        this.status = status;
+        this.discount = discount;
+        this.discountedPrice = discountedPrice;
+    }
 
     public Product(String pro_name, String image) {
         this.pro_name = pro_name;
