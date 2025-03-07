@@ -8,7 +8,7 @@
         <a href="#" class="nav-link text-light p-3 border-0 rounded">
             <i class="bi bi-people"></i>Account Management
         </a>
-        <a href="#" class="nav-link text-light p-3 border-0 rounded">
+        <a href="${pageContext.request.contextPath}/productM" class="nav-link text-light p-3 border-0 rounded">
             <i class="bi bi-box-seam"></i>Product Management
         </a>
         <a href="${pageContext.request.contextPath}/orderM" class="nav-link text-light p-3 border-0 rounded">

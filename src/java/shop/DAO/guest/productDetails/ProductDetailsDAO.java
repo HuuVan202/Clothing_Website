@@ -86,114 +86,63 @@ public class ProductDetailsDAO {
         }
         return feedback;
     }
+    
+    public List<Product> getSuggestProducts(Integer pro_id) {
+    List<Product> list = new ArrayList<>();
+    String sql = 
+        "WITH OrderedProducts AS ( " +
+        "    SELECT TOP 5 p.pro_id, p.pro_name, p.image, p.discount, p.price, " +
+        "           (p.price * (1 - p.discount / 100.0)) AS discounted_price, " +
+        "           COALESCE(SUM(od.quantity), 0) AS total_order " + // Xử lý nếu không có order thì mặc định là 0
+        "    FROM Product p " +
+        "    LEFT JOIN OrderDetail od ON p.pro_id = od.pro_id " + 
+        "    WHERE p.type_id = (SELECT type_id FROM Product WHERE pro_id = ?) " +
+        "    AND p.pro_id != ? " + // Không lấy lại chính sản phẩm đang xem
+        "    AND p.status = 'active' " +
+        "    GROUP BY p.pro_id, p.pro_name, p.image, p.discount, p.price " +
+        "    ORDER BY total_order DESC " + // Sắp xếp theo số lượng đặt hàng nhiều nhất
+        "), " +
+        "AdditionalProducts AS ( " +
+        "    SELECT TOP (5 - (SELECT COUNT(*) FROM OrderedProducts)) " + // Chỉ lấy thêm sản phẩm nếu thiếu
+        "           p.pro_id, p.pro_name, p.image, p.discount, p.price, " +
+        "           (p.price * (1 - p.discount / 100.0)) AS discounted_price, " +
+        "           0 AS total_order " + // Các sản phẩm này không có order
+        "    FROM Product p " +
+        "    WHERE p.type_id = (SELECT type_id FROM Product WHERE pro_id = ?) " +
+        "    AND p.pro_id NOT IN (SELECT pro_id FROM OrderedProducts) " + // Không lặp lại sản phẩm đã có order
+        "    AND p.pro_id != ? " + // Không lấy lại chính sản phẩm đang xem
+        "    AND p.status = 'active' " +
+        "    ORDER BY p.pro_id DESC " + // Lấy sản phẩm mới nhất trước
+        ") " +
+        "SELECT * FROM OrderedProducts " +
+        "UNION ALL " +
+        "SELECT * FROM AdditionalProducts"; // Kết hợp hai bảng OrderedProducts & AdditionalProducts
 
-    public List<Product> getSuggestProducts(int pro_id) {
-        List<Product> list = new ArrayList<>();
-        String sql = "WITH TypeProducts AS ( "
-                + "    SELECT p.pro_id, p.pro_name, p.image, p.discount, p.price, "
-                + "           (p.price * (1 - p.discount / 100.0)) AS discounted_price, "
-                + "           SUM(od.quantity) AS total_order "
-                + "    FROM Product p "
-                + "    JOIN OrderDetail od ON p.pro_id = od.pro_id "
-                + "    JOIN [Order] o ON od.order_id = o.order_id "
-                + "    WHERE p.type_id = (SELECT type_id FROM Product WHERE pro_id = ?) "
-                + "    AND p.pro_id != ? " // Loại bỏ sản phẩm hiện tại khỏi danh sách gợi ý
-                + "    AND p.status = 'active' "
-                + "    GROUP BY p.pro_id, p.pro_name, p.image, p.discount, p.price "
-                + ") "
-                + "SELECT TOP 5 * FROM TypeProducts ORDER BY total_order DESC";
+    try {
+        conn = new DBcontext().getConnection();
+        ps = conn.prepareStatement(sql);
+        ps.setInt(1, pro_id); // Lấy type_id của sản phẩm hiện tại
+        ps.setInt(2, pro_id); // Không lấy lại chính sản phẩm
+        ps.setInt(3, pro_id); // Lấy thêm sản phẩm cùng type_id nếu thiếu
+        ps.setInt(4, pro_id); // Không lấy lại chính sản phẩm
 
-        try {
-            conn = new DBcontext().getConnection();
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1, pro_id); // Lấy type_id của sản phẩm hiện tại
-            ps.setInt(2, pro_id); // Không lấy lại chính sản phẩm đang xem
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                Product p = new Product();
-                p.setPro_id(rs.getInt(1));
-                p.setPro_name(rs.getString(2));
-                p.setImage(rs.getString(3));
-                p.setDiscount(rs.getInt(4));
-                p.setPrice(rs.getBigDecimal(5));
-                p.setDiscountedPrice(rs.getBigDecimal(6));
-                list.add(p);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        rs = ps.executeQuery();
+        while (rs.next()) {
+            Product p = new Product();
+            p.setPro_id(rs.getInt("pro_id"));
+            p.setPro_name(rs.getString("pro_name"));
+            p.setImage(rs.getString("image"));
+            p.setDiscount(rs.getInt("discount"));
+            p.setPrice(rs.getBigDecimal("price"));
+            p.setDiscountedPrice(rs.getBigDecimal("discounted_price"));
+            list.add(p);
         }
-        return list;
+    } catch (Exception e) {
+        e.printStackTrace();
     }
-//        String sql;
-//
-//        if (cus_id != null) {
-//            sql = "SELECT TOP 1 o.order_id FROM [Order] o WHERE o.cus_id = ? ORDER BY o.order_date DESC";
-//            try {
-//                conn = new DBcontext().getConnection();
-//                ps = conn.prepareStatement(sql);
-//                ps.setInt(1, cus_id);
-//                rs = ps.executeQuery();
-//
-//                if (rs.next()) {
-//                    sql = "SELECT TOP 5 p.pro_id, p.pro_name, p.image, p.discount, p.price, (p.price * (1 - p.discount / 100.0)) AS discounted_price FROM Product p WHERE p.type_id IN ("
-//                            + "    SELECT DISTINCT pr.type_id "
-//                            + "    FROM [Order] o "
-//                            + "    JOIN OrderDetail od ON o.order_id = od.order_id "
-//                            + "    JOIN Product pr ON od.pro_id = pr.pro_id "
-//                            + "    WHERE o.cus_id = ? "
-//                            + ") "
-//                            + "AND p.status = 'active' ORDER BY p.pro_id DESC";
-//                } else {
-//                    sql = "SELECT TOP 1 c.cart_id FROM Cart c WHERE c.cus_id = ?";
-//                    ps = conn.prepareStatement(sql);
-//                    ps.setInt(1, cus_id);
-//                    rs = ps.executeQuery();
-//
-//                    if (rs.next()) {
-//                        sql = "SELECT TOP 5 p.pro_id, p.pro_name, p.image, p.discount, p.price, (p.price * (1 - p.discount / 100.0)) AS discounted_price FROM Product p WHERE p.type_id IN ("
-//                                + "    SELECT DISTINCT pr.type_id "
-//                                + "    FROM Cart c "
-//                                + "    JOIN Product pr ON c.pro_id = pr.pro_id "
-//                                + "    WHERE c.cus_id = ? "
-//                                + ") "
-//                                + "AND p.status = 'active' ORDER BY p.pro_id DESC";
-//                    } else {
-//                        sql = "WITH TopType AS ("
-//                                + "    SELECT TOP 3 p.type_id "
-//                                + "    FROM OrderDetail od "
-//                                + "    JOIN Product p ON od.pro_id = p.pro_id "
-//                                + "    GROUP BY p.type_id "
-//                                + "    ORDER BY SUM(od.quantity) DESC"
-//                                + ") "
-//                                + "SELECT TOP 5 p.pro_id, p.pro_name, p.image, p.discount, p.price, (p.price * (1 - p.discount / 100.0)) AS discounted_price FROM Product p "
-//                                + "WHERE p.type_id IN (SELECT type_id FROM TopType) "
-//                                + "AND p.status = 'active'";
-//                    }
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            sql = "WITH TopType AS ("
-//                    + "    SELECT TOP 3 p.type_id "
-//                    + "    FROM OrderDetail od "
-//                    + "    JOIN Product p ON od.pro_id = p.pro_id "
-//                    + "    GROUP BY p.type_id "
-//                    + "    ORDER BY SUM(od.quantity) DESC"
-//                    + ") "
-//                    + "SELECT TOP 5 p.pro_id, p.pro_name, p.image, p.discount, p.price, (p.price * (1 - p.discount / 100.0)) AS discounted_price FROM Product p "
-//                    + "WHERE p.type_id IN (SELECT type_id FROM TopType) "
-//                    + "AND p.status = 'active'";
-//        }
-//
-//        try {
-//            conn = new DBcontext().getConnection();
-//            ps = conn.prepareStatement(sql);
-//            if (cus_id != null) {
-//                ps.setInt(1, cus_id);
-//            }
-//            rs = ps.executeQuery();
-
+    return list;
+}
+  
     public static void main(String[] args) {
         ProductDetailsDAO p = new ProductDetailsDAO();
         p.getSuggestProducts(1);
