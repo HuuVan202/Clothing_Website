@@ -55,7 +55,11 @@
                                         <span class="text-warning fs-5">★</span> (${pd.feedbackCount})
                                     </p>
 
-                                    <button class="btn btn-success me-2">Add to Cart</button>
+                                    <form action="Cart" method="post">
+                                        <input type="hidden" name="pro_id" value="${pd.pro_id}" />
+                                        <input type="hidden" name="action" value="add" />
+                                        <button type="submit" class="btn btn-success mt-auto">Add to Cart</button>
+                                    </form>
                                     <button class="btn btn-primary">Give Feedback</button>
                                 </div>
                             </div>
@@ -133,7 +137,11 @@
                                                 <div class="text-danger fw-bold">${s.formattedPrice} VND</div>
                                             </c:if>
                                         </div>
-                                        <button class="btn btn-success w-100 mt-2">Add to Cart</button>
+                                        <form action="Cart" method="post">
+                                        <input type="hidden" name="pro_id" value="${pd.pro_id}" />
+                                        <input type="hidden" name="action" value="add" />
+                                        <button type="submit" class="btn btn-success mt-auto">Add to Cart</button>
+                                    </form>
                                     </div>
                                 </div>
                             </div>
