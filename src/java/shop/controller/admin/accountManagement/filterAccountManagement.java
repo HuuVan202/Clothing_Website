@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package shop.controller.admin.feedbackManagement;
+package shop.controller.admin.accountManagement;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,14 +12,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import shop.DAO.admin.feedbackManagement.feedbackManagementDAO;
+import shop.DAO.admin.accountManagement.accountDAO;
 
 /**
  *
  * @author ADMIN
  */
-@WebServlet(name = "searchFeedbackCustomer", urlPatterns = {"/searchFeedbackCustomer"})
-public class searchFeedbackCustomer extends HttpServlet {
+@WebServlet(name = "filterAccountManagement", urlPatterns = {"/filterAccountManagement"})
+public class filterAccountManagement extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +38,10 @@ public class searchFeedbackCustomer extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet searchFeedbackCustomer</title>");
+            out.println("<title>Servlet filterAccountManagement</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet searchFeedbackCustomer at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet filterAccountManagement at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,34 +57,35 @@ public class searchFeedbackCustomer extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-
-        String sortOrder = request.getParameter("order");
-        String pro_name = request.getParameter("pro_name");
-        String ratingParam = request.getParameter("rating");
-
-        if (pro_name == null) {
-            pro_name = ""; // Đảm bảo không bị lỗi NULL
-        }
-
-        feedbackManagementDAO dao = new feedbackManagementDAO();
-        List<Object[]> feedback = dao.searchFeedbackByProductrname(pro_name);
-
-        if (feedback == null || feedback.isEmpty()) {
-            // Nếu không tìm thấy tài khoản, hiển thị thông báo lỗi
-            request.setAttribute("errorMessage", "No Feedback found for the entered product name .");
-        } else {
-
-            request.setAttribute("feedback", feedback);
-        }
-        request.setAttribute("selectedRating", ratingParam);
-        request.setAttribute("sortOrder", sortOrder != null ? sortOrder : "desc");
-
-        request.setAttribute("search", pro_name);
-        request.getRequestDispatcher("jsp/admin/feedbackManagement.jsp").forward(request, response);
+ protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    response.setContentType("text/html;charset=UTF-8");
+    
+    // Lấy dữ liệu từ request
+    String status = request.getParameter("status");
+    
+    // Lưu trạng thái vào session để sử dụng khi tìm kiếm
+    request.getSession().setAttribute("selectedStatus", status);
+    
+    // Khởi tạo DAO
+    accountDAO dao = new accountDAO();
+    
+    // Lấy danh sách tài khoản dựa trên trạng thái
+    List<Object[]> accounts = dao.getFilteredCustomerAccounts(null, status);
+    
+    // Gửi dữ liệu đến JSP
+    if (accounts == null || accounts.isEmpty()) {
+        request.setAttribute("errorMessage", "No accounts found for the selected status.");
+    } else {
+        request.setAttribute("accounts", accounts);
     }
+    
+    request.setAttribute("selectedStatus", status);
+    
+    request.getRequestDispatcher("jsp/admin/accountManagement.jsp").forward(request, response);
+}
+
+
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -97,8 +98,7 @@ public class searchFeedbackCustomer extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        processRequest(request, response);
+        doGet(request, response);
     }
 
     /**

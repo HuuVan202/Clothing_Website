@@ -18,8 +18,8 @@ import shop.DAO.admin.feedbackManagement.feedbackManagementDAO;
  *
  * @author ADMIN
  */
-@WebServlet(name = "searchFeedbackCustomer", urlPatterns = {"/searchFeedbackCustomer"})
-public class searchFeedbackCustomer extends HttpServlet {
+@WebServlet(name = "sortFeedback", urlPatterns = {"/sortFeedback"})
+public class sortFeedback extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +38,10 @@ public class searchFeedbackCustomer extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet searchFeedbackCustomer</title>");
+            out.println("<title>Servlet sortFeedback</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet searchFeedbackCustomer at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet sortFeedback at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,29 +59,24 @@ public class searchFeedbackCustomer extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
 
         String sortOrder = request.getParameter("order");
         String pro_name = request.getParameter("pro_name");
         String ratingParam = request.getParameter("rating");
-
-        if (pro_name == null) {
-            pro_name = ""; // Đảm bảo không bị lỗi NULL
-        }
+            int rating = (ratingParam != null && !ratingParam.isEmpty()) ? Integer.parseInt(ratingParam) : 0;
 
         feedbackManagementDAO dao = new feedbackManagementDAO();
-        List<Object[]> feedback = dao.searchFeedbackByProductrname(pro_name);
+        List<Object[]> feedback = dao.sortFeedbackByDate(sortOrder);
 
-        if (feedback == null || feedback.isEmpty()) {
-            // Nếu không tìm thấy tài khoản, hiển thị thông báo lỗi
-            request.setAttribute("errorMessage", "No Feedback found for the entered product name .");
-        } else {
-
-            request.setAttribute("feedback", feedback);
+        if (pro_name != null && !pro_name.isEmpty()) {
+            feedback = dao.searchFeedbackByProductrname(pro_name);
         }
+        if (rating > 0) {
+            feedback = dao.filterFeedbackByRating(rating);
+        }
+        request.setAttribute("feedback", feedback);
+        request.setAttribute("sortOrder", sortOrder != null ? sortOrder : "desc"); // Mặc định DESC
         request.setAttribute("selectedRating", ratingParam);
-        request.setAttribute("sortOrder", sortOrder != null ? sortOrder : "desc");
-
         request.setAttribute("search", pro_name);
         request.getRequestDispatcher("jsp/admin/feedbackManagement.jsp").forward(request, response);
     }
@@ -97,7 +92,6 @@ public class searchFeedbackCustomer extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
         processRequest(request, response);
     }
 

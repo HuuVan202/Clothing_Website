@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/D:/2025/SPRING2025/rac/Clothing_Website/src/java/shop/controller/admin/feedbackManagement/filterFeedback.java</file>
+            <file>file:/D:/2025/SPRING2025/rac/Clothing_Website/web/jsp/admin/feedbackManagement.jsp</file>
+            <file>file:/D:/2025/SPRING2025/rac/Clothing_Website/src/java/shop/controller/admin/accountManagement/searchAccountManagement.java</file>
+            <file>file:/D:/2025/SPRING2025/rac/Clothing_Website/src/java/shop/controller/admin/accountManagement/updateAccountManagement.java</file>
+            <file>file:/D:/2025/SPRING2025/rac/Clothing_Website/src/java/shop/controller/admin/feedbackManagement/viewFeedbackDetails.java</file>
+            <file>file:/D:/2025/SPRING2025/rac/Clothing_Website/web/jsp/common/layout/managerSidebar.jsp</file>
+            <file>file:/D:/2025/SPRING2025/rac/Clothing_Website/src/java/shop/DAO/admin/accountManagement/accountDAO.java</file>
+            <file>file:/D:/2025/SPRING2025/rac/Clothing_Website/web/jsp/admin/feedbackDetails.jsp</file>
+            <file>file:/D:/2025/SPRING2025/rac/Clothing_Website/src/java/shop/context/DBcontext.java</file>
+            <file>file:/D:/2025/SPRING2025/rac/Clothing_Website/web/jsp/common/layout/managerHeader.jsp</file>
+            <file>file:/D:/2025/SPRING2025/rac/Clothing_Website/web/jsp/admin/updateAccount.jsp</file>
+            <file>file:/D:/2025/SPRING2025/rac/Clothing_Website/src/java/shop/controller/admin/feedbackManagement/searchFeedbackCustomer.java</file>
+            <file>file:/D:/2025/SPRING2025/rac/Clothing_Website/web/CSS/admin/managerLayout.css</file>
+            <file>file:/D:/2025/SPRING2025/rac/Clothing_Website/src/java/shop/controller/admin/feedbackManagement/sortFeedback.java</file>
+            <file>file:/D:/2025/SPRING2025/rac/Clothing_Website/web/jsp/admin/accountManagement.jsp</file>
+        </group>
+    </open-files>
 </project-private>

@@ -57,23 +57,33 @@ public class searchAccountManagement extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        // Lấy dữ liệu từ request
-        String username = request.getParameter("username");
-
-        // Khởi tạo DAOsearchAccountManagement
-        accountDAO dao = new accountDAO();
-
-        // Lấy danh sách tài khoản dựa trên username tìm kiếm
-        List<Object[]> accounts = dao.searchCustomerAccountsByUsername(username);
-
-        // Gửi dữ liệu đến JSP
+    // Servlet cho tìm kiếm tài khoản
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    response.setContentType("text/html;charset=UTF-8");
+    
+    // Lấy dữ liệu từ request
+    String username = request.getParameter("username");
+    String status = (String) request.getSession().getAttribute("selectedStatus"); // Lấy trạng thái đã lọc trước đó
+    
+    // Khởi tạo DAO
+    accountDAO dao = new accountDAO();
+    
+    // Lấy danh sách tài khoản dựa trên username và status tìm kiếm
+    List<Object[]> accounts = dao.getFilteredCustomerAccounts(username, status);
+    
+    // Gửi dữ liệu đến JSP
+    if (accounts == null || accounts.isEmpty()) {
+        request.setAttribute("errorMessage", "No account found matching the search criteria.");
+    } else {
         request.setAttribute("accounts", accounts);
-        request.setAttribute("search", username); // Lưu username vào request để hiển thị lại trong ô tìm kiếm
-        request.getRequestDispatcher("jsp/admin/accountManagement.jsp").forward(request, response);
     }
-
+    
+    request.setAttribute("search", username);
+    request.setAttribute("selectedStatus", status);
+    
+    request.getRequestDispatcher("jsp/admin/accountManagement.jsp").forward(request, response);
+}
     /**
      * Handles the HTTP <code>POST</code> method.
      *
@@ -85,6 +95,7 @@ public class searchAccountManagement extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
         processRequest(request, response);
     }
 

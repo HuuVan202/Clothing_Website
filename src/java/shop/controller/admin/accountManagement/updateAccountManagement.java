@@ -39,7 +39,7 @@ public class updateAccountManagement extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet updataAccountManagement</title>");            
+            out.println("<title>Servlet updataAccountManagement</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet updataAccountManagement at " + request.getContextPath() + "</h1>");
@@ -57,30 +57,31 @@ public class updateAccountManagement extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-  @Override
-protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    String id_raw = request.getParameter("cus_id");
-    int id = -1;
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        String id_raw = request.getParameter("cus_id");
+        int id = -1;
 
-    try {
-        id = Integer.parseInt(id_raw);
-    } catch (NumberFormatException e) {
-        e.printStackTrace();
-        response.sendRedirect("accountManagement.jsp?error=InvalidID");
-        return;
+        try {
+            id = Integer.parseInt(id_raw);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            response.sendRedirect("accountManagement.jsp?error=InvalidID");
+            return;
+        }
+
+        accountDAO dao = new accountDAO();
+        Object[] account = dao.getAccountById(id);
+
+        if (account != null) {
+            request.setAttribute("account", account);
+            request.getRequestDispatcher("/jsp/admin/updateAccount.jsp").forward(request, response);
+        } else {
+            response.sendRedirect("accountManagement.jsp?error=AccountNotFound");
+        }
     }
-
-    accountDAO dao = new accountDAO();
-    Object[] account = dao.getAccountById(id);
-
-    if (account != null) {
-        request.setAttribute("account", account);
-        request.getRequestDispatcher("/jsp/admin/updateAccount.jsp").forward(request, response);
-    } else {
-        response.sendRedirect("accountManagement.jsp?error=AccountNotFound");
-    }
-}
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -91,44 +92,63 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
      * @throws IOException if an I/O error occurs
      */
     @Override
-    
-protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    String cusIdRaw = request.getParameter("cus_id");
-    String email = request.getParameter("email");
-    String phone = request.getParameter("phone");
-    String address = request.getParameter("address");
-    String status = request.getParameter("acc_status");
 
- 
-    int cusId = -1;
-    try {
-        cusId = Integer.parseInt(cusIdRaw);
-    } catch (NumberFormatException e) {
-        response.sendRedirect("jsp/admin/accountManagement.jsp?error=Invalid ID");
-        return;
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        String cusIdRaw = request.getParameter("cus_id");
+        String cusName = request.getParameter("cus_name");
+        String phone = request.getParameter("phone");
+        String address = request.getParameter("address");
+        String status = request.getParameter("acc_status");
+
+        int cusId = -1;
+        try {
+            cusId = Integer.parseInt(cusIdRaw);
+        } catch (NumberFormatException e) {
+            response.sendRedirect("jsp/admin/accountManagement.jsp?error=Invalid ID");
+            return;
+        }
+
+        accountDAO dao = new accountDAO();
+        Object[] accountData = dao.getAccountById(cusId);
+        if (accountData != null) {
+            Customer customer = (Customer) accountData[0];
+            Account account = (Account) accountData[1];
+
+            if (!phone.matches("^(0[3|5|7|8|9])[0-9]{8}$")) {
+
+                request.setAttribute("errorPhone", "Invalid phone number! It must contain 10!");
+                request.setAttribute("phone", phone); // Giữ lại giá trị đã nhập
+                request.setAttribute("account", accountData);
+                request.getRequestDispatcher("jsp/admin/updateAccount.jsp").forward(request, response);
+                return;
+            }
+            if (cusName == null || cusName.trim().isEmpty()) {
+                request.setAttribute("errorCusName", "Customer name cannot be empty!");
+            }
+            if (address == null || address.trim().isEmpty()) {
+                request.setAttribute("errorAddress", "Address cannot be empty!");
+            }
+
+            if (request.getAttribute("errorCusName") != null || request.getAttribute("errorAddress") != null) {
+                request.setAttribute("account", accountData);
+                request.getRequestDispatcher("jsp/admin/updateAccount.jsp").forward(request, response);
+                return;
+            }
+
+            customer.setCus_name(cusName);
+            customer.setPhone(phone);
+            customer.setAddress(address);
+            account.setAcc_status(status);
+            dao.updateCustomer(customer);
+            dao.updateAccount(account);
+
+            response.sendRedirect("accountHome?");
+        } else {
+            response.sendRedirect("accountManagement.jsp?error=Account Not Found");
+        }
     }
-
-    accountDAO dao = new accountDAO();
-    Object[] accountData = dao.getAccountById(cusId);
-    if (accountData != null) {
-        Customer customer = (Customer) accountData[0];
-        Account account = (Account) accountData[1];
-        
-      
-        customer.setEmail(email);
-        customer.setPhone(phone);
-        customer.setAddress(address);
-        account.setAcc_status(status);
-
-        dao.updateCustomer(customer);
-        dao.updateAccount(account);
-
-        response.sendRedirect("accountHome?");
-    } else {
-        response.sendRedirect("accountManagement.jsp?error=Account Not Found");
-    }
-}
 
     /**
      * Returns a short description of the servlet.
@@ -139,5 +159,5 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-  
+
 }

@@ -58,6 +58,7 @@ public class accountHome extends HttpServlet {
      */
     @Override
      protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+         response.setContentType("text/html;charset=UTF-8");
         List<Object[]> accounts = accountDAO.getAllCustomerAccounts();
         request.setAttribute("accounts", accounts);
         request.getRequestDispatcher("jsp/admin/accountManagement.jsp").forward(request, response);
@@ -74,6 +75,7 @@ public class accountHome extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
         processRequest(request, response);
     }
 

@@ -60,6 +60,7 @@ public class feedbackHome extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
       List<Object[]> feedback = feedbackDAO.getAllFeedback();
       request.setAttribute("feedback", feedback);
       request.getRequestDispatcher("jsp/admin/feedbackManagement.jsp").forward(request, response);
@@ -76,6 +77,7 @@ public class feedbackHome extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
         processRequest(request, response);
     }
 

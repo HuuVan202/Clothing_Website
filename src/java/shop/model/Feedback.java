@@ -21,6 +21,12 @@ public class Feedback {
     private String comment;
     private Date feedback_date;
 
+    public Feedback(int rating, String comment) {
+        this.rating = rating;
+        this.comment = comment;
+    }
+    
+
     public Feedback(int feedback_id, int order_id, int pro_id, int cus_id, int rating, String comment, Date feedback_date) {
         this.feedback_id = feedback_id;
         this.order_id = order_id;
