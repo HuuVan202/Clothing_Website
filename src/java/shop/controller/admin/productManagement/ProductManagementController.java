@@ -414,9 +414,9 @@ public class ProductManagementController extends HttpServlet {
                 return;
             }
             
-            if (discount < 0 || discount > 100) {
+            if (discount < 0 || discount > 99) {
                 String currentPage = request.getParameter("currentPage");
-                response.sendRedirect(request.getContextPath() + "/productM?updateError=Discount must be between 0 and 100" + 
+                response.sendRedirect(request.getContextPath() + "/productM?updateError=Discount must be between 0 and 99" + 
                     (currentPage != null ? "&page=" + currentPage : ""));
                 return;
             }
