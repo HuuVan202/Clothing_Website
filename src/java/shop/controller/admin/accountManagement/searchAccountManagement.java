@@ -21,6 +21,7 @@ import shop.DAO.admin.accountManagement.accountDAO;
 @WebServlet(name = "searchAccountManagement", urlPatterns = {"/searchAccountManagement"})
 public class searchAccountManagement extends HttpServlet {
 
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
