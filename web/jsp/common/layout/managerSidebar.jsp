@@ -2,7 +2,7 @@
 <div class="sidebar text-light p-3">
     <h3 class="text-center">Shop Manager</h3>
     <div class="nav flex-column">
-        <a href="${pageContext.request.contextPath}/jsp/admin/dashboard.jsp" class="nav-link text-light p-3 border-0 rounded">
+        <a href="${pageContext.request.contextPath}/Dashboard" class="nav-link text-light p-3 border-0 rounded">
             <i class="bi bi-speedometer2"></i>Dashboard
         </a>
         <a href="#" class="nav-link text-light p-3 border-0 rounded">
@@ -17,7 +17,7 @@
         <a href="#" class="nav-link text-light p-3 border-0 rounded">
             <i class="bi bi-chat-dots"></i>Feedback Management
         </a>
-        <a href="#" class="nav-link text-light p-3 border-0 rounded">
+        <a href="${pageContext.request.contextPath}/revenue" class="nav-link text-light p-3 border-0 rounded">
             <i class="bi bi-graph-up"></i>Revenue
         </a>
     </div>
