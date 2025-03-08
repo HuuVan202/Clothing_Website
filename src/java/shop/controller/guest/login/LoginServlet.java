@@ -98,7 +98,7 @@ public class LoginServlet extends HttpServlet {
             }
         } else {
             String message;
-               if (!account.getAcc_status().equalsIgnoreCase("active")) {
+            if (!account.getAcc_status().equalsIgnoreCase("active")) {
                 message = "Your account has been temporarily locked.";
             } else {
                 message = "Invalid username or password!";

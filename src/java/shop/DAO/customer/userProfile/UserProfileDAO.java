@@ -41,16 +41,16 @@ public class UserProfileDAO extends DBcontext {
 
         return isSuccess;
     }
-    
+
     public static void main(String[] args) {
         UserProfileDAO dao = new UserProfileDAO();
-        
-        if(dao.updateProfile("aaaa", "123131", "Can Tho", "customer1")){
+
+        if (dao.updateProfile("aaaa", "123131", "Can Tho", "customer1")) {
             System.out.println("Thanh cong");
-        }else{
+        } else {
             System.out.println("khong thanh cong");
         }
-               
+
     }
 
 }

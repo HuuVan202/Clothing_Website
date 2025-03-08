@@ -17,8 +17,8 @@ import java.io.IOException;
  */
 @WebServlet(name = "Dashboard", urlPatterns = {"/Dashboard"})
 public class Dashboard extends HttpServlet {
-    private final String DASHBOARD = "jsp/admin/dashboard.jsp";
 
+    private final String DASHBOARD = "jsp/admin/dashboard.jsp";
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -47,6 +47,5 @@ public class Dashboard extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     }
-
 
 }

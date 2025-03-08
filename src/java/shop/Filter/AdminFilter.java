@@ -38,7 +38,7 @@ public class AdminFilter implements Filter {
             Account account = (Account) session.getAttribute("admin");
             if (!account.getRole().equalsIgnoreCase("admin")) {
                 res.sendRedirect(req.getContextPath() + "/Error");
-            }else{
+            } else {
                 chain.doFilter(request, response);
             }
         }

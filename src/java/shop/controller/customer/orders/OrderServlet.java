@@ -22,8 +22,9 @@ import shop.model.Order;
  */
 @WebServlet(name = "OrderServlet", urlPatterns = {"/Order"})
 public class OrderServlet extends HttpServlet {
+
     private final String ORDER = "jsp/customer/orders.jsp";
-    
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -39,10 +40,10 @@ public class OrderServlet extends HttpServlet {
         MyOrderDAO orderDao = new MyOrderDAO();
         HttpSession session = request.getSession();
         Customer cus = (Customer) session.getAttribute("customer");
-        
+
         List<Order> listOrder = orderDao.getListOrderByID(cus.getCus_id());
         request.setAttribute("listOrder", listOrder);
-        
+
         request.getRequestDispatcher(ORDER).forward(request, response);
     }
 

@@ -22,7 +22,6 @@ public class Order {
     private Date order_date;
     private String payment_method;
     private Customer customer;
-    
 
     private static final NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
 
@@ -97,8 +96,6 @@ public class Order {
     public String getFormattedPrice() {
         return formatter.format(total_price);
     }
-
-   
 
     @Override
     public String toString() {

@@ -67,7 +67,7 @@ public class ProductDetailsController extends HttpServlet {
         List<Product> suggestProducts = dao.getSuggestProducts(productId);
         request.setAttribute("averageRating", productDetails);
         request.setAttribute("feedbackCount", productDetails);
-        
+
         //      Xử lý danh sách Recommended Products
         if (productDetails != null) {
             request.setAttribute("productDetails", productDetails);
@@ -89,6 +89,7 @@ public class ProductDetailsController extends HttpServlet {
 
         request.getRequestDispatcher("jsp/guest/productDetails.jsp").forward(request, response);
     }
+
     /**
      * Handles the HTTP <code>POST</code> method.
      *

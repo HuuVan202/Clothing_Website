@@ -35,6 +35,7 @@ import shop.model.CartItem;
 import shop.model.CartUtil;
 import shop.model.Config;
 import shop.model.Customer;
+import shop.model.EmailService;
 import shop.model.Order;
 import shop.model.OrderDetail;
 
@@ -131,10 +132,13 @@ public class CheckoutServlet extends HttpServlet {
         }
 
         String paymentMethod = request.getParameter("payment_method");
+
         if ("cash".equals(paymentMethod)) {
 
             BigDecimal totalPrice = BigDecimal.ZERO;
+
             for (CartItem item : cart) {
+
                 totalPrice = totalPrice.add(item.getProduct().getSalePrice().multiply(BigDecimal.valueOf(item.getQuantity())));
             }
 
@@ -144,14 +148,15 @@ public class CheckoutServlet extends HttpServlet {
             ProductDAO productDAO = new ProductDAO();
 
             try {
-                int orderId = orderDAO.InsertOrder(order);
 
+                int orderId = orderDAO.InsertOrder(order);
                 for (CartItem item : cart) {
                     OrderDetail orderDetail = new OrderDetail(0, orderId, item.getProduct().getPro_id(), item.getQuantity(), item.getProduct().getSalePrice());
                     orderDetailDAO.insertOrderDetail(orderDetail);
 
                     productDAO.updateStock(item.getProduct().getPro_id(), item.getQuantity());
                 }
+                EmailService.sendMultiProductPaymentConfirmationCOD(customer.getEmail(), customer.getCus_name(), customer.getAddress(), totalPrice, cart);
 
                 CartDAO cartDAO = new CartDAO();
                 cartDAO.removeAllCartItems(customer.getCus_id());

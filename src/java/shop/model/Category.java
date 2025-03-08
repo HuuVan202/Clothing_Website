@@ -6,12 +6,13 @@ package shop.model;
 
 /**
  *
- * @author 
+ * @author
  */
 public class Category {
-  private int cat_id;
-  private String cat_name;
-  private String description;
+
+    private int cat_id;
+    private String cat_name;
+    private String description;
 
     public Category(int cat_id, String cat_name, String description) {
         this.cat_id = cat_id;

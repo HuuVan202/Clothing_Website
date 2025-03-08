@@ -18,10 +18,10 @@ public class ProductsDAO {
     // Get all products without pagination
     public List<Product> getAllProductsUnpaginated() {
         List<Product> list = new ArrayList<>();
-        String sql = "SELECT pro_id, pro_name, image, discount, price, gender, brand, type_id, " +
-                     "CASE WHEN discount > 0 THEN price * (1 - discount / 100.0) ELSE price END AS discounted_price " +
-                     "FROM Product WHERE status = 'active' " +
-                     "ORDER BY pro_id";
+        String sql = "SELECT pro_id, pro_name, image, discount, price, gender, brand, type_id, "
+                + "CASE WHEN discount > 0 THEN price * (1 - discount / 100.0) ELSE price END AS discounted_price "
+                + "FROM Product WHERE status = 'active' "
+                + "ORDER BY pro_id";
         try {
             conn = new DBcontext().getConnection();
             System.out.println("Executing SQL: " + sql);
@@ -49,9 +49,15 @@ public class ProductsDAO {
             e.printStackTrace();
         } finally {
             try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -226,9 +232,15 @@ public class ProductsDAO {
             e.printStackTrace();
         } finally {
             try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
