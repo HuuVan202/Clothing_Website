@@ -18,10 +18,8 @@ import shop.DAO.admin.accountManagement.accountDAO;
  *
  * @author ADMIN
  */
-@WebServlet(name = "accountHome", urlPatterns = {"/accountHome"})
-public class accountHome extends HttpServlet {
-
-    private accountDAO accountDAO = new accountDAO();
+@WebServlet(name = "filterAccountManagement", urlPatterns = {"/filterAccountManagement"})
+public class filterAccountManagement extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +38,10 @@ public class accountHome extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet accountHome</title>");
+            out.println("<title>Servlet filterAccountManagement</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet accountHome at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet filterAccountManagement at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,13 +57,35 @@ public class accountHome extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-         response.setContentType("text/html;charset=UTF-8");
-
-        List<Object[]> accounts = accountDAO.getAllCustomerAccounts();
+ protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    response.setContentType("text/html;charset=UTF-8");
+    
+    // Lấy dữ liệu từ request
+    String status = request.getParameter("status");
+    
+    // Lưu trạng thái vào session để sử dụng khi tìm kiếm
+    request.getSession().setAttribute("selectedStatus", status);
+    
+    // Khởi tạo DAO
+    accountDAO dao = new accountDAO();
+    
+    // Lấy danh sách tài khoản dựa trên trạng thái
+    List<Object[]> accounts = dao.getFilteredCustomerAccounts(null, status);
+    
+    // Gửi dữ liệu đến JSP
+    if (accounts == null || accounts.isEmpty()) {
+        request.setAttribute("errorMessage", "No accounts found for the selected status.");
+    } else {
         request.setAttribute("accounts", accounts);
-        request.getRequestDispatcher("jsp/admin/accountManagement.jsp").forward(request, response);
     }
+    
+    request.setAttribute("selectedStatus", status);
+    
+    request.getRequestDispatcher("jsp/admin/accountManagement.jsp").forward(request, response);
+}
+
+
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -78,8 +98,7 @@ public class accountHome extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        processRequest(request, response);
+        doGet(request, response);
     }
 
     /**

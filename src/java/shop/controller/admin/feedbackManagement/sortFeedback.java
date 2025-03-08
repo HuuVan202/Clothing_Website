@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package shop.controller.admin.accountManagement;
+package shop.controller.admin.feedbackManagement;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,16 +12,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import shop.DAO.admin.accountManagement.accountDAO;
+import shop.DAO.admin.feedbackManagement.feedbackManagementDAO;
 
 /**
  *
  * @author ADMIN
  */
-@WebServlet(name = "accountHome", urlPatterns = {"/accountHome"})
-public class accountHome extends HttpServlet {
-
-    private accountDAO accountDAO = new accountDAO();
+@WebServlet(name = "sortFeedback", urlPatterns = {"/sortFeedback"})
+public class sortFeedback extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +38,10 @@ public class accountHome extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet accountHome</title>");
+            out.println("<title>Servlet sortFeedback</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet accountHome at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet sortFeedback at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,12 +57,28 @@ public class accountHome extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-         response.setContentType("text/html;charset=UTF-8");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-        List<Object[]> accounts = accountDAO.getAllCustomerAccounts();
-        request.setAttribute("accounts", accounts);
-        request.getRequestDispatcher("jsp/admin/accountManagement.jsp").forward(request, response);
+        String sortOrder = request.getParameter("order");
+        String pro_name = request.getParameter("pro_name");
+        String ratingParam = request.getParameter("rating");
+            int rating = (ratingParam != null && !ratingParam.isEmpty()) ? Integer.parseInt(ratingParam) : 0;
+
+        feedbackManagementDAO dao = new feedbackManagementDAO();
+        List<Object[]> feedback = dao.sortFeedbackByDate(sortOrder);
+
+        if (pro_name != null && !pro_name.isEmpty()) {
+            feedback = dao.searchFeedbackByProductrname(pro_name);
+        }
+        if (rating > 0) {
+            feedback = dao.filterFeedbackByRating(rating);
+        }
+        request.setAttribute("feedback", feedback);
+        request.setAttribute("sortOrder", sortOrder != null ? sortOrder : "desc"); // Mặc định DESC
+        request.setAttribute("selectedRating", ratingParam);
+        request.setAttribute("search", pro_name);
+        request.getRequestDispatcher("jsp/admin/feedbackManagement.jsp").forward(request, response);
     }
 
     /**
@@ -78,7 +92,6 @@ public class accountHome extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
         processRequest(request, response);
     }
 

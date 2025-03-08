@@ -16,7 +16,6 @@
 
                 </h2>
 
-
                 <form action="updateAccountManagement" method="post">
                     <div class="row g-3">
                         <div class="col-md-6">
@@ -26,7 +25,10 @@
 
                         <div class="col-md-6">
                             <label class="form-label">Name:</label>
-                            <input type="text" name="cus_name" class="form-control" value="${account[0].cus_name}" readonly>
+                            <input type="text" name="cus_name" class="form-control" value="${account[0].cus_name}" required>
+                              <% if (request.getAttribute("errorCusName") != null) { %>
+                                <p class="text-danger"><%= request.getAttribute("errorCusName") %></p>
+                            <% } %>
                         </div>
 
                         <div class="col-md-6">
@@ -36,17 +38,26 @@
 
                         <div class="col-md-6">
                             <label class="form-label">Email:</label>
-                            <input type="email" name="email" class="form-control" value="${account[0].email}" required>
+                            <input type="email" name="email" class="form-control" value="${account[0].email}" readonly>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label">Phone:</label>
                             <input type="text" name="phone" class="form-control" value="${account[0].phone}" required>
+
+                            <% if (request.getAttribute("errorPhone") != null) { %>
+                            <p class="text-danger"><%= request.getAttribute("errorPhone") %></p>
+                            <% } %>
+
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label">Address:</label>
                             <input type="text" name="address" class="form-control" value="${account[0].address}" required>
+                            
+                               <% if (request.getAttribute("errorAddress") != null) { %>
+                                <p class="text-danger"><%= request.getAttribute("errorAddress") %></p>
+                            <% } %>
                         </div>
 
                         <div class="col-md-6">
@@ -62,8 +73,8 @@
                         <div class="col-md-6">
                             <label class="form-label">Status:</label>
                             <select name="acc_status" class="form-select">
-                                <option value="ACTIVE" ${account[1].acc_status == 'ACTIVE' ? 'selected' : ''}>Active</option>
-                                <option value="INACTIVE" ${account[1].acc_status == 'INACTIVE' ? 'selected' : ''}>Inactive</option>
+                                <option value="active" ${account[1].acc_status == 'active' ? 'selected' : ''}>Active</option>
+                                <option value="inactive" ${account[1].acc_status == 'inactive' ? 'selected' : ''}>Inactive</option>
                             </select>
                         </div>
 
@@ -75,5 +86,6 @@
                 </form>
             </div>
         </div>
+
     </body>
 </html>

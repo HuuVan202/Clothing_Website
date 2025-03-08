@@ -1,10 +1,3 @@
-<%-- 
-    Document   : feedbackManagement
-    Created on : Feb 17, 2025, 10:03:11 AM
-    Author     : Dinh_Hau
---%>
-
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -43,35 +36,57 @@
                 <!-- Main Content -->
                 <div class="flex-grow-1">
                     <!-- Header -->
-                <jsp:include page="../common/layout/managerHeaderFeedback.jsp"></jsp:include>
+                <jsp:include page="../common/layout/managerHeader.jsp"></jsp:include>
 
                     <!-- Content Area -->
                     <div class="content-area">
                         <div class="container mt-4">
                             <h2 class="text-center">Customer Feedback Management</h2>
 
-                            <!-- Search & Filters -->
 
-                            <form action="searchFeedbackCustomer" method="get" class="d-flex mb-3">
+                            <!-- Search, Filter & Sort -->
+                            <div class="row mb-3">
+                                <!-- Filter Rating -->
+                                <div class="col-md-4">
+                                    <form action="filterFeedback" method="get">
+                                        <input type="hidden" name="pro_name" value="${search}">
+                                    <input type="hidden" name="order" value="${sortOrder}">
+                                    <select id="rating" name="rating" class="form-select" onchange="this.form.submit()">
+                                        <option value="">Select Rating</option>
+                                        <option value="5" ${selectedRating == '5' ? 'selected' : ''}>5 Stars</option>
+                                        <option value="4" ${selectedRating == '4' ? 'selected' : ''}>4 Stars</option>
+                                        <option value="3" ${selectedRating == '3' ? 'selected' : ''}>3 Stars</option>
+                                        <option value="2" ${selectedRating == '2' ? 'selected' : ''}>2 Stars</option>
+                                        <option value="1" ${selectedRating == '1' ? 'selected' : ''}>1 Star</option>
+                                    </select>
+                                </form>
+                            </div>
 
-                                <select id="ratingFilter" class="form-select me-2">
-                                    <option value="">Select Rating</option>
-                                    <option value="5">5 Stars</option>
-                                    <option value="4">4 Stars</option>
-                                    <option value="3">3 Stars</option>
-                                    <option value="2">2 Stars</option>
-                                    <option value="1">1 Star</option>
-                                </select>
-                                <select id="sortFilter" class="form-select">
-                                    <option value="asc">Sort by time</option>
-                                    <option value="desc">Sort by time</option>
-                                </select>
-                                <input type="text" name="cus_name"  id="search" class="form-control me-2" placeholder="Search customer name"
-                                       value="${search}">
-                            <button type="submit" class="btn btn-primary ms-2">Search</button>
+                            <!-- Sort Feedback -->
+                            <div class="col-md-4">
+                                <form action="filterFeedback" method="get">
+                                    <input type="hidden" name="pro_name" value="${search}">
+                                    <input type="hidden" name="rating" value="${selectedRating}">
+                                    <select name="order" class="form-select" onchange="this.form.submit()">
+                                        <option value="asc" ${sortOrder == 'asc' ? 'selected' : ''}>Oldest First</option>
+                                        <option value="desc" ${sortOrder == 'desc' ? 'selected' : ''}>Newest First</option>
+                                    </select>
+                                </form>
+                            </div>
+
+                            <!-- Search Product Name -->
+                            <div class="col-md-4">
+                                <form action="filterFeedback" method="get" class="d-flex">
+                                    <input type="hidden" name="rating" value="${selectedRating}">
+                                    <input type="hidden" name="order" value="${sortOrder}">
+                                    <input type="text" name="pro_name" id="search" class="form-control me-2" 
+                                           placeholder="Search Feedback by Product Name" value="${search}">
+                                    <button type="submit" class="btn btn-primary" style="background: #233446" >Search</button>
+                                </form>
+                            </div>
+                        </div>
 
 
-                        </form>
 
 
                         <!-- Feedback Table -->
@@ -85,33 +100,41 @@
                                     <th>Comment</th>
                                     <th>Date</th>
                                 </tr>
+
                             </thead>
                             <tbody>
-                                <c:forEach var="feedback" items="${feedback}">
-                                    <tr>
-                                        <td>${feedback[0].feedback_id}</td>
-                                        <td>${feedback[1].cus_name}</td>
+                                <c:choose>
+                                    <c:when test="${not empty errorMessage}">
+                                        <tr>
+                                            <td colspan="9" class="text-center text-danger">${errorMessage}</td>
+                                        </tr>
+                                    </c:when>
 
-                                        <td>
-                                            <img src="${feedback[2].image}" alt="Product Image" class="product-img">
-                                            ${feedback[2].pro_name}
-                                        </td>
-                                        <td>
-                                            ${feedback[0].rating}
-                                            <span class="star">★</span>
-                                        </td>
-
-                                        <td>${feedback[0].comment}</td>
-
-                                        <td>${feedback[0].feedback_date}</td>
-                                    </tr>
-                                </c:forEach>
+                                    <c:otherwise>
+                                        <c:forEach var="feedback" items="${feedback}">
+                                            <tr>
+                                                <td>${feedback[0].feedback_id}</td>
+                                                <td>${feedback[1].cus_name}</td>
+                                                <td>
+                                                    <img src="${feedback[2].image}" alt="Product Image" class="product-img">
+                                                    <a href="viewFeedbackDetails?pro_name=${feedback[2].pro_name}" style="text-decoration: none ;color: black">${feedback[2].pro_name}</a>
+                                                </td>
+                                                <td>
+                                                    ${feedback[0].rating}
+                                                    <span class="star">★</span>
+                                                </td>
+                                                <td>${feedback[0].comment}</td>
+                                                <td>${feedback[0].feedback_date}</td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
                             </tbody>
+
                         </table>
                     </div>
                 </div>
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
             </div>
         </div>
     </body>

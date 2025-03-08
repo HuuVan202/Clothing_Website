@@ -84,25 +84,25 @@ public class accountDAO {
     }
 
     public void updateCustomer(Customer customerUpdate) {
-        String sql = "UPDATE Customer SET email = ?, phone = ?, address = ? WHERE username = ?";
-        try (Connection connection = new DBcontext().getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+    String sql = "UPDATE Customer SET cus_name = ?, phone = ?, address = ? WHERE cus_id = ?";
+    try (Connection connection = new DBcontext().getConnection(); 
+         PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setString(1, customerUpdate.getEmail());
-            statement.setString(2, customerUpdate.getPhone());
-            statement.setString(3, customerUpdate.getAddress());
-            statement.setString(4, customerUpdate.getUsername());
+        statement.setString(1, customerUpdate.getCus_name());
+        statement.setString(2, customerUpdate.getPhone());
+        statement.setString(3, customerUpdate.getAddress());
+        statement.setInt(4, customerUpdate.getCus_id());
 
-            int rowsUpdated = statement.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Customer updated successfully!");
-            } else {
-                System.out.println("Customer not found.");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        int rowsUpdated = statement.executeUpdate();
+        if (rowsUpdated > 0) {
+            System.out.println("Customer updated successfully!");
+        } else {
+            System.out.println("Customer not found.");
         }
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
-
+}
     // Lấy tài khoản theo username
     public Object[] getAccountById(int cus_Id) {
         String sql = "SELECT c.cus_id, c.cus_name, a.username, a.password, c.email, c.phone, c.address, "
@@ -114,7 +114,7 @@ public class accountDAO {
         try (Connection connection = new DBcontext().getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, cus_Id);
-            try (ResultSet resultSet = statement.executeQuery()) {
+              try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return new Object[]{
                         new Customer(
@@ -177,6 +177,59 @@ public class accountDAO {
         }
         return customers;
     }
+    public List<Object[]> getFilteredCustomerAccounts(String username, String status) {
+    List<Object[]> customers = new ArrayList<>();
+    StringBuilder sql = new StringBuilder("SELECT c.cus_id, c.cus_name, a.username, a.password, c.email, c.phone, c.address, a.role, a.acc_status "
+            + "FROM Customer c "
+            + "JOIN Account a ON c.username = a.username WHERE 1=1");
+
+    List<String> parameters = new ArrayList<>();
+
+    if (status != null && !status.isEmpty() && !status.equals("all")) {
+        sql.append(" AND a.acc_status = ?");
+        parameters.add(status);
+    }
+    
+    if (username != null && !username.isEmpty()) {
+        sql.append(" AND a.username LIKE ?");
+        parameters.add("%" + username + "%");
+    }
+
+    try (Connection connection = new DBcontext().getConnection();
+         PreparedStatement statement = connection.prepareStatement(sql.toString())) {
+
+        for (int i = 0; i < parameters.size(); i++) {
+            statement.setString(i + 1, parameters.get(i));
+        }
+
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            Customer customer = new Customer(
+                    resultSet.getInt("cus_id"),
+                    resultSet.getString("cus_name"),
+                    resultSet.getString("email"),
+                    resultSet.getString("username"),
+                    resultSet.getString("phone"),
+                    resultSet.getString("address")
+            );
+
+            Account account = new Account(
+                    resultSet.getString("username"),
+                    resultSet.getString("password"),
+                    resultSet.getString("role"),
+                    resultSet.getString("acc_status")
+            );
+
+            customers.add(new Object[]{customer, account});
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return customers;
+}
+
+    
+
 
     public static void main(String[] args) {
         accountDAO dao = new accountDAO();
