@@ -17,8 +17,6 @@ public class Type {
     public Type() {
     }
 
-    
-    
     public Type(int type_id, String type_name, int cat_id) {
         this.type_id = type_id;
         this.type_name = type_name;

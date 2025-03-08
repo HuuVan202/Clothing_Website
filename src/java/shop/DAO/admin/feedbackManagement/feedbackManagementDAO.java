@@ -14,6 +14,7 @@ import shop.context.DBcontext;
 import shop.model.Customer;
 import shop.model.Feedback;
 import shop.model.Product;
+
 /**
  *
  * @author ADMIN
@@ -30,7 +31,6 @@ public class feedbackManagementDAO {
         String sql = "SELECT \n"
                 + "    f.feedback_id,\n"
                 + "  c.cus_name,\n"
-               
                 + "p.pro_name,\n"
                 + "    p.image ,\n"
                 + "    f.rating,\n"
@@ -46,7 +46,6 @@ public class feedbackManagementDAO {
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
 
-               
                 Feedback feedback = new Feedback(
                         resultSet.getInt("feedback_id"),
                         resultSet.getInt("rating"),
@@ -76,8 +75,7 @@ public class feedbackManagementDAO {
                 + "JOIN Product p ON f.pro_id = p.pro_id "
                 + "WHERE c.cus_name LIKE ?";
 
-        try (Connection connection = new DBcontext().getConnection(); 
-                PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = new DBcontext().getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, "%" + cus_name + "%"); // Tìm username gần đúng
             ResultSet resultSet = statement.executeQuery();

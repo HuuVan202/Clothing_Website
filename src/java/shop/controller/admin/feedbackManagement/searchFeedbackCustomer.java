@@ -38,7 +38,7 @@ public class searchFeedbackCustomer extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet searchFeedbackCustomer</title>");            
+            out.println("<title>Servlet searchFeedbackCustomer</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet searchFeedbackCustomer at " + request.getContextPath() + "</h1>");
@@ -59,11 +59,11 @@ public class searchFeedbackCustomer extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String cus_name = request.getParameter("cus_name");
-        
+
         feedbackManagementDAO dao = new feedbackManagementDAO();
-        
+
         List<Object[]> feedback = dao.searchFeedbackByCustomername(cus_name);
         request.setAttribute("feedback", feedback);
         request.setAttribute("search", cus_name);

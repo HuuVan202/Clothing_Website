@@ -99,7 +99,7 @@ public class MyOrderDetailDAO extends DBcontext {
 
     public static void main(String[] args) {
         MyOrderDetailDAO dao = new MyOrderDetailDAO();
-        
+
         System.out.println(dao.getProductByID(1));
     }
 

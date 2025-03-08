@@ -17,7 +17,9 @@ import java.io.IOException;
  */
 @WebServlet(name = "ErrorServlet", urlPatterns = {"/Error"})
 public class ErrorServlet extends HttpServlet {
-    private final String ERROR= "jsp/common/error.jsp";
+
+    private final String ERROR = "jsp/common/error.jsp";
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

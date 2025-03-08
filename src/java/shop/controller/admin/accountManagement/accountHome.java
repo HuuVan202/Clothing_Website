@@ -18,9 +18,11 @@ import shop.DAO.admin.accountManagement.accountDAO;
  *
  * @author ADMIN
  */
-@WebServlet(name="accountHome", urlPatterns={"/accountHome"})
+@WebServlet(name = "accountHome", urlPatterns = {"/accountHome"})
 public class accountHome extends HttpServlet {
- private accountDAO accountDAO = new accountDAO();
+
+    private accountDAO accountDAO = new accountDAO();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -38,7 +40,7 @@ public class accountHome extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet accountHome</title>");            
+            out.println("<title>Servlet accountHome</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet accountHome at " + request.getContextPath() + "</h1>");
@@ -57,7 +59,7 @@ public class accountHome extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Object[]> accounts = accountDAO.getAllCustomerAccounts();
         request.setAttribute("accounts", accounts);
         request.getRequestDispatcher("jsp/admin/accountManagement.jsp").forward(request, response);
