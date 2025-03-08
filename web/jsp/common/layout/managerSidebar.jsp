@@ -20,5 +20,8 @@
         <a href="${pageContext.request.contextPath}/revenue" class="nav-link text-light p-3 border-0 rounded">
             <i class="bi bi-graph-up"></i>Revenue
         </a>
+        <a href="#" class="nav-link text-light p-3 border-0 rounded">
+            <i class="bi bi-chat"></i>Chat with Customer
+        </a>
     </div>
 </div>
