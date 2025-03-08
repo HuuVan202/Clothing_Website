@@ -122,6 +122,7 @@ public class CheckoutServlet extends HttpServlet {
         Customer customer = (Customer) session.getAttribute("customer");
         CartUtil cartUtil = (CartUtil) session.getAttribute("cart");
 
+        
         List<CartItem> cart = cartUtil.getItems();
         if (customer == null) {
             response.sendRedirect("Login");
