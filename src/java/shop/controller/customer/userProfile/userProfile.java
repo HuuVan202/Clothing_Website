@@ -70,11 +70,11 @@ public class userProfile extends HttpServlet {
 
         if (userProfileDao.updateProfile(fullName, phone, address, userName)) {
             Customer customer = loginDao.getCustomer(userName);
-            
+
             HttpSession session = request.getSession();
-            
+
             session.setAttribute("customer", customer);
-            
+
             request.setAttribute("message", "Update Successful!");
         } else {
             request.setAttribute("message", "Update Failed!");

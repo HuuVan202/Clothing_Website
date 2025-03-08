@@ -47,9 +47,9 @@ public class OrderDetailServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Customer cus = (Customer) session.getAttribute("customer");
         boolean checkOrderId = false;
-        
+
         int id = Integer.parseInt(request.getParameter("id"));
-        
+
         for (Order order : orderDao.getListOrderByID(cus.getCus_id())) {
             if (order.getOrder_id() == id) {
                 checkOrderId = true;
@@ -57,11 +57,11 @@ public class OrderDetailServlet extends HttpServlet {
             }
         }
 
-        if(!checkOrderId){
+        if (!checkOrderId) {
             response.sendRedirect("Error");
             return;
         }
-        
+
         List<OrderDetail> listOrderDetail = orderDetailsDao.getListOrderDetail(id);
 
         Map<Integer, Product> listProduct = new HashMap<>();
@@ -71,7 +71,7 @@ public class OrderDetailServlet extends HttpServlet {
                 listProduct.put(productId, orderDetailsDao.getProductByID(productId));
             }
         }
-        
+
         request.setAttribute("listProduct", listProduct);
         request.setAttribute("listOrderDetail", listOrderDetail);
         request.getRequestDispatcher(ORDERDETAIL).forward(request, response);

@@ -19,4 +19,3 @@ public class Iconstant {
     // Sau khi lấy được access token --> gọi đến API này để get user
     public static final String GOOGLE_LINK_GET_USER_INFO = "https://www.googleapis.com/oauth2/v1/userinfo";
 }
-

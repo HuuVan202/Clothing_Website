@@ -83,6 +83,7 @@ public class searchFeedbackCustomer extends HttpServlet {
         request.setAttribute("sortOrder", sortOrder != null ? sortOrder : "desc");
 
         request.setAttribute("search", pro_name);
+
         request.getRequestDispatcher("jsp/admin/feedbackManagement.jsp").forward(request, response);
     }
 

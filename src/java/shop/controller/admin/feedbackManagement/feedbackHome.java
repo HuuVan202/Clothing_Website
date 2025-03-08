@@ -21,7 +21,9 @@ import shop.model.Feedback;
  */
 @WebServlet(name = "feedbackHome", urlPatterns = {"/feedbackHome"})
 public class feedbackHome extends HttpServlet {
+
     private feedbackManagementDAO feedbackDAO = new feedbackManagementDAO();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -39,7 +41,7 @@ public class feedbackHome extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet feedbackHome</title>");            
+            out.println("<title>Servlet feedbackHome</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet feedbackHome at " + request.getContextPath() + "</h1>");
@@ -64,6 +66,7 @@ public class feedbackHome extends HttpServlet {
       List<Object[]> feedback = feedbackDAO.getAllFeedback();
       request.setAttribute("feedback", feedback);
       request.getRequestDispatcher("jsp/admin/feedbackManagement.jsp").forward(request, response);
+
     }
 
     /**

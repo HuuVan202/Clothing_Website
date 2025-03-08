@@ -16,8 +16,6 @@
 
                 </h2>
 
-
-
                 <form action="updateAccountManagement" method="post">
                     <div class="row g-3">
                         <div class="col-md-6">
@@ -50,6 +48,7 @@
                             <% if (request.getAttribute("errorPhone") != null) { %>
                             <p class="text-danger"><%= request.getAttribute("errorPhone") %></p>
                             <% } %>
+
                         </div>
 
                         <div class="col-md-6">

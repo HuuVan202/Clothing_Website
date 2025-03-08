@@ -148,8 +148,7 @@ public class accountDAO {
                 + "JOIN Account a ON c.username = a.username "
                 + "WHERE a.role = 'customer' AND a.username LIKE ?";
 
-        try (Connection connection = new DBcontext().getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = new DBcontext().getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, "%" + username + "%"); // Tìm username gần đúng
             ResultSet resultSet = statement.executeQuery();

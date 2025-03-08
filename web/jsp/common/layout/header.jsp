@@ -38,6 +38,21 @@
                 </c:if>
             </ul>
 
+
+            <div class="cart me-3">
+                <a href="https://www.google.com" class="d-block link-dark text-decoration-none" style="color: white">
+                    <img
+                        class="border"
+
+                        src="${pageContext.request.contextPath}/img/icon/header/icons8-messages-100.png"
+
+                        title="Chat With Admin"
+
+                        alt="messages-icon"
+                        />
+                </a>
+            </div>
+
             <div class="cart me-3">
                 <a href="Cart" class="d-block link-dark text-decoration-none" style="color: white">
                     <img
@@ -45,8 +60,8 @@
 
                         src="${pageContext.request.contextPath}/img/icon/header/icons8-shopping-cart-100.png"
 
-                        src="${pageContext.request.contextPath}/img/common/icon/header/icons8-shopping-cart-100.png"
-
+                        title="Cart"
+                        
                         alt="cart-icon"
                         />
                     <c:if test="${not empty sessionScope.customer}">

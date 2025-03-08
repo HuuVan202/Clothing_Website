@@ -61,6 +61,7 @@ public class updateAccountManagement extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+
         String id_raw = request.getParameter("cus_id");
         int id = -1;
 
@@ -95,9 +96,11 @@ public class updateAccountManagement extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         response.setContentType("text/html;charset=UTF-8");
         String cusIdRaw = request.getParameter("cus_id");
         String cusName = request.getParameter("cus_name");
+
         String phone = request.getParameter("phone");
         String address = request.getParameter("address");
         String status = request.getParameter("acc_status");
@@ -141,6 +144,7 @@ public class updateAccountManagement extends HttpServlet {
             customer.setPhone(phone);
             customer.setAddress(address);
             account.setAcc_status(status);
+
             dao.updateCustomer(customer);
             dao.updateAccount(account);
 

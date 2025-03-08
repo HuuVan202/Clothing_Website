@@ -38,8 +38,6 @@ public class Customer {
         this.address = address;
     }
 
-  
-    
     public int getCus_id() {
         return cus_id;
     }
@@ -92,7 +90,5 @@ public class Customer {
     public String toString() {
         return "Customer{" + "cus_id=" + cus_id + ", cus_name=" + cus_name + ", email=" + email + ", username=" + username + ", phone=" + phone + ", address=" + address + '}';
     }
-
-   
 
 }

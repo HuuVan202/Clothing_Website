@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 @WebFilter(filterName = "LoginFilter", urlPatterns = {"/profile", "/ChangePassword", "/Order", "/OrderDetail"})
 public class LoginFilter implements Filter {
-    
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
@@ -29,12 +29,12 @@ public class LoginFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession();
-        
+
         if (session.getAttribute("customer") == null) {
             res.sendRedirect(req.getContextPath() + "/Login");
-        }else{
+        } else {
             chain.doFilter(request, response);
         }
     }
-    
+
 }

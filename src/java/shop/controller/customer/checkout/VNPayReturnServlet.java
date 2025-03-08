@@ -26,6 +26,7 @@ import shop.DAO.customer.checkout.OrderDetailDAO;
 import shop.model.CartItem;
 import shop.model.CartUtil;
 import shop.model.Customer;
+import shop.model.EmailService;
 import shop.model.Order;
 import shop.model.OrderDetail;
 
@@ -107,6 +108,7 @@ public class VNPayReturnServlet extends HttpServlet {
 
                     productDAO.updateStock(item.getProduct().getPro_id(), item.getQuantity());
                 }
+                EmailService.sendMultiProductPaymentConfirmationVNPay(customer.getEmail(), customer.getCus_name(), customer.getAddress(), totalPrice, cart);
 
                 CartDAO cartDAO = new CartDAO();
                 cartDAO.removeAllCartItems(customer.getCus_id());

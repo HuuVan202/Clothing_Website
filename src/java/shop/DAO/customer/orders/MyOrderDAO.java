@@ -45,7 +45,7 @@ public class MyOrderDAO extends DBcontext {
                 String tracking = resultSet.getString(4);
                 Date order_date = resultSet.getDate(5);
                 String payment = resultSet.getString(6);
-                
+
                 Order order = new Order(order_id, cus_id, total_price, tracking, order_date, payment);
                 listOrder.add(order);
             }
@@ -56,10 +56,10 @@ public class MyOrderDAO extends DBcontext {
 
         return listOrder;
     }
-    
+
     public static void main(String[] args) {
         MyOrderDAO dao = new MyOrderDAO();
-        
+
         System.out.println(dao.getListOrderByID(51));
     }
 }
