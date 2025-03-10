@@ -84,8 +84,6 @@ public class Product {
         this.discount = discount;
     }
 
-
-
     public int getPro_id() {
         return pro_id;
     }

@@ -190,7 +190,7 @@ $(document).ready(function () {
                 options += '<option value="canceled">Canceled</option>';
                 break;
             case 'shipping':
-                options += '<option value="shipping">Delivered</option>';
+                options += '<option value="shipping">Shipping</option>';
                 options += '<option value="delivered">Delivered</option>';
                 options += '<option value="canceled">Canceled</option>';
                 break;

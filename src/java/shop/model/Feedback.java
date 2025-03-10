@@ -21,6 +21,12 @@ public class Feedback {
     private String comment;
     private Date feedback_date;
 
+    public Feedback(int rating, String comment) {
+        this.rating = rating;
+        this.comment = comment;
+    }
+    
+
     public Feedback(int feedback_id, int order_id, int pro_id, int cus_id, int rating, String comment, Date feedback_date) {
         this.feedback_id = feedback_id;
         this.order_id = order_id;
@@ -37,7 +43,7 @@ public class Feedback {
         this.comment = comment;
         this.feedback_date = feedback_date;
     }
-    
+
     public Feedback(int feedback_id, int pro_id, int cus_id, String cus_name, int rating, String comment, Date feedback_date) {
         this.feedback_id = feedback_id;
         this.pro_id = pro_id;
@@ -47,7 +53,7 @@ public class Feedback {
         this.comment = comment;
         this.feedback_date = feedback_date;
     }
-    
+
     public Feedback() {
     }
 
@@ -82,7 +88,7 @@ public class Feedback {
     public void setCus_id(int cus_id) {
         this.cus_id = cus_id;
     }
-    
+
     public String getCus_name() {
         return cus_name;
     }
@@ -90,6 +96,7 @@ public class Feedback {
     public void setCus_name(String cus_name) {
         this.cus_name = cus_name;
     }
+
     public int getRating() {
         return rating;
     }

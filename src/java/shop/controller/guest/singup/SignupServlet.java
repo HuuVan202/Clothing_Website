@@ -77,7 +77,7 @@ public class SignupServlet extends HttpServlet {
             message = "Passwords do not match! Please re-enter!";
         } else if (!isValidPassword(passWord)) { // Check strong passwords
             message = "Password must be at least 8 characters, including uppercase and special characters!";
-        }else if (!isValidPhoneNumber(phone)){
+        } else if (!isValidPhoneNumber(phone)) {
             message = "Your phone number is invalid! Please re-enter!";
         }
 

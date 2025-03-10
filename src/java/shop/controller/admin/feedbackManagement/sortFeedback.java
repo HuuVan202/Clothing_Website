@@ -2,22 +2,24 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package shop.controller.guest.resetPassword;
+package shop.controller.admin.feedbackManagement;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+import shop.DAO.admin.feedbackManagement.feedbackManagementDAO;
 
 /**
  *
- * @author Dinh_Hau
+ * @author ADMIN
  */
-@WebServlet(name = "newServlet", urlPatterns = {"/newServlet"})
-public class newServlet extends HttpServlet {
+@WebServlet(name = "sortFeedback", urlPatterns = {"/sortFeedback"})
+public class sortFeedback extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,10 +38,10 @@ public class newServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet newServlet</title>");
+            out.println("<title>Servlet sortFeedback</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet newServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet sortFeedback at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,7 +59,26 @@ public class newServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
+        String sortOrder = request.getParameter("order");
+        String pro_name = request.getParameter("pro_name");
+        String ratingParam = request.getParameter("rating");
+            int rating = (ratingParam != null && !ratingParam.isEmpty()) ? Integer.parseInt(ratingParam) : 0;
+
+        feedbackManagementDAO dao = new feedbackManagementDAO();
+        List<Object[]> feedback = dao.sortFeedbackByDate(sortOrder);
+
+        if (pro_name != null && !pro_name.isEmpty()) {
+            feedback = dao.searchFeedbackByProductrname(pro_name);
+        }
+        if (rating > 0) {
+            feedback = dao.filterFeedbackByRating(rating);
+        }
+        request.setAttribute("feedback", feedback);
+        request.setAttribute("sortOrder", sortOrder != null ? sortOrder : "desc"); // Mặc định DESC
+        request.setAttribute("selectedRating", ratingParam);
+        request.setAttribute("search", pro_name);
+        request.getRequestDispatcher("jsp/admin/feedbackManagement.jsp").forward(request, response);
     }
 
     /**

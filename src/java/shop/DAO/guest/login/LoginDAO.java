@@ -130,7 +130,7 @@ public class LoginDAO extends DBcontext {
         LoginDAO loginDAO = new LoginDAO();
 //        Account c = loginDAO.checkLoginAccount("test1", "Huuvan@2004");
         Customer c = loginDAO.getCustomerByEmail("donatellophan@gmail.com");
-        
+
         if (c != null) {
             System.out.println("Đăng nhập thành công!");
         } else {

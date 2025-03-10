@@ -21,7 +21,7 @@ public class OrderDAO extends DBcontext {
 
     public int InsertOrder(Order order) throws SQLException {
         String sql = "INSERT INTO [Order] (cus_id, total_price, tracking, order_date, payment_method) VALUES (?, ?, ?, ?, ?)";
-        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql,PreparedStatement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             statement.setInt(1, order.getCus_id());
             statement.setBigDecimal(2, order.getTotal_price());
             statement.setString(3, order.getTracking());

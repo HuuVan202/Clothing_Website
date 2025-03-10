@@ -35,7 +35,7 @@ public class LoginByGG {
                 + "&code=" + URLEncoder.encode(code, StandardCharsets.UTF_8)
                 //Chỉ định kiểu grant OAuth đang sử dụng
                 + "&grant_type=authorization_code";  // Không cần encode giá trị này
-        
+
         // Gửi yêu cầu HTTP POST tới GG
         HttpClient client = HttpClient.newHttpClient();
 
@@ -45,13 +45,13 @@ public class LoginByGG {
                 // Body request: Chứa thông tin ứng dụng và authorization code
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
-        
+
         //Nhận phản hồi từ GG
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         // Debug --> In phản hồi từ GG
         System.out.println("Response: " + response.body());
-        
+
         //status code 200 là kết nối thành công
         if (response.statusCode() != 200) {
             throw new IOException("Failed to get token: " + response.body());
@@ -86,4 +86,3 @@ public class LoginByGG {
         return new Gson().fromJson(response.body(), AccountGG.class);
     }
 }
-

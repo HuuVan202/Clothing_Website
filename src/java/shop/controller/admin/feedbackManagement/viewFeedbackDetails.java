@@ -2,22 +2,24 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package shop.controller.guest.resetPassword;
+package shop.controller.admin.feedbackManagement;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+import shop.DAO.admin.feedbackManagement.feedbackManagementDAO;
 
 /**
  *
- * @author Dinh_Hau
+ * @author ADMIN
  */
-@WebServlet(name = "newServlet", urlPatterns = {"/newServlet"})
-public class newServlet extends HttpServlet {
+@WebServlet(name = "viewFeedbackDetails", urlPatterns = {"/viewFeedbackDetails"})
+public class viewFeedbackDetails extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,10 +38,10 @@ public class newServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet newServlet</title>");
+            out.println("<title>Servlet viewFeedbackDetails</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet newServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet viewFeedbackDetails at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,7 +59,16 @@ public class newServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String productName = request.getParameter("pro_name");
+        feedbackManagementDAO dao = new feedbackManagementDAO();
+
+        // Lấy danh sách feedback theo tên sản phẩm
+        List<Object[]> feedbackList = dao.getFeedbackByProductName(productName);
+
+        // Gửi danh sách feedback tới JSP
+        request.setAttribute("feedbackList", feedbackList);
+        request.setAttribute("productName", productName);
+        request.getRequestDispatcher("jsp/admin/feedbackDetails.jsp").forward(request, response);
     }
 
     /**
