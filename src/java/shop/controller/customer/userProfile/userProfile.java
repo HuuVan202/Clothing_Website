@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import shop.DAO.customer.userProfile.UserProfileDAO;
 import shop.DAO.guest.login.LoginDAO;
+import static shop.controller.guest.singup.SignupServlet.isValidPhoneNumber;
 import shop.model.Customer;
 
 /**
@@ -66,6 +67,10 @@ public class userProfile extends HttpServlet {
             request.setAttribute("message", "Please fill in all information!");
             request.getRequestDispatcher(PROFILE).forward(request, response);
             return;
+        } else if (!isValidPhoneNumber(phone)) {
+            request.setAttribute("message", "Your phone number is invalid! Please re-enter!");
+            request.getRequestDispatcher(PROFILE).forward(request, response);
+            return;
         }
 
         if (userProfileDao.updateProfile(fullName, phone, address, userName)) {
@@ -83,4 +88,14 @@ public class userProfile extends HttpServlet {
         request.getRequestDispatcher(PROFILE).forward(request, response);
     }
 
+    public static boolean isValidPhoneNumber(String phoneNumber) {
+        // Kiểm tra nếu phoneNumber là null hoặc rỗng
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            return false;
+        }
+
+        // Regex kiểm tra số điện thoại 10 chữ số, bắt đầu bằng số 0
+        String regex = "^0\\d{9}$";
+        return phoneNumber.matches(regex);
+    }
 }
