@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+
 <!-- header -->
 
 <header class="p-3 mb-3 border-bottom">
@@ -40,7 +41,7 @@
 
 
             <div class="cart me-3">
-                <a href="https://www.google.com" class="d-block link-dark text-decoration-none" style="color: white">
+                <a href="https://m.me/626403237211918" class="d-block link-dark text-decoration-none" style="color: white">
                     <img
                         class="border"
 
@@ -61,7 +62,7 @@
                         src="${pageContext.request.contextPath}/img/icon/header/icons8-shopping-cart-100.png"
 
                         title="Cart"
-                        
+
                         alt="cart-icon"
                         />
                     <c:if test="${not empty sessionScope.customer}">

@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
+
 <%-- 
     Document   : home
     Created on : Feb 17, 2025, 10:06:23 AM
@@ -206,15 +207,15 @@
         <!-- footer -->
         <jsp:include page="../common/layout/footer.jsp"></jsp:include>
 
-        <script>
-            function scrollCards(containerId, direction) {
-                const container = document.getElementById(containerId);
-                if (container) {
-                    container.scrollBy({left: direction * 250, behavior: "smooth"});
+            <script>
+                function scrollCards(containerId, direction) {
+                    const container = document.getElementById(containerId);
+                    if (container) {
+                        container.scrollBy({left: direction * 250, behavior: "smooth"});
+                    }
                 }
-            }
-        </script>
+            </script>
 
-        <title>JSP Page</title>
-    </head>
+            <title>JSP Page</title>
+        </head>
 </html>

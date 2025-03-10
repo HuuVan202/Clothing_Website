@@ -138,7 +138,7 @@
                                             </c:if>
                                         </div>
                                         <form action="Cart" method="post">
-                                        <input type="hidden" name="pro_id" value="${pd.pro_id}" />
+                                        <input type="hidden" name="pro_id" value="${s.pro_id}" />
                                         <input type="hidden" name="action" value="add" />
                                         <button type="submit" class="btn btn-success mt-auto">Add to Cart</button>
                                     </form>
