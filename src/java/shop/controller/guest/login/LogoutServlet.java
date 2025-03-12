@@ -34,7 +34,9 @@ public class LogoutServlet extends HttpServlet {
         if (session.getAttribute("customer") != null) {
             session.removeAttribute("customer");
         }
+
         session.invalidate();
+
         response.sendRedirect("home");
     }
 

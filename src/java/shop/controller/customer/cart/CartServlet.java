@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import shop.DAO.customer.cart.CartDAO;
 import shop.DAO.customer.cart.ProductDAO;
 import shop.model.CartItem;
@@ -101,8 +102,14 @@ public class CartServlet extends HttpServlet {
                 String proid = request.getParameter("pro_id");
 
                 try {
-                    int id = Integer.parseInt(proid); // Product ID
+                    int id = Integer.parseInt(proid);
                     Product product = proDAO.getProductById(id);
+
+                    if (product.getStock() <= 0) {
+                        session.setAttribute("error", "This product is sold out.");
+                        response.sendRedirect("detail?id=" + id);
+                        return;
+                    }
 
                     if (product == null) {
                         request.setAttribute("error", "Product not found");
