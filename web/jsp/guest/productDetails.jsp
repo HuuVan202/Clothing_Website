@@ -21,6 +21,13 @@
         <jsp:include page="../common/layout/header.jsp" />
 
         <!-- Product Details Section -->
+        <c:if test="${not empty sessionScope.error}">
+            <div class="alert alert-danger text-center">
+                ${sessionScope.error}
+            </div>
+            <c:remove var="error" scope="session"/> 
+        </c:if>
+
         <div class="container my-5">
             <h1 class="text-center mb-4">Product Details</h1>
 
@@ -40,7 +47,14 @@
                                     <p><strong>Name:</strong> ${pd.pro_name}</p>
                                     <p><strong>Size:</strong> ${pd.size}</p>
                                     <p><strong>Type:</strong> ${pd.type.type_name}</p>
-                                    <p><strong>Stock:</strong> ${pd.stock}</p>
+                                    <p>
+                                        <c:if test="${pd.stock >0}">
+                                            <strong>Stock:</strong> ${pd.stock}
+                                        </c:if>
+                                        <c:if  test="${pd.stock <=0}">
+                                            <strong>Stock:</strong> <span class="text-danger">Sold Out</span>
+                                        </c:if>
+                                    </p>
                                     <p><strong>Price:</strong> 
                                         <c:if test="${pd.discount > 0}">
                                             <span class="text-decoration-line-through text-muted">${pd.formattedPrice} VND</span>
@@ -138,10 +152,10 @@
                                             </c:if>
                                         </div>
                                         <form action="Cart" method="post">
-                                        <input type="hidden" name="pro_id" value="${s.pro_id}" />
-                                        <input type="hidden" name="action" value="add" />
-                                        <button type="submit" class="btn btn-success mt-auto">Add to Cart</button>
-                                    </form>
+                                            <input type="hidden" name="pro_id" value="${s.pro_id}" />
+                                            <input type="hidden" name="action" value="add" />
+                                            <button type="submit" class="btn btn-success mt-auto">Add to Cart</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>

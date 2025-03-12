@@ -26,6 +26,7 @@
                 <img src="${pageContext.request.contextPath}/img/icon/header/empty-cart.png" width="30%" height="30%" alt="Cart-empty"/>
             </div>
         </c:if>
+       
         <c:if test="${not empty sessionScope.cart and not empty sessionScope.cart.items}">
             <table>
                 <tr>
@@ -49,13 +50,21 @@
                         </td>
                         <td class="price_product"><fmt:formatNumber value="${i.product.salePrice}" /> VND</td>
                         <td class="quantity_product">
-                            <form action="Cart" method="POST">
-                                <input type="hidden" name="pro_id" value="${i.product.pro_id}" />
-                                <input type="hidden" name="action" value="updateQuantity"/>
-                                <input type="number" name="quantity" value="${i.quantity}" min="1" max="${i.product.stock}" 
-                                       onchange="checkStock(this, ${i.product.stock}); this.form.submit();" />
-                            </form>                      
+                            <c:choose>
+                                <c:when test="${i.product.stock > 0}">
+                                    <form action="Cart" method="POST">
+                                        <input type="hidden" name="pro_id" value="${i.product.pro_id}" />
+                                        <input type="hidden" name="action" value="updateQuantity"/>
+                                        <input type="number" name="quantity" value="${i.quantity}" min="0" max="${i.product.stock}" 
+                                               onchange="checkStock(this, ${i.product.stock}); this.form.submit();" />
+                                    </form>
+                                </c:when>
+                                <c:otherwise>
+                                    <span class="text-danger text-bold">Sold Out</span>
+                                </c:otherwise>
+                            </c:choose>
                         </td>
+
                         <td class="total_product"><fmt:formatNumber value="${i.product.salePrice * i.quantity}" /> VND</td>
                         <td class="remove_product"> 
                             <form action="Cart" method="POST">
