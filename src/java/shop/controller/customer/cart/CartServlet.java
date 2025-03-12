@@ -106,7 +106,7 @@ public class CartServlet extends HttpServlet {
                     Product product = proDAO.getProductById(id);
 
                     if (product.getStock() <= 0) {
-                        session.setAttribute("error", "This product is sold out.");
+                        session.setAttribute("error", "The product is out of stock.");
                         response.sendRedirect("detail?id=" + id);
                         return;
                     }

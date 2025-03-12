@@ -52,7 +52,7 @@
                                             <strong>Stock:</strong> ${pd.stock}
                                         </c:if>
                                         <c:if  test="${pd.stock <=0}">
-                                            <strong>Stock:</strong> <span class="text-danger">Sold Out</span>
+                                            <strong>Stock:</strong> <span class="text-danger">Out of stock</span>
                                         </c:if>
                                     </p>
                                     <p><strong>Price:</strong> 

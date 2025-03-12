@@ -41,7 +41,7 @@
 
 
             <div class="cart me-3">
-                <a href="https://m.me/626403237211918" class="d-block link-dark text-decoration-none" style="color: white">
+                <a href="https://m.me/580890381776714" class="d-block link-dark text-decoration-none" style="color: white">
                     <img
                         class="border"
 
