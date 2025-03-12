@@ -8,4 +8,21 @@
         <servlet-name>LogoutServlet</servlet-name>
         <url-pattern>/Logout</url-pattern>
     </servlet-mapping>
+       
+    <!-- Multipart configuration -->
+    <servlet>
+        <servlet-name>ProductDetailController</servlet-name>
+        <servlet-class>shop.controller.guest.productDetails.ProductDetailsController</servlet-class>
+        <multipart-config>
+            <max-file-size>10485760</max-file-size> <!-- 10 MB -->
+            <max-request-size>15728640</max-request-size> <!-- 15 MB -->
+            <file-size-threshold>1048576</file-size-threshold> <!-- 1 MB -->
+        </multipart-config>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductDetailController</servlet-name>
+        <url-pattern>/detail</url-pattern>
+        <url-pattern>/checkPurchase</url-pattern>
+        <url-pattern>/addFeedback</url-pattern>
+    </servlet-mapping>
 </web-app>
