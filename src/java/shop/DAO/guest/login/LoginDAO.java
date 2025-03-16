@@ -31,7 +31,7 @@ public class LoginDAO extends DBcontext {
                          WHERE [username] = ? AND [password] = ?""";
 
             String passHashed = hash.hashPassword(passWord);
-            statement = connection.prepareCall(sql);
+            statement = connection.prepareStatement(sql);
             statement.setString(1, userName.trim());
             statement.setString(2, passHashed);
 

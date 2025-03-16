@@ -14,6 +14,7 @@
 
         <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/common/layout/layout.css"/>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/guest/home.css"/>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/guest/productDetails.css"/>
     </head>
     <body>
 
@@ -21,13 +22,6 @@
         <jsp:include page="../common/layout/header.jsp" />
 
         <!-- Product Details Section -->
-        <c:if test="${not empty sessionScope.error}">
-            <div class="alert alert-danger text-center">
-                ${sessionScope.error}
-            </div>
-            <c:remove var="error" scope="session"/> 
-        </c:if>
-
         <div class="container my-5">
             <h1 class="text-center mb-4">Product Details</h1>
 
@@ -55,6 +49,7 @@
                                             <strong>Stock:</strong> <span class="text-danger">Out of stock</span>
                                         </c:if>
                                     </p>
+
                                     <p><strong>Price:</strong> 
                                         <c:if test="${pd.discount > 0}">
                                             <span class="text-decoration-line-through text-muted">${pd.formattedPrice} VND</span>
@@ -68,13 +63,17 @@
                                     <p><strong>Rating:</strong> ${pd.averageRating} 
                                         <span class="text-warning fs-5">★</span> (${pd.feedbackCount})
                                     </p>
-
-                                    <form action="Cart" method="post">
-                                        <input type="hidden" name="pro_id" value="${pd.pro_id}" />
-                                        <input type="hidden" name="action" value="add" />
-                                        <button type="submit" class="btn btn-success mt-auto">Add to Cart</button>
-                                    </form>
-                                    <button class="btn btn-primary">Give Feedback</button>
+                                    <div class="d-flex flex-column gap-2 w-100">
+                                        <form action="Cart" method="post" class="m-0">
+                                            <input type="hidden" name="pro_id" value="${pd.pro_id}" />
+                                            <input type="hidden" name="action" value="add" />
+                                            <button type="submit" class="btn btn-success w-50">Add to Cart</button>
+                                        </form>
+                                        <div>
+                                            <button type="button" class="btn btn-primary feedback-btn w-50" data-product-id="${pd.pro_id}">Give Feedback</button>
+                                            <div class="feedback-warning fw-bold text-danger mt-1"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </c:when>
@@ -95,15 +94,17 @@
                         <c:when test="${not empty feedbackOfProduct}">
                             <c:forEach var="f" items="${feedbackOfProduct}">
                                 <div class="border-bottom pb-2 mb-2">
-                                    <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex justify-content-between">
                                         <span class="fw-bold">${f.cus_name}</span>
-                                        <span class="text-warning">
-                                            <c:forEach begin="1" end="${f.rating}">★</c:forEach>
-                                            <c:forEach begin="${f.rating + 1}" end="5">☆</c:forEach>
-                                            </span>
-                                            <span class="text-muted small">${f.feedback_date}</span>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <span class="text-warning">
+                                                <c:forEach begin="1" end="${f.rating}">★</c:forEach>
+                                                <c:forEach begin="${f.rating + 1}" end="5">☆</c:forEach>
+                                                </span>
+                                                <span class="text-muted small">${f.feedback_date}</span>
+                                        </div>
                                     </div>
-                                    <p class="mt-1">${f.comment}</p>
+                                    <p class="mt-1 mb-0">${f.comment}</p>
                                 </div>
                             </c:forEach>
                         </c:when>
@@ -152,7 +153,7 @@
                                             </c:if>
                                         </div>
                                         <form action="Cart" method="post">
-                                            <input type="hidden" name="pro_id" value="${s.pro_id}" />
+                                            <input type="hidden" name="pro_id" value="${pd.pro_id}" />
                                             <input type="hidden" name="action" value="add" />
                                             <button type="submit" class="btn btn-success mt-auto">Add to Cart</button>
                                         </form>
@@ -168,9 +169,54 @@
             </div>
         </div>
 
+        <!-- Feedback Modal -->
+        <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="feedbackModalLabel">Give Feedback</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="feedbackForm">
+                            <input type="hidden" name="pro_id" value="${pd.pro_id}">
+                            <div class="mb-3">
+                                <label class="form-label">Rating:</label>
+                                <div class="rating d-flex justify-content-center">
+                                    <input type="radio" name="rating" value="5" id="star5"><label for="star5">★</label>
+                                    <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
+                                    <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
+                                    <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
+                                    <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
+                                </div>
+                                <div id="ratingWarning" class="feedback-warning text-danger fw-bold" style="display: none;"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="comment" class="form-label">Comment:</label>
+                                <textarea class="form-control" id="comment" name="comment" rows="3" maxlength="500"></textarea>
+                                <div class="d-flex justify-content-between">
+                                    <div id="commentWarning" class="feedback-warning text-danger fw-bold" style="display: none;"></div>
+                                    <small class="text-muted">Characters remaining: <span id="charCount">500</span></small>
+                                </div>
+                            </div>
+
+                            <!-- Error Message -->
+                            <div id="feedbackError" class="alert alert-danger d-none"></div>
+                            <div id="successMessage" class="alert alert-success" style="display: none;"></div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Footer -->
         <jsp:include page="../common/layout/footer.jsp" />
 
+        <script src="${pageContext.request.contextPath}/JS/guest/productDetails.js" defer></script>
     </body>
 </html>

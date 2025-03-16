@@ -28,9 +28,12 @@ public class ChangePasswordDAO extends DBcontext {
             statement = connection.prepareStatement(sql);
             statement.setString(1, hashPass.hashPassword(pass));
             statement.setString(2, username);
-            statement.executeUpdate();
+            int rowsUpdated = statement.executeUpdate();
 
-            isSuccess = true;
+            if (rowsUpdated > 0) {
+                isSuccess = true;
+                System.out.println("Password updated successfully for user: " + username);
+            }
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
