@@ -71,7 +71,7 @@
                                                     <button onclick="changeType(this)" id="edit" type="button"
                                                             style="background-color: #2c3e50; color: white; border: none; padding: 12px;
                                                             font-size: 16px; font-weight: bold; border-radius: 5px; width: 100%;
-                                                            margin-top: 15px; cursor: pointer;">Edit</button>
+                                                            margin-top: 15px; cursor: pointer;">Update</button>
                                                 </div>
                                                 <c:if test="${not empty requestScope.message}">
                                                     <span class="message ${requestScope.message == 'Update Successful!' || requestScope.message == 'Password Change Successful' ? 'success' : 'error'}">
