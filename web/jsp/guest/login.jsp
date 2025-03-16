@@ -72,7 +72,7 @@
                                                 </div>
                                                 <div class="col-6">
                                                     <div class="text-end">
-                                                        <a href="#!" class="link-secondary text-decoration-none">Forgot password?</a>
+                                                        <a href="VerifyMail" class="link-secondary text-decoration-none">Forgot password?</a>
                                                     </div>
                                                 </div>
                                             </div>
