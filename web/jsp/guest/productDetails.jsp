@@ -41,7 +41,15 @@
                                     <p><strong>Name:</strong> ${pd.pro_name}</p>
                                     <p><strong>Size:</strong> ${pd.size}</p>
                                     <p><strong>Type:</strong> ${pd.type.type_name}</p>
-                                    <p><strong>Stock:</strong> ${pd.stock}</p>
+                                    <p>
+                                        <c:if test="${pd.stock >0}">
+                                            <strong>Stock:</strong> ${pd.stock}
+                                        </c:if>
+                                        <c:if  test="${pd.stock <=0}">
+                                            <strong>Stock:</strong> <span class="text-danger">Out of stock</span>
+                                        </c:if>
+                                    </p>
+
                                     <p><strong>Price:</strong> 
                                         <c:if test="${pd.discount > 0}">
                                             <span class="text-decoration-line-through text-muted">${pd.formattedPrice} VND</span>
