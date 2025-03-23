@@ -107,7 +107,7 @@
                                                             <td>${o.order_date}</td>
                                                             <td>${o.tracking}</td>
                                                             <td>${o.payment_method}</td>
-                                                            <td>${o.total_price}</td>
+                                                            <td>${o.getFormattedPrice()} VND</td>
                                                             <td>
                                                                 <a href="OrderDetail?id=${o.order_id}" class="view">View</a>
                                                                 <c:if test="${o.tracking eq 'processing'}">
@@ -145,7 +145,7 @@
                                                             <td>${o.order_date}</td>
                                                             <td>${o.tracking}</td>
                                                             <td>${o.payment_method}</td>
-                                                            <td>${o.total_price}</td>
+                                                            <td>${o.getFormattedPrice()} VND</td>
                                                             <td><a href="OrderDetail?id=${o.order_id}" class="view">View</a></td>
                                                         </tr>
                                                     </c:if>
@@ -177,7 +177,7 @@
                                                             <td>${o.order_date}</td>
                                                             <td>${o.tracking}</td>
                                                             <td>${o.payment_method}</td>
-                                                            <td>${o.total_price}</td>
+                                                            <td>${o.getFormattedPrice()} VND</td>
                                                             <td><a href="OrderDetail?id=${o.order_id}" class="view">View</a></td>
                                                         </tr>
                                                     </c:if>
@@ -208,7 +208,7 @@
                                                             <td>${o.order_date}</td>
                                                             <td>${o.tracking}</td>
                                                             <td>${o.payment_method}</td>
-                                                            <td>${o.total_price}</td>
+                                                            <td>${o.getFormattedPrice()} VND</td>
                                                             <td><a href="OrderDetail?id=${o.order_id}" class="view">View</a></td>
                                                         </tr>
                                                     </c:if>
