@@ -16,7 +16,7 @@ import shop.model.Customer;
  */
 public class LoginDAO extends DBcontext {
 
-    public Account checkLoginAccount(String userName, String passWord) {
+        public Account checkLoginAccount(String userName, String passWord) {
         Account account = null;
         connection = getConnection();
         HashPassword hash = new HashPassword();
@@ -52,7 +52,7 @@ public class LoginDAO extends DBcontext {
 
         return account;
     }
-
+    
     public Customer getCustomer(String userName) {
         Customer customer = null;
         connection = getConnection();
@@ -125,12 +125,14 @@ public class LoginDAO extends DBcontext {
 
         return customer;
     }
-
+    
     public static void main(String[] args) {
         LoginDAO loginDAO = new LoginDAO();
-//        Account c = loginDAO.checkLoginAccount("test1", "Huuvan@2004");
-        Customer c = loginDAO.getCustomerByEmail("donatellophan@gmail.com");
-
+        Account c = loginDAO.checkLoginAccount("customer10", "Huuvan@2004");
+//        Customer c = loginDAO.getCustomer("huuvan2004");
+//        Customer c = loginDAO.getCustomerByEmail("donatellophan@gmail.com");
+    
+            System.out.println(c);
         if (c != null) {
             System.out.println("Đăng nhập thành công!");
         } else {
