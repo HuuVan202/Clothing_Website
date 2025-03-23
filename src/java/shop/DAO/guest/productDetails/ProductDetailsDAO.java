@@ -3,6 +3,7 @@ package shop.DAO.guest.productDetails;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import shop.context.DBcontext;
@@ -12,9 +13,26 @@ import shop.model.Type;
 
 public class ProductDetailsDAO {
 
-    Connection conn = null;
-    PreparedStatement ps = null;
-    ResultSet rs = null;
+    private Connection conn = null;
+    private PreparedStatement ps = null;
+    private ResultSet rs = null;
+
+    private void closeResources() {
+        try {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            System.out.println("Error closing resources: " + e.getMessage());
+        }
+    }
+
+    private Connection getConnection() throws SQLException {
+        if (conn == null || conn.isClosed()) {
+            conn = new DBcontext().getConnection();
+        }
+        return conn;
+    }
 
     public Product getProductDetails(int pro_id) {
         String sql = "SELECT p.image, p.pro_id, p.pro_name, p.size, p.type_id, "
@@ -23,13 +41,13 @@ public class ProductDetailsDAO {
                 + "           WHEN p.discount > 0 THEN p.price * (1 - p.discount / 100.0) "
                 + "           ELSE p.price "
                 + "       END AS discounted_price, "
-                + "       COALESCE((SELECT AVG(rating) FROM Feedback WHERE pro_id = p.pro_id), 0) AS averageRating, "
+                + "       CAST(COALESCE((SELECT AVG(CAST(rating AS DECIMAL(2,1))) FROM Feedback WHERE pro_id = p.pro_id), 0) AS DECIMAL(10,2)) AS averageRating, "
                 + "       COALESCE((SELECT COUNT(*) FROM Feedback WHERE pro_id = p.pro_id), 0) AS feedbackCount "
                 + "FROM Product p "
                 + "JOIN Type t ON p.type_id = t.type_id " // Join với bảng Type để lấy type_name
                 + "WHERE p.pro_id = ? AND p.status = 'active'";
         try {
-            conn = new DBcontext().getConnection();
+            conn = getConnection();
             ps = conn.prepareStatement(sql);
             ps.setInt(1, pro_id); // Truyền tham số ID vào câu SQL
             rs = ps.executeQuery();
@@ -51,8 +69,10 @@ public class ProductDetailsDAO {
                 pd.setFeedbackCount(rs.getInt("feedbackCount"));
                 return pd; // Trả về sản phẩm nếu tìm thấy
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println("Error getting product details: " + e.getMessage());
+        } finally {
+            closeResources();
         }
         return null; // Trả về null nếu không tìm thấy sản phẩm
     }
@@ -65,7 +85,7 @@ public class ProductDetailsDAO {
                 + "WHERE f.pro_id = ?";
 
         try {
-            conn = new DBcontext().getConnection();
+            conn = getConnection();
             ps = conn.prepareStatement(sql);
             ps.setInt(1, pro_id);
             rs = ps.executeQuery();
@@ -81,8 +101,10 @@ public class ProductDetailsDAO {
 
                 feedback.add(f);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println("Error getting feedback: " + e.getMessage());
+        } finally {
+            closeResources();
         }
         return feedback;
     }
@@ -119,7 +141,7 @@ public class ProductDetailsDAO {
         "SELECT * FROM AdditionalProducts"; // Kết hợp hai bảng OrderedProducts & AdditionalProducts
 
     try {
-        conn = new DBcontext().getConnection();
+        conn = getConnection();
         ps = conn.prepareStatement(sql);
         ps.setInt(1, pro_id); // Lấy type_id của sản phẩm hiện tại
         ps.setInt(2, pro_id); // Không lấy lại chính sản phẩm
@@ -137,15 +159,123 @@ public class ProductDetailsDAO {
             p.setDiscountedPrice(rs.getBigDecimal("discounted_price"));
             list.add(p);
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+    } catch (SQLException e) {
+        System.out.println("Error getting suggested products: " + e.getMessage());
+    } finally {
+        closeResources();
     }
     return list;
 }
-  
-    public static void main(String[] args) {
-        ProductDetailsDAO p = new ProductDetailsDAO();
-        p.getSuggestProducts(1);
+    
+    public boolean hasCustomerGivenFeedback(int customerId, int productId) {
+        String sql = "SELECT COUNT(*) as count FROM Feedback f " +
+                    "WHERE f.cus_id = ? AND f.pro_id = ?";
+        
+        try {
+            conn = getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, customerId);
+            ps.setInt(2, productId);
+            
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("count") > 0;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error checking customer feedback: " + e.getMessage());
+        } finally {
+            closeResources();
+        }
+        return false;
     }
-
+    
+    public boolean canCustomerGiveFeedback(int customerId, int productId) {
+        String sql = "SELECT DISTINCT o.order_id FROM [Order] o " +
+                    "INNER JOIN OrderDetail od ON o.order_id = od.order_id " +
+                    "WHERE o.cus_id = ? AND od.pro_id = ? AND o.tracking = 'delivered' " +
+                    "AND NOT EXISTS (SELECT 1 FROM Feedback f WHERE f.cus_id = ? AND f.pro_id = ?)";
+        
+        try {
+            conn = getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, customerId);
+            ps.setInt(2, productId);
+            ps.setInt(3, customerId);
+            ps.setInt(4, productId);
+            
+            rs = ps.executeQuery();
+            return rs.next(); // If there's at least one delivered order without feedback
+        } catch (SQLException e) {
+            System.out.println("Error checking feedback eligibility: " + e.getMessage());
+        } finally {
+            closeResources();
+        }
+        return false;
+    }
+    
+    public boolean addFeedback(String customerId, String productId, int rating, String comment) {
+        // First check if customer can give feedback
+        int cusId = Integer.parseInt(customerId);
+        int proId = Integer.parseInt(productId);
+        
+        if (!canCustomerGiveFeedback(cusId, proId)) {
+            return false;
+        }
+        
+        String sql = "INSERT INTO Feedback (cus_id, pro_id, rating, comment, feedback_date) VALUES (?, ?, ?, ?, GETDATE())";
+        try {
+            conn = getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, cusId);
+            ps.setInt(2, proId);
+            ps.setInt(3, rating);
+            ps.setString(4, comment);
+            
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.out.println("Error adding feedback: " + e.getMessage());
+        } finally {
+            closeResources();
+        }
+        return false;
+    }
+    
+    public String getCusIdByUsername(String username) {
+        String sql = "SELECT cus_id FROM Customer WHERE username = ?";
+        try {
+            conn = getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, username);
+            rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                return String.valueOf(rs.getInt("cus_id"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting customer ID: " + e.getMessage());
+        } finally {
+            closeResources();
+        }
+        return null;
+    }
+    
+    public boolean hasCustomerReviewedProduct(String customerId, String productId) {
+        String sql = "SELECT COUNT(*) FROM Feedback WHERE cus_id = ? AND pro_id = ?";
+        try {
+            conn = getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, customerId);
+            ps.setString(2, productId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error checking customer feedback: " + e.getMessage());
+        } finally {
+            closeResources();
+        }
+        return false;
+    }
 }
