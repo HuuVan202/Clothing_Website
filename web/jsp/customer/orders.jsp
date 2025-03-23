@@ -67,7 +67,7 @@
                                 <c:set var="hasProcessing" value="false"/>
                                 <c:set var="hasShipping" value="false"/>
                                 <c:set var="hasDelivered" value="false"/>
-                                <c:set var="hasCancelled" value="false"/>
+                                <c:set var="hasCanceled" value="false"/>
 
                                 <c:forEach items="${requestScope.listOrder}" var="o">
                                     <c:if test="${o.tracking eq 'processing'}">
@@ -79,8 +79,8 @@
                                     <c:if test="${o.tracking eq 'delivered'}">
                                         <c:set var="hasDelivered" value="true"/>
                                     </c:if>
-                                    <c:if test="${o.tracking eq 'cancelled'}">
-                                        <c:set var="hasCancelled" value="true"/>
+                                    <c:if test="${o.tracking.toLowerCase() eq 'canceled'}">
+                                        <c:set var="hasCanceled" value="true"/>
                                     </c:if>
                                 </c:forEach>
 
@@ -121,7 +121,7 @@
                                         </table>
                                     </c:if>
 
-                                    <span class="message ${requestScope.messCancle} == null ? '' : 'successCancel' ">${requestScope.messCancle}</span>
+                                    <span class="message ${not empty requestScope.messCancle ? 'successCancel' : ''}">${requestScope.messCancle}</span>
 
                                     <!-- Table Shipping -->
                                     <c:if test="${hasShipping}">
@@ -187,7 +187,7 @@
                                     </c:if>
 
                                     <!-- Table Cancel -->
-                                    <c:if test="${hasCancelled}">
+                                    <c:if test="${hasCanceled}">
                                         <h3>Canceled Orders</h3>
                                         <table class="table">
                                             <thead>
@@ -202,7 +202,8 @@
                                             </thead>
                                             <tbody>   
                                                 <c:forEach items="${requestScope.listOrder}" var="o">
-                                                    <c:if test="${o.tracking eq 'cancelled'}">
+
+                                                    <c:if test="${o.tracking.toLowerCase() eq 'canceled'}">
                                                         <tr>
                                                             <td>${sessionScope.customer.cus_name}</td>
                                                             <td>${o.order_date}</td>
