@@ -56,6 +56,7 @@
                                     <div class="login_form_container">
                                         <div class="account_login_form">
                                             <form id="form-1" action="profile" method="POST">
+                                                <input hidden value="profile" name="from"/>
                                                 <label>Username</label>
                                                 <input class="input_type" type="text" id="txtUserName" name="txtUserName" value="${sessionScope.customer.username}" readonly>
                                                 <label for="txtFullName">Full Name</label>

@@ -11,10 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
 import shop.DAO.customer.userProfile.UserProfileDAO;
 import shop.DAO.guest.login.LoginDAO;
-import static shop.controller.guest.singup.SignupServlet.isValidPhoneNumber;
 import shop.model.Customer;
 
 /**
@@ -25,6 +23,7 @@ import shop.model.Customer;
 public class userProfile extends HttpServlet {
 
     private final String PROFILE = "jsp/customer/userProfile.jsp";
+    private final String CHECKOUT = "jsp/customer/checkout.jsp";
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -54,22 +53,30 @@ public class userProfile extends HttpServlet {
             throws ServletException, IOException {
         UserProfileDAO userProfileDao = new UserProfileDAO();
         LoginDAO loginDao = new LoginDAO();
-
+        String path = "";
+        
         String userName = request.getParameter("txtUserName");
         String fullName = request.getParameter("txtFullName");
         String phone = request.getParameter("txtPhone");
         String address = request.getParameter("txtAddress");
-
+        String from = request.getParameter("from");
+        
+        if(from.equalsIgnoreCase("profile")){
+            path = PROFILE;
+        }else if (from.equalsIgnoreCase("checkout")){
+            path = CHECKOUT;
+        }
+        
         if (fullName == null || fullName.trim().isEmpty()
                 || userName == null || userName.trim().isEmpty()
                 || phone == null || phone.trim().isEmpty()
                 || address == null || address.trim().isEmpty()) {
             request.setAttribute("message", "Please fill in all information!");
-            request.getRequestDispatcher(PROFILE).forward(request, response);
+            request.getRequestDispatcher(path).forward(request, response);
             return;
         } else if (!isValidPhoneNumber(phone)) {
             request.setAttribute("message", "Your phone number is invalid! Please re-enter!");
-            request.getRequestDispatcher(PROFILE).forward(request, response);
+            request.getRequestDispatcher(path).forward(request, response);
             return;
         }
 
@@ -85,7 +92,7 @@ public class userProfile extends HttpServlet {
             request.setAttribute("message", "Update Failed!");
         }
 
-        request.getRequestDispatcher(PROFILE).forward(request, response);
+        request.getRequestDispatcher(path).forward(request, response);
     }
 
     public static boolean isValidPhoneNumber(String phoneNumber) {

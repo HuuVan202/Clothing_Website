@@ -4,12 +4,10 @@
  */
 package shop.DAO.admin.feedbackManagement;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import shop.context.DBcontext;
 import shop.model.Customer;
@@ -99,78 +97,76 @@ public class feedbackManagementDAO {
             e.printStackTrace(); // Xử lý lỗi
         }
         return feedbackList;
-    }public List<Object[]> searchFeedbackByProductrname(String pro_name) {
-    List<Object[]> feedbackList = new ArrayList<>();
+    }
 
-    String sql = "SELECT f.feedback_id, c.cus_name, p.pro_name, p.image, f.rating, f.comment, f.feedback_date "
-               + "FROM Feedback f "
-               + "JOIN Customer c ON f.cus_id = c.cus_id "
-               + "JOIN Product p ON f.pro_id = p.pro_id "
-               + "WHERE p.pro_name LIKE ?";
+    public List<Object[]> searchFeedbackByProductrname(String pro_name) {
+        List<Object[]> feedbackList = new ArrayList<>();
 
-    try (Connection connection = new DBcontext().getConnection();
-         PreparedStatement statement = connection.prepareStatement(sql)) {
+        String sql = "SELECT f.feedback_id, c.cus_name, p.pro_name, p.image, f.rating, f.comment, f.feedback_date "
+                + "FROM Feedback f "
+                + "JOIN Customer c ON f.cus_id = c.cus_id "
+                + "JOIN Product p ON f.pro_id = p.pro_id "
+                + "WHERE p.pro_name LIKE ?";
 
-        statement.setString(1, "%" + pro_name + "%"); // Tìm kiếm gần đúng theo tên sản phẩm
-        ResultSet resultSet = statement.executeQuery();
-        
-        while (resultSet.next()) {
-            Feedback feedback = new Feedback(
-                    resultSet.getInt("feedback_id"),
-                    resultSet.getInt("rating"),
-                    resultSet.getString("comment"),
-                    resultSet.getDate("feedback_date")
-            );
-            Customer customer = new Customer(
-                    resultSet.getString("cus_name")
-            );
-            Product product = new Product(
-                    resultSet.getString("pro_name"),
-                    resultSet.getString("image")
-            );
-            feedbackList.add(new Object[]{feedback, customer, product});
+        try (Connection connection = new DBcontext().getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, "%" + pro_name + "%"); // Tìm kiếm gần đúng theo tên sản phẩm
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Feedback feedback = new Feedback(
+                        resultSet.getInt("feedback_id"),
+                        resultSet.getInt("rating"),
+                        resultSet.getString("comment"),
+                        resultSet.getDate("feedback_date")
+                );
+                Customer customer = new Customer(
+                        resultSet.getString("cus_name")
+                );
+                Product product = new Product(
+                        resultSet.getString("pro_name"),
+                        resultSet.getString("image")
+                );
+                feedbackList.add(new Object[]{feedback, customer, product});
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // Xử lý lỗi
         }
-    } catch (Exception e) {
-        e.printStackTrace(); // Xử lý lỗi
-    }
-    return feedbackList;
-}
-
-public List<Object[]> sortFeedbackByDate(String order) {
-    List<Object[]> feedbackList = new ArrayList<>();
-    
-    // Kiểm tra nếu order null hoặc không hợp lệ, mặc định dùng DESC
-    if (order == null || (!order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc"))) {
-        order = "desc"; // Mặc định lấy feedback mới nhất trước
+        return feedbackList;
     }
 
-    String sql = "SELECT f.feedback_id, c.cus_name, p.pro_name, p.image, f.rating, f.comment, f.feedback_date "
-               + "FROM Feedback f "
-               + "JOIN Customer c ON f.cus_id = c.cus_id "
-               + "JOIN Product p ON f.pro_id = p.pro_id "
-               + "ORDER BY f.feedback_date " + order; // Truy vấn an toàn
+    public List<Object[]> sortFeedbackByDate(String order) {
+        List<Object[]> feedbackList = new ArrayList<>();
 
-    try (Connection connection = new DBcontext().getConnection();
-         PreparedStatement statement = connection.prepareStatement(sql);
-         ResultSet resultSet = statement.executeQuery()) {
-
-        while (resultSet.next()) {
-            Feedback feedback = new Feedback(
-                    resultSet.getInt("feedback_id"),
-                    resultSet.getInt("rating"),
-                    resultSet.getString("comment"),
-                    resultSet.getDate("feedback_date")
-            );
-            Customer customer = new Customer(resultSet.getString("cus_name"));
-            Product product = new Product(resultSet.getString("pro_name"), resultSet.getString("image"));
-            feedbackList.add(new Object[]{feedback, customer, product});
+        // Kiểm tra nếu order null hoặc không hợp lệ, mặc định dùng DESC
+        if (order == null || (!order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc"))) {
+            order = "desc"; // Mặc định lấy feedback mới nhất trước
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    return feedbackList;
-}
 
+        String sql = "SELECT f.feedback_id, c.cus_name, p.pro_name, p.image, f.rating, f.comment, f.feedback_date "
+                + "FROM Feedback f "
+                + "JOIN Customer c ON f.cus_id = c.cus_id "
+                + "JOIN Product p ON f.pro_id = p.pro_id "
+                + "ORDER BY f.feedback_date " + order; // Truy vấn an toàn
+
+        try (Connection connection = new DBcontext().getConnection(); PreparedStatement statement = connection.prepareStatement(sql); ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                Feedback feedback = new Feedback(
+                        resultSet.getInt("feedback_id"),
+                        resultSet.getInt("rating"),
+                        resultSet.getString("comment"),
+                        resultSet.getDate("feedback_date")
+                );
+                Customer customer = new Customer(resultSet.getString("cus_name"));
+                Product product = new Product(resultSet.getString("pro_name"), resultSet.getString("image"));
+                feedbackList.add(new Object[]{feedback, customer, product});
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return feedbackList;
+    }
 
     public List<Object[]> getFeedbackByProductName(String productname) {
         List<Object[]> feedbackList = new ArrayList<>();
@@ -228,94 +224,91 @@ public List<Object[]> sortFeedbackByDate(String order) {
         }
         return feedbackList;
     }
+
     public List<Object[]> filterFeedbackByRating(int rating) {
-    List<Object[]> feedbackList = new ArrayList<>();
-    
-    String sql = "SELECT f.feedback_id, c.cus_name, p.pro_name, p.image, f.rating, f.comment, f.feedback_date "
-               + "FROM Feedback f "
-               + "JOIN Customer c ON f.cus_id = c.cus_id "
-               + "JOIN Product p ON f.pro_id = p.pro_id "
-               + "WHERE f.rating = ? "
-               + "ORDER BY f.feedback_date DESC"; // Mặc định hiển thị từ mới nhất
+        List<Object[]> feedbackList = new ArrayList<>();
 
-    try (Connection connection = new DBcontext().getConnection();
-         PreparedStatement statement = connection.prepareStatement(sql)) {
-        
-        statement.setInt(1, rating);
-        ResultSet resultSet = statement.executeQuery();
+        String sql = "SELECT f.feedback_id, c.cus_name, p.pro_name, p.image, f.rating, f.comment, f.feedback_date "
+                + "FROM Feedback f "
+                + "JOIN Customer c ON f.cus_id = c.cus_id "
+                + "JOIN Product p ON f.pro_id = p.pro_id "
+                + "WHERE f.rating = ? "
+                + "ORDER BY f.feedback_date DESC"; // Mặc định hiển thị từ mới nhất
 
-        while (resultSet.next()) {
-            Feedback feedback = new Feedback(
-                    resultSet.getInt("feedback_id"),
-                    resultSet.getInt("rating"),
-                    resultSet.getString("comment"),
-                    resultSet.getDate("feedback_date")
-            );
-            Customer customer = new Customer(resultSet.getString("cus_name"));
-            Product product = new Product(resultSet.getString("pro_name"), resultSet.getString("image"));
-            feedbackList.add(new Object[]{feedback, customer, product});
+        try (Connection connection = new DBcontext().getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, rating);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Feedback feedback = new Feedback(
+                        resultSet.getInt("feedback_id"),
+                        resultSet.getInt("rating"),
+                        resultSet.getString("comment"),
+                        resultSet.getDate("feedback_date")
+                );
+                Customer customer = new Customer(resultSet.getString("cus_name"));
+                Product product = new Product(resultSet.getString("pro_name"), resultSet.getString("image"));
+                feedbackList.add(new Object[]{feedback, customer, product});
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return feedbackList;
     }
-    return feedbackList;
-}
-    
+
     public List<Object[]> filterFeedbackByRating(int rating, String pro_name, String sortOrder) {
-    List<Object[]> feedbackList = new ArrayList<>();
+        List<Object[]> feedbackList = new ArrayList<>();
 
-    String sql = "SELECT f.feedback_id, c.cus_name, p.pro_name, p.image, f.rating, f.comment, f.feedback_date "
-               + "FROM Feedback f "
-               + "JOIN Customer c ON f.cus_id = c.cus_id "
-               + "JOIN Product p ON f.pro_id = p.pro_id "
-               + "WHERE 1=1 "; // Điều kiện luôn đúng để dễ dàng thêm WHERE động
+        String sql = "SELECT f.feedback_id, c.cus_name, p.pro_name, p.image, f.rating, f.comment, f.feedback_date "
+                + "FROM Feedback f "
+                + "JOIN Customer c ON f.cus_id = c.cus_id "
+                + "JOIN Product p ON f.pro_id = p.pro_id "
+                + "WHERE 1=1 "; // Điều kiện luôn đúng để dễ dàng thêm WHERE động
 
-    // Nếu có rating
-    if (rating > 0) {
-        sql += "AND f.rating = ? ";
-    }
-
-    // Nếu có tìm kiếm theo tên sản phẩm
-    if (pro_name != null && !pro_name.trim().isEmpty()) {
-        sql += "AND p.pro_name LIKE ? ";
-    }
-
-    // Thêm sắp xếp theo ngày
-    sql += "ORDER BY f.feedback_date " + (sortOrder != null ? sortOrder : "DESC");
-
-    try (Connection connection = new DBcontext().getConnection();
-         PreparedStatement statement = connection.prepareStatement(sql)) {
-
-        int paramIndex = 1;
-
+        // Nếu có rating
         if (rating > 0) {
-            statement.setInt(paramIndex++, rating);
+            sql += "AND f.rating = ? ";
         }
 
+        // Nếu có tìm kiếm theo tên sản phẩm
         if (pro_name != null && !pro_name.trim().isEmpty()) {
-            statement.setString(paramIndex++, "%" + pro_name + "%");
+            sql += "AND p.pro_name LIKE ? ";
         }
 
-        ResultSet resultSet = statement.executeQuery();
+        // Thêm sắp xếp theo ngày
+        sql += "ORDER BY f.feedback_date " + (sortOrder != null ? sortOrder : "DESC");
 
-        while (resultSet.next()) {
-            Feedback feedback = new Feedback(
-                    resultSet.getInt("feedback_id"),
-                    resultSet.getInt("rating"),
-                    resultSet.getString("comment"),
-                    resultSet.getDate("feedback_date")
-            );
-            Customer customer = new Customer(resultSet.getString("cus_name"));
-            Product product = new Product(resultSet.getString("pro_name"), resultSet.getString("image"));
-            feedbackList.add(new Object[]{feedback, customer, product});
+        try (Connection connection = new DBcontext().getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            int paramIndex = 1;
+
+            if (rating > 0) {
+                statement.setInt(paramIndex++, rating);
+            }
+
+            if (pro_name != null && !pro_name.trim().isEmpty()) {
+                statement.setString(paramIndex++, "%" + pro_name + "%");
+            }
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Feedback feedback = new Feedback(
+                        resultSet.getInt("feedback_id"),
+                        resultSet.getInt("rating"),
+                        resultSet.getString("comment"),
+                        resultSet.getDate("feedback_date")
+                );
+                Customer customer = new Customer(resultSet.getString("cus_name"));
+                Product product = new Product(resultSet.getString("pro_name"), resultSet.getString("image"));
+                feedbackList.add(new Object[]{feedback, customer, product});
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return feedbackList;
     }
-    return feedbackList;
-}
-
-
 
     public static void main(String[] args) {
         feedbackManagementDAO dao = new feedbackManagementDAO();
