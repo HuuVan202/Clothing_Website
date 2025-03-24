@@ -36,7 +36,7 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <table class="table table-bordered text-center">
-                            <thead class="thead-dark">
+                            <thead style="background-color: #2d336b; color: white">
                                 <tr>
                                     <th>Picture</th>
                                     <th>Product Name</th>
@@ -53,7 +53,7 @@
                                 <c:set var="p" value="${requestScope.listProduct[o.pro_id]}"/>
                                 <tr>
                                     <td><img src="${p.image}" alt="Product Image" width="100" height="100" class="img-thumbnail"></td>
-                                    <td>${p.pro_name}</td>
+                                    <td><a style="color: black" href="detail?id=${o.pro_id}">${p.pro_name}</a></td>
                                     <td>${o.quantity}</td>
                                     <td>${o.getFormattedPrice(p.salePrice)} VND</td>
                                     <td>${o.getFormattedPrice(p.salePrice * o.quantity)} VND</td>
