@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
+        <file>
+            <url>src/java/shop/DAO/guest/login/LoginDAO.java</url>
+            <bookmark id="1">
+                <name/>
+                <line>92</line>
+                <key/>
+            </bookmark>
+        </file>
+    </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< Updated upstream
             <file>file:/D:/HK5/Final/Clothing_Website/web/jsp/customer/checkout.jsp</file>
             <file>file:/D:/HK5/Final/Clothing_Website/src/java/shop/DAO/guest/login/LoginDAO.java</file>
             <file>file:/D:/HK5/Final/Clothing_Website/src/java/shop/controller/guest/login/LoginServlet.java</file>
             <file>file:/D:/HK5/Final/Clothing_Website/src/java/shop/context/DBcontext.java</file>
+=======
+            <file>file:/D:/HK5/Final/test/New%20folder/Clothing_Website/web/jsp/admin/dashboard.jsp</file>
+            <file>file:/D:/HK5/Final/test/New%20folder/Clothing_Website/web/jsp/common/layout/header.jsp</file>
+            <file>file:/D:/HK5/Final/test/New%20folder/Clothing_Website/src/java/shop/controller/customer/userProfile/userProfileServlet.java</file>
+            <file>file:/D:/HK5/Final/test/New%20folder/Clothing_Website/web/jsp/common/layout/managerHeader.jsp</file>
+>>>>>>> Stashed changes
         </group>
     </open-files>
 </project-private>

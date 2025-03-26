@@ -18,7 +18,7 @@
                 id="userMenu"
                 data-bs-toggle="dropdown"
                 >
-                <i class="bi bi-person-circle"></i> Admin User
+                <i class="bi bi-person-circle"></i> Admin
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
                 <li>

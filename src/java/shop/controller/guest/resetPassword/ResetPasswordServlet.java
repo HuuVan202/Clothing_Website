@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 import shop.DAO.customer.changePassword.ChangePasswordDAO;
 import shop.DAO.guest.forgotPassword.ForgotPasswordDAO;
-import shop.DAO.guest.singup.HashPassword;
 
 /**
  *

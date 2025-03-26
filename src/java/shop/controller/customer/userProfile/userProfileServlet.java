@@ -20,7 +20,7 @@ import shop.model.Customer;
  * @author Admin
  */
 @WebServlet(name = "userProfile", urlPatterns = {"/profile"})
-public class userProfile extends HttpServlet {
+public class userProfileServlet extends HttpServlet {
 
     private final String PROFILE = "jsp/customer/userProfile.jsp";
     private final String CHECKOUT = "jsp/customer/checkout.jsp";
