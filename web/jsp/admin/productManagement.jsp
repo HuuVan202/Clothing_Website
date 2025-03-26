@@ -41,7 +41,6 @@
                     <div class="row g-2 mb-3">
                         <div class="col-md-2">
                             <select id="typeFilter" class="form-select" onchange="applyFilters()">
-                                <option value="" selected hidden>Type</option>
                                 <option value="All Type">All Type</option>
                                 <option value="Shirt">Shirt</option>
                                 <option value="T-Shirt">T-Shirt</option>
@@ -56,7 +55,6 @@
                         </div>
                         <div class="col-md-2">
                             <select id="genderFilter" class="form-select" onchange="applyFilters()">
-                                <option value="" selected hidden>Gender</option>
                                 <option value="All Gender">All Gender</option>
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
@@ -65,7 +63,6 @@
                         </div>
                         <div class="col-md-2">
                             <select id="brandFilter" class="form-select" onchange="applyFilters()">
-                                <option value="" selected hidden>Brand</option>
                                 <option value="All Brand">All Brand</option>
                                 <option value="Adidas">Adidas</option>
                                 <option value="Calvin Klein">Calvin Klein</option>
@@ -79,15 +76,13 @@
                         </div>
                         <div class="col-md-2">
                             <select id="stockFilter" class="form-select" onchange="applyFilters()">
-                                <option value="" selected hidden>Stock</option>
                                 <option value="All Stock">All Stock</option>
                                 <option value="In Stock">In Stock</option>
-                                <option value="No Stock">No Stock</option>
+                                <option value="No Stock">Out of Stock</option>
                             </select>
                         </div>
                         <div class="col-md-2">
                             <select id="statusFilter" class="form-select" onchange="applyFilters()">
-                                <option value="" selected hidden>Status</option>
                                 <option value="All Status">All Status</option>
                                 <option value="Active">Active</option>
                                 <option value="Inactive">Inactive</option>
@@ -111,9 +106,9 @@
                     </div>
 
                     <!-- Product Table -->
-                    <div class="table-responsive">
-                        <table class="table table-bordered text-center">
-                            <thead class="table-dark">
+                    <div class="table-responsive text-center">
+                        <table class="table table-hover table-bordered">
+                            <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Product</th>
@@ -125,45 +120,78 @@
                                     <th>Discount</th>
                                     <th>Stock</th>
                                     <th>Status</th>
-                                    <th>Action</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <c:choose>
-                                    <c:when test="${not empty productList}">
-                                        <c:forEach items="${productList}" var="p">
-                                            <tr>
-                                                <td class="align-middle">${p.pro_id}</td>
-                                                <td class="align-middle">
-                                                    <div class="d-flex align-items-center">
-                                                        <img src="${p.image}" alt="${p.pro_name}" class="product-image" />
-                                                        <div class="product-name ms-3">
-                                                            <p class="mb-1">${p.pro_name}</p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="align-middle">${p.type.type_name}</td>
-                                                <td class="align-middle">${p.size}</td>
-                                                <td class="align-middle">${p.gender}</td>
-                                                <td class="align-middle">${p.brand}</td>
-                                                <td class="align-middle">${p.formattedPrice} VND</td>
-                                                <td class="align-middle">${p.discount}%</td>
-                                                <td class="align-middle">${p.stock}</td>
-                                                <td class="align-middle">${p.status}</td>
-                                                <td class="align-middle">
-                                                    <button class="btn btn-primary btn-sm" onclick="openUpdateModal(${p.pro_id})">Update</button>
-                                                </td>
-                                            </tr>
-                                        </c:forEach>
-                                    </c:when>
-                                    <c:otherwise>
+                                <c:if test="${empty productList}">
+                                    <tr>
+                                        <td colspan="11" class="text-center">No products found</td>
+                                    </tr>
+                                </c:if>
+                                <c:if test="${not empty productList}">
+                                    <c:forEach items="${productList}" var="p">
                                         <tr>
-                                            <td colspan="11" class="text-center">
-                                                <div class="alert alert-info mb-0">No product found.</div>
+                                            <td class="align-middle">${p.pro_id}</td>
+                                            <td class="align-middle">
+                                                <div class="d-flex align-items-center">
+                                                    <img src="${p.image}" alt="${p.pro_name}" class="product-image" />
+                                                    <div class="product-name ms-3">
+                                                        <p class="mb-1">${p.pro_name}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="align-middle">${p.type.type_name}</td>
+                                            <td class="align-middle">
+                                                <c:choose>
+                                                    <c:when test="${not empty p.productSizes}">
+                                                        <c:set var="hasStock" value="false" />
+                                                        <c:set var="sizesWithStock" value="" />
+                                                        <c:forEach items="${p.productSizes}" var="size">
+                                                            <c:if test="${size.stock > 0}">
+                                                                <c:set var="hasStock" value="true" />
+                                                                <c:set var="sizesWithStock" value="${sizesWithStock}${not empty sizesWithStock ? ', ' : ''}${size.size}" />
+                                                            </c:if>
+                                                        </c:forEach>
+                                                        <c:choose>
+                                                            <c:when test="${hasStock}">
+                                                                ${sizesWithStock}
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <span class="text-danger">Out of Stock</span>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="text-muted">No sizes</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td class="align-middle">${p.gender}</td>
+                                            <td class="align-middle">${p.brand}</td>
+                                            <td class="align-middle">${p.formattedPrice} VND</td>
+                                            <td class="align-middle">${p.discount}%</td>
+                                            <td class="align-middle">
+                                                <c:choose>
+                                                    <c:when test="${not empty p.productSizes}">
+                                                        <c:set var="totalStock" value="0" />
+                                                        <c:forEach items="${p.productSizes}" var="size">
+                                                            <c:set var="totalStock" value="${totalStock + size.stock}" />
+                                                        </c:forEach>
+                                                        ${totalStock}
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        0
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td class="align-middle">${p.status}</td>
+                                            <td class="align-middle">
+                                                <button class="btn btn-primary btn-sm" onclick="openUpdateModal(${p.pro_id})" type="button">Update</button>
                                             </td>
                                         </tr>
-                                    </c:otherwise>
-                                </c:choose>
+                                    </c:forEach>
+                                </c:if>
                             </tbody>
                         </table>
                     </div>
@@ -231,47 +259,74 @@
                                     </div>
                                     <div class="mb-3">
                                         <label>Image</label>
-                                        <input type="file" class="form-control" name="image" accept="image/*" required>
+                                        <input type="file" class="form-control" name="image" accept="image/*" onchange="previewImage(this)" required>
+                                        <img id="currentProductImage" src="" alt="Product Image" style="max-width: 200px; margin-top: 10px; display: none;">
                                     </div>
                                     <div class="mb-3">
                                         <label>Type</label>
-                                        <select class="form-select" id="addProductType" name="type_id" onchange="handleTypeChange(this)" required>
-                                            <option value="" selected disabled>Select Type</option>
-                                            <c:forEach items="${typeList}" var="type">
-                                                <option value="${type.type_id}">${type.type_name}</option>
-                                            </c:forEach>
+                                        <select class="form-select" name="type_id" onchange="handleTypeChange(this)" required>
+                                            <option value="" selected hidden>Select Type</option>
+                                            <option value="1">Shirt</option>
+                                            <option value="2">T-Shirt</option>
+                                            <option value="3">Jacket</option>
+                                            <option value="4">Pants</option>
+                                            <option value="5">Shorts</option>
+                                            <option value="6">Sunglasses</option>
+                                            <option value="7">Wallet</option>
+                                            <option value="8">Bag</option>
+                                            <option value="9">Hat</option>
                                         </select>
                                     </div>
 
-                                    <input type="hidden" name="size" value="">
-
+                                    <!-- Size Options for Clothing -->
                                     <div class="mb-3 size-options" style="display: none;">
-                                        <label>Size</label><br>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" class="form-check-input" name="size" value="S">
-                                            <label class="form-check-label">S</label>
+                                        <label>Sizes and Stock</label>
+                                        <div class="size-stock-grid">
+                                            <div class="size-stock-item">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" name="size_S" value="S" id="sizeS">
+                                                    <label class="form-check-label" for="sizeS">S</label>
+                                                </div>
+                                                <input type="number" class="form-control form-control-sm" name="stock_S" value="0" min="0" max="100000000">
+                                            </div>
+                                            <div class="size-stock-item">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" name="size_M" value="M" id="sizeM">
+                                                    <label class="form-check-label" for="sizeM">M</label>
+                                                </div>
+                                                <input type="number" class="form-control form-control-sm" name="stock_M" value="0" min="0" max="100000000">
+                                            </div>
+                                            <div class="size-stock-item">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" name="size_L" value="L" id="sizeL">
+                                                    <label class="form-check-label" for="sizeL">L</label>
+                                                </div>
+                                                <input type="number" class="form-control form-control-sm" name="stock_L" value="0" min="0" max="100000000">
+                                            </div>
+                                            <div class="size-stock-item">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" name="size_XL" value="XL" id="sizeXL">
+                                                    <label class="form-check-label" for="sizeXL">XL</label>
+                                                </div>
+                                                <input type="number" class="form-control form-control-sm" name="stock_XL" value="0" min="0" max="100000000">
+                                            </div>
+                                            <div class="size-stock-item">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" name="size_XXL" value="XXL" id="sizeXXL">
+                                                    <label class="form-check-label" for="sizeXXL">XXL</label>
+                                                </div>
+                                                <input type="number" class="form-control form-control-sm" name="stock_XXL" value="0" min="0" max="100000000">
+                                            </div>
                                         </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" class="form-check-input" name="size" value="M">
-                                            <label class="form-check-label">M</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" class="form-check-input" name="size" value="L">
-                                            <label class="form-check-label">L</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" class="form-check-input" name="size" value="XL">
-                                            <label class="form-check-label">XL</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" class="form-check-input" name="size" value="XXL">
-                                            <label class="form-check-label">XXL</label>
+                                        <div class="total-stock mt-2">
+                                            Total stock: <span class="total-stock-value">0</span>
                                         </div>
                                     </div>
 
-                                    <div class="mb-3 one-size" style="display: none;">
-                                        <label>Size</label>
-                                        <input type="text" class="form-control" value="One Size" readonly>
+                                    <!-- One Size Option for Accessories -->
+                                    <div class="mb-3 one-size-option" style="display: none;">
+                                        <label>Stock</label>
+                                        <input type="number" class="form-control" name="stock_one_size" value="0" min="0" max="100000000">
                                     </div>
 
                                     <div class="mb-3">
@@ -284,7 +339,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label>Brand</label>
-                                        <select class="form-select" name="brand" required>
+                                        <select class="form-select" id="brand" name="brand" required>
                                             <option value="Adidas">Adidas</option>
                                             <option value="Calvin Klein">Calvin Klein</option>
                                             <option value="Lacoste">Lacoste</option>
@@ -297,37 +352,26 @@
                                     </div>
                                     <div class="mb-3">
                                         <label>Price (VND)</label>
-                                        <input type="number" class="form-control" name="price" value="1" required min="1" max="99999999" oninput="validatePrice(this)">
-                                        <div class="invalid-feedback">Price must be between 1 and under 100.000.000</div>
+                                        <input type="number" class="form-control" name="price" value="1" min="1" max="99999999" required>
                                     </div>
-
                                     <div class="mb-3">
                                         <label>Discount (%)</label>
-                                        <input type="number" class="form-control" name="discount" value="0" required min="0" max="99" oninput="validateDiscount(this)">
-                                        <div class="invalid-feedback">Discount must be between 0 and 99</div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label>Stock</label>
-                                        <input type="number" class="form-control" name="stock" value="1" required min="1" max="99999999" oninput="validateStock(this)">
-                                        <div class="invalid-feedback">Stock must be between 1 and under 100.000.000</div>
+                                        <input type="number" class="form-control" name="discount" value="0" min="0" max="99" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label>Status</label>
-                                        <div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="status" value="active" checked required>
-                                                <label class="form-check-label">Active</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="status" value="inactive" required>
-                                                <label class="form-check-label">Inactive</label>
-                                            </div>
+                                        <label>Status</label><br>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" value="active" checked>
+                                            <label class="form-check-label" for="activeStatus">Active</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" value="inactive">
+                                            <label class="form-check-label" for="inactiveStatus">Inactive</label>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary">Add Product</button>
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Add Product</button>
                                     </div>
                                 </form>
                             </div>
@@ -340,90 +384,99 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">Update Product</h5>
+                                <h5 class="modal-title">Update Product #<span id="displayProductId"></span></h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
                                 <form id="updateForm" action="${pageContext.request.contextPath}/updateProduct" method="post" enctype="multipart/form-data" onsubmit="return validateForm(this)">
-                                    <input type="hidden" name="action" value="update">
-                                    <input type="hidden" name="pro_id" value="">
-                                    <input type="hidden" name="currentImage" value="">
-                                    <input type="hidden" name="size" value="">
-
-                                    <!-- Product ID Display -->
+                                    <input type="hidden" id="pro_id" name="pro_id">
+                                    <input type="hidden" id="currentImage" name="currentImage">
                                     <div class="mb-3">
-                                        <label class="fw-bold">Product ID: <span id="displayProductId"></span></label>
+                                        <label for="update_name">Name</label>
+                                        <input type="text" class="form-control" id="update_name" name="name" required>
                                     </div>
-
                                     <div class="mb-3">
-                                        <label>Name</label>
-                                        <input type="text" class="form-control" name="name" required>
+                                        <label for="update_image">Image</label>
+                                        <input type="file" class="form-control" id="update_image" name="image" accept="image/*" onchange="previewImage(this)">
+                                        <input type="hidden" id="currentImagePath" name="currentImagePath">
+                                        <img id="currentProductImage" src="" alt="Product Image" style="max-width: 200px; margin-top: 10px;">
+                                        <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="resetImage()">Reset Image</button>
                                     </div>
-
                                     <div class="mb-3">
-                                        <label>Image</label>
-                                        <div class="d-flex align-items-center mb-2">
-                                            <img id="currentProductImage" src="" alt="Current Product" style="width: 100px; height: 100px; object-fit: cover;" class="rounded me-2">
-                                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="resetImage()">
-                                                <i class="bi bi-arrow-counterclockwise"></i> Reset Image
-                                            </button>
-                                        </div>
-                                        <input type="file" class="form-control" name="image" accept="image/*" onchange="previewImage(this)">
-                                        <input type="hidden" name="currentImage" id="currentImagePath">
-                                        <small class="text-muted">Leave empty to keep current image</small>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label>Type</label>
-                                        <select class="form-select" name="type_id" onchange="handleTypeChange(this)" required>
-                                            <c:forEach items="${typeList}" var="type">
-                                                <option value="${type.type_id}">${type.type_name}</option>
-                                            </c:forEach>
+                                        <label for="update_type">Type</label>
+                                        <select class="form-select" id="update_type" name="type_id" onchange="handleTypeChange(this)" required>
+                                            <option value="1">Shirt</option>
+                                            <option value="2">T-Shirt</option>
+                                            <option value="3">Jacket</option>
+                                            <option value="4">Pants</option>
+                                            <option value="5">Shorts</option>
+                                            <option value="6">Sunglasses</option>
+                                            <option value="7">Wallet</option>
+                                            <option value="8">Bag</option>
+                                            <option value="9">Hat</option>
                                         </select>
                                     </div>
 
+                                    <!-- Size Options for Clothing -->
                                     <div class="mb-3 size-options" style="display: none;">
-                                        <label>Size</label><br>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" class="form-check-input" name="size" value="S">
-                                            <label class="form-check-label">S</label>
+                                        <label>Sizes and Stock</label>
+                                        <div class="size-stock-grid">
+                                            <div class="size-stock-item">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" id="update_size_S" name="size_S" value="S">
+                                                    <label class="form-check-label" for="update_size_S">S</label>
+                                                </div>
+                                                <input type="number" class="form-control form-control-sm" id="update_stock_S" name="stock_S" value="0" min="0" max="100000000">
+                                            </div>
+                                            <div class="size-stock-item">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" id="update_size_M" name="size_M" value="M">
+                                                    <label class="form-check-label" for="update_size_M">M</label>
+                                                </div>
+                                                <input type="number" class="form-control form-control-sm" id="update_stock_M" name="stock_M" value="0" min="0" max="100000000">
+                                            </div>
+                                            <div class="size-stock-item">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" id="update_size_L" name="size_L" value="L">
+                                                    <label class="form-check-label" for="update_size_L">L</label>
+                                                </div>
+                                                <input type="number" class="form-control form-control-sm" id="update_stock_L" name="stock_L" value="0" min="0" max="100000000">
+                                            </div>
+                                            <div class="size-stock-item">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" id="update_size_XL" name="size_XL" value="XL">
+                                                    <label class="form-check-label" for="update_size_XL">XL</label>
+                                                </div>
+                                                <input type="number" class="form-control form-control-sm" id="update_stock_XL" name="stock_XL" value="0" min="0" max="100000000">
+                                            </div>
+                                            <div class="size-stock-item">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" id="update_size_XXL" name="size_XXL" value="XXL">
+                                                    <label class="form-check-label" for="update_size_XXL">XXL</label>
+                                                </div>
+                                                <input type="number" class="form-control form-control-sm" id="update_stock_XXL" name="stock_XXL" value="0" min="0" max="100000000">
+                                            </div>
                                         </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" class="form-check-input" name="size" value="M">
-                                            <label class="form-check-label">M</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" class="form-check-input" name="size" value="L">
-                                            <label class="form-check-label">L</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" class="form-check-input" name="size" value="XL">
-                                            <label class="form-check-label">XL</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" class="form-check-input" name="size" value="XXL">
-                                            <label class="form-check-label">XXL</label>
-                                        </div>
+
                                     </div>
 
-                                    <div class="mb-3 one-size" style="display: none;">
-                                        <label>Size</label>
-                                        <input type="text" class="form-control" value="One Size" readonly>
+                                    <!-- One Size Option for Accessories -->
+                                    <div class="mb-3 one-size-option" style="display: none;">
+                                        <label for="update_stock_one_size">Stock</label>
+                                        <input type="number" class="form-control" id="update_stock_one_size" name="stock_one_size" value="0" min="0" max="100000000">
                                     </div>
 
-                                    <!-- Rest of the form fields -->
                                     <div class="mb-3">
-                                        <label>Gender</label>
-                                        <select class="form-select" name="gender" required>
+                                        <label for="update_gender">Gender</label>
+                                        <select class="form-select" id="update_gender" name="gender" required>
                                             <option value="male">Male</option>
                                             <option value="female">Female</option>
                                             <option value="unisex">Unisex</option>
                                         </select>
                                     </div>
-
                                     <div class="mb-3">
-                                        <label>Brand</label>
-                                        <select class="form-select" name="brand" required>
+                                        <label for="update_brand">Brand</label>
+                                        <select class="form-select" id="update_brand" name="brand" required>
                                             <option value="Adidas">Adidas</option>
                                             <option value="Calvin Klein">Calvin Klein</option>
                                             <option value="Lacoste">Lacoste</option>
@@ -434,42 +487,28 @@
                                             <option value="Tommy Hilfiger">Tommy Hilfiger</option>
                                         </select>
                                     </div>
-
                                     <div class="mb-3">
-                                        <label>Price</label>
-                                        <input type="number" class="form-control" name="price" required min="1" max="99999999" oninput="validatePrice(this)">
-                                        <div class="invalid-feedback">Price must be between 1 and under 100.000.000</div>
+                                        <label for="update_price">Price (VND)</label>
+                                        <input type="number" class="form-control" id="update_price" name="price" min="0" max="100000000" required>
                                     </div>
-
                                     <div class="mb-3">
-                                        <label>Discount (%)</label>
-                                        <input type="number" class="form-control" name="discount" required min="0" max="99" oninput="validateDiscount(this)">
-                                        <div class="invalid-feedback">Discount must be between 0 and 99</div>
+                                        <label for="update_discount">Discount (%)</label>
+                                        <input type="number" class="form-control" id="update_discount" name="discount" min="0" max="99" value="0" required>
                                     </div>
-
-                                    <div class="mb-3">
-                                        <label>Stock</label>
-                                        <input type="number" class="form-control" name="stock" required min="1" max="99999999" oninput="validateStock(this)">
-                                        <div class="invalid-feedback">Stock must be between 1 and under 100.000.000</div>
-                                    </div>
-
                                     <div class="mb-3">
                                         <label>Status</label>
-                                        <div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="updateProductStatus" value="active" required>
-                                                <label class="form-check-label">Active</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="updateProductStatus" value="inactive" required>
-                                                <label class="form-check-label">Inactive</label>
-                                            </div>
+                                        <div class="form-check">
+                                            <input type="radio" class="form-check-input" id="update_status_active" name="status" value="active" checked>
+                                            <label class="form-check-label" for="update_status_active">Active</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="radio" class="form-check-input" id="update_status_inactive" name="status" value="inactive">
+                                            <label class="form-check-label" for="update_status_inactive">Inactive</label>
                                         </div>
                                     </div>
-
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Update</button>
+                                        <button type="submit" class="btn btn-primary">Update Product</button>
                                     </div>
                                 </form>
                             </div>
@@ -477,30 +516,144 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <script>
-            // Store data in JavaScript
-            const products = [
-            <c:forEach items="${productList}" var="p" varStatus="status">
-            {
-            pro_id: ${p.pro_id},
-                    pro_name: "${p.pro_name}",
-                    pro_image: "${p.image}",
-                    type: {
-                    type_id: ${p.type.type_id},
-                            type_name: "${p.type.type_name}"
-                    },
-                    size: "${p.size}",
-                    pro_gender: "${p.gender}",
-                    pro_brand: "${p.brand}",
-                    pro_price: ${p.price},
-                    pro_discount: ${p.discount},
-                    pro_stock: ${p.stock},
-                    status: "${p.status}"
-            }<c:if test="${!status.last}">,</c:if>
-            </c:forEach>
-            ];
-        </script>
-        <script src="${pageContext.request.contextPath}/JS/admin/productManagement.js"></script>
+
+            <script>
+                // Initialize products array with proper JSON format
+                const products = ${productListJson};
+                console.log('Products initialized:', products);
+
+                // Function to handle size options visibility
+                function handleSizeOptions(typeSelect, formPrefix) {
+                    const typeId = parseInt(typeSelect.value);
+                    const sizeOptions = document.querySelector(`#${formPrefix}Form .size-options`);
+                    const sizeInputs = sizeOptions.querySelectorAll('input[type="checkbox"]');
+                    const stockInputs = sizeOptions.querySelectorAll('input[type="number"]');
+
+                    if (typeId >= 6 && typeId <= 9) {
+                        // For accessories (one size)
+                        sizeOptions.style.display = 'block';
+                        sizeInputs.forEach(input => {
+                            input.checked = input.value === 'One Size';
+                            input.disabled = input.value !== 'One Size';
+                        });
+                        stockInputs.forEach(input => {
+                            input.disabled = input.parentElement.querySelector('input[type="checkbox"]').value !== 'One Size';
+                        });
+                    } else {
+                        // For clothing items (multiple sizes)
+                        sizeOptions.style.display = 'block';
+                        sizeInputs.forEach(input => {
+                            input.disabled = false;
+                        });
+                        stockInputs.forEach(input => {
+                            input.disabled = !input.parentElement.querySelector('input[type="checkbox"]').checked;
+                        });
+                    }
+                }
+
+                // Function to validate form before submission
+                function validateForm(form) {
+                    const typeId = parseInt(form.querySelector('select[name="type_id"]').value);
+                    const sizeChecks = form.querySelectorAll('.size-options input[type="checkbox"]:checked');
+                    const stockInputs = Array.from(form.querySelectorAll('.size-options input[type="number"]'))
+                            .filter(input => !input.disabled);
+
+                    // Validate size selection
+                    if (sizeChecks.length === 0) {
+                        alert('Please select at least one size.');
+                        return false;
+                    }
+
+                    // Validate stock values
+                    for (let input of stockInputs) {
+                        if (input.value === '' || parseInt(input.value) < 0) {
+                            alert('Please enter valid stock values (0 or greater) for all selected sizes.');
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }
+
+                // Function to handle checkbox changes
+                function handleSizeCheckbox(checkbox) {
+                    const stockInput = checkbox.parentElement.nextElementSibling.querySelector('input[type="number"]');
+                    stockInput.disabled = !checkbox.checked;
+                    if (!checkbox.checked) {
+                        stockInput.value = '';
+                    }
+                }
+
+                // Function to open update modal
+                function openUpdateModal(productId) {
+                    const product = products.find(p => p.pro_id === productId);
+                    if (!product)
+                        return;
+
+                    const form = document.getElementById('updateForm');
+                    form.querySelector('input[name="pro_id"]').value = product.pro_id;
+                    form.querySelector('input[name="name"]').value = product.pro_name;
+                    form.querySelector('input[name="currentImage"]').value = product.image;
+                    form.querySelector('select[name="type_id"]').value = product.type.type_id;
+                    form.querySelector('select[name="gender"]').value = product.gender;
+                    form.querySelector('select[name="brand"]').value = product.brand;
+                    form.querySelector('input[name="price"]').value = product.price;
+                    form.querySelector('input[name="discount"]').value = product.discount;
+                    form.querySelector('select[name="status"]').value = product.status;
+
+                    // Handle size checkboxes and stock inputs
+                    handleSizeOptions(form.querySelector('select[name="type_id"]'), 'update');
+                    const sizeOptions = form.querySelector('.size-options');
+
+                    // Reset all checkboxes and stock inputs
+                    sizeOptions.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                        cb.checked = false;
+                    });
+                    sizeOptions.querySelectorAll('input[type="number"]').forEach(input => {
+                        input.value = '';
+                        input.disabled = true;
+                    });
+
+                    // Set values from product sizes
+                    if (product.productSizes) {
+                        product.productSizes.forEach(ps => {
+                            const checkbox = sizeOptions.querySelector(`input[type="checkbox"][value="${ps.size}"]`);
+                            if (checkbox) {
+                                checkbox.checked = true;
+                                const stockInput = checkbox.parentElement.nextElementSibling.querySelector('input[type="number"]');
+                                stockInput.disabled = false;
+                                stockInput.value = ps.stock;
+                            }
+                        });
+                    }
+
+                    document.getElementById('displayProductId').textContent = product.pro_id;
+                    const updateModal = new bootstrap.Modal(document.getElementById('updateProductModal'));
+                    updateModal.show();
+                }
+
+                // Add event listeners when document is loaded
+                document.addEventListener('DOMContentLoaded', function () {
+                    // Add type select change handlers
+                    document.querySelector('#addForm select[name="type_id"]')
+                            .addEventListener('change', function () {
+                                handleSizeOptions(this, 'add');
+                            });
+                    document.querySelector('#updateForm select[name="type_id"]')
+                            .addEventListener('change', function () {
+                                handleSizeOptions(this, 'update');
+                            });
+
+                    // Add checkbox change handlers
+                    document.querySelectorAll('.size-options input[type="checkbox"]')
+                            .forEach(cb => cb.addEventListener('change', function () {
+                                    handleSizeCheckbox(this);
+                                }));
+                });
+            </script>
+
+            <!-- Include JavaScript file -->
+            <script src="${pageContext.request.contextPath}/JS/admin/productManagement.js"></script>
     </body>
 </html>
+
