@@ -20,7 +20,7 @@ public class CancelDAO extends DBcontext {
         try {
             String sql = """
                          UPDATE [dbo].[Order]
-                            SET [tracking] = 'cancelled'
+                            SET [tracking] = 'canceled'
                           WHERE [order_id] = ?""";
             statement = connection.prepareStatement(sql);
             statement.setInt(1, id);
@@ -36,7 +36,7 @@ public class CancelDAO extends DBcontext {
 
     public static void main(String[] args) {
         CancelDAO dao = new CancelDAO();
-        if (dao.cancelOrder(2)) {
+        if (dao.cancelOrder(1)) {
             System.out.println("oke");
         } else {
             System.out.println("no");

@@ -68,8 +68,8 @@
                                     <input type="hidden" name="pro_name" value="${search}">
                                     <input type="hidden" name="rating" value="${selectedRating}">
                                     <select name="order" class="form-select" onchange="this.form.submit()">
-                                        <option value="asc" ${sortOrder == 'asc' ? 'selected' : ''}>Oldest First</option>
-                                        <option value="desc" ${sortOrder == 'desc' ? 'selected' : ''}>Newest First</option>
+                                        <option value="asc" ${sortOrder == 'asc' ? 'selected' : ''}>Oldest</option>
+                                        <option value="desc" ${sortOrder == 'desc' ? 'selected' : ''}>Newest</option>
                                     </select>
                                 </form>
                             </div>

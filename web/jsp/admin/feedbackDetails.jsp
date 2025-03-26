@@ -64,7 +64,7 @@
 <!--                        <td>${feedback[2].size}</td>-->
                         <td>${feedback[2].gender}</td>
                         <td>${feedback[2].brand}</td>
-                        <td>${feedback[2].price} $</td>
+                        <td>${feedback[2].getFormattedPrice()} VND</td>
                         <td>${feedback[2].discount}%</td>
                         <td>${feedback[2].stock}</td>
                         <td>${feedback[2].status}</td>
