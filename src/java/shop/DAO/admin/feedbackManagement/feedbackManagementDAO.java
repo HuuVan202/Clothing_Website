@@ -173,12 +173,12 @@ public class feedbackManagementDAO {
         String sql = "SELECT "
                 + "    p.pro_id AS product_id, "
                 + "    p.pro_name AS product_name, "
-                + "    p.size, "
+//                + "    p.size, "
                 + "    p.gender, "
                 + "    p.brand, "
                 + "    p.price, "
                 + "    p.discount, "
-                + "    p.stock, "
+//                + "    p.stock, "
                 + "    p.status, "
                 + "    p.image, "
                 + "    c.cus_name AS customer_name, "
@@ -208,9 +208,9 @@ public class feedbackManagementDAO {
                         resultSet.getInt("product_id"),
                         resultSet.getString("product_name"),
                         resultSet.getBigDecimal("price"),
-                        resultSet.getInt("stock"),
+//                        resultSet.getInt("stock"),
                         resultSet.getString("image"),
-                        resultSet.getString("size"),
+//                        resultSet.getString("size"),
                         resultSet.getString("gender"),
                         resultSet.getString("brand"),
                         resultSet.getString("status"),

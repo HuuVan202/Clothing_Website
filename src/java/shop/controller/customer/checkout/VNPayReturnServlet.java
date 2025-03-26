@@ -103,10 +103,10 @@ public class VNPayReturnServlet extends HttpServlet {
                 Order order = new Order(0, customer.getCus_id(), totalPrice, "processing", new java.util.Date(), "bank_transfer");
                 int orderId = orderDAO.InsertOrder(order);
                 for (CartItem item : cart) {
-                    OrderDetail orderDetail = new OrderDetail(0, orderId, item.getProduct().getPro_id(), item.getQuantity(), item.getProduct().getSalePrice());
+                    OrderDetail orderDetail = new OrderDetail(0, orderId, item.getProduct().getPro_id(), item.getQuantity(), item.getSize(), item.getProduct().getSalePrice());
                     orderDetailDAO.insertOrderDetail(orderDetail);
 
-                    productDAO.updateStock(item.getProduct().getPro_id(), item.getQuantity());
+                    productDAO.updateStock(item.getProduct().getPro_id(), item.getSize(), item.getQuantity());
                 }
                 EmailService.sendMultiProductPaymentConfirmationVNPay(customer.getEmail(), customer.getCus_name(), customer.getAddress(), totalPrice, cart);
 
@@ -120,10 +120,9 @@ public class VNPayReturnServlet extends HttpServlet {
                 Logger.getLogger(VNPayReturnServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            message = "Thanh toán thất bại! Mã lỗi: " + vnp_ResponseCode;
+            message = "error " + vnp_ResponseCode;
         }
-        session.setAttribute("orderMessage", "Order Successful");
-        response.sendRedirect("Checkout");
+        response.sendRedirect("Cart");
     }
 
     /**
@@ -151,3 +150,5 @@ public class VNPayReturnServlet extends HttpServlet {
     }// </editor-fold>
 
 }
+
+

@@ -23,21 +23,27 @@ public class CartDAO {
 
     public static List<CartItem> getCartItemsByCustomerId(int customerId) {
         List<CartItem> items = new ArrayList<>();
-        String sql = "SELECT * FROM cart WHERE cus_id = ?";
-        DBcontext db = new DBcontext();
+        String sql = "SELECT c.pro_id, c.size, c.quantity, ps.stock "
+                + "FROM cart c "
+                + "JOIN productSize ps ON c.pro_id = ps.pro_id AND c.size = ps.size "
+                + "WHERE c.cus_id = ?";
 
-        try (Connection connection = db.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = new DBcontext().getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, customerId);
             try (ResultSet rs = statement.executeQuery()) {
+                ProductDAO dao = new ProductDAO();
                 while (rs.next()) {
                     int productId = rs.getInt("pro_id");
+                    String size = rs.getString("size");
                     int quantity = rs.getInt("quantity");
+                    int stock = rs.getInt("stock");
 
-                    ProductDAO dao = new ProductDAO();
                     Product product = dao.getProductById(productId);
                     if (product != null) {
-                        items.add(new CartItem(product, quantity));
+                        CartItem item = new CartItem(product, quantity, size);
+                        item.setStock(stock);
+                        items.add(item);
                     }
                 }
             }
@@ -53,22 +59,19 @@ public class CartDAO {
         return cart;
     }
 
-    public static void saveCartToDatabase(int customerId, CartUtil cart) {
+    public static void addIem(int customerId, CartItem cartItem) {
         DBcontext db = new DBcontext();
 
-        String sql = "MERGE INTO cart AS target "
-                + "USING (SELECT ? AS cus_id, ? AS pro_id, ? AS quantity) AS source "
-                + "ON target.cus_id = source.cus_id AND target.pro_id = source.pro_id "
-                + "WHEN MATCHED THEN UPDATE SET target.quantity = source.quantity "
-                + "WHEN NOT MATCHED THEN INSERT (cus_id, pro_id, quantity) VALUES (source.cus_id, source.pro_id, source.quantity);";
+        String sql = "INSERT INTO cart (cus_id, pro_id, size, quantity) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = db.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            for (CartItem item : cart.getItems()) {
-                statement.setInt(1, customerId);
-                statement.setInt(2, item.getProduct().getPro_id());
-                statement.setInt(3, item.getQuantity());
-                statement.executeUpdate();
-            }
+
+            statement.setInt(1, customerId);
+            statement.setInt(2, cartItem.getProduct().getPro_id());
+            statement.setString(3, cartItem.getSize());
+            statement.setInt(4, cartItem.getQuantity());
+            statement.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -76,35 +79,30 @@ public class CartDAO {
 
     public static void addCartItem(int customerId, CartItem item) {
         DBcontext db = new DBcontext();
-        String sql = "INSERT INTO cart (cus_id, pro_id, quantity) VALUES (?, ?, ?) "
+        String sql = "INSERT INTO cart (cus_id, pro_id, size, quantity) VALUES (?, ?, ?, ?) "
                 + "ON DUPLICATE KEY UPDATE quantity = ?";
 
         try (Connection connection = db.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-
-            System.out.println("Adding to DB: cus_id = " + customerId + ", pro_id = " + item.getProduct().getPro_id());
-
             statement.setInt(1, customerId);
             statement.setInt(2, item.getProduct().getPro_id());
-            statement.setInt(3, item.getQuantity());
+            statement.setString(3, item.getSize());
             statement.setInt(4, item.getQuantity());
+            statement.setInt(5, item.getQuantity());
 
-            int rows = statement.executeUpdate();
-            System.out.println("Rows affected: " + rows);
-
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public static void removeCartItem(int customerId, int productId) {
+    public static void removeCartItem(int customerId, int productId, String size) {
         DBcontext db = new DBcontext();
-
-        String sql = "DELETE FROM cart WHERE cus_id = ? AND pro_id = ?";
+        String sql = "DELETE FROM cart WHERE cus_id = ? AND pro_id = ? AND size = ?";
 
         try (Connection connection = db.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-
             statement.setInt(1, customerId);
             statement.setInt(2, productId);
+            statement.setString(3, size);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -123,19 +121,21 @@ public class CartDAO {
         }
     }
 
-    public static void updateCartItem(int customerId, int productId, int quantity) {
+    public static boolean updateCartItem(int customerId, int productId, String size, int quantity) {
         DBcontext db = new DBcontext();
-
-        String sql = "UPDATE cart SET quantity = ? WHERE cus_id = ? AND pro_id = ?";
-
+        String sql = "UPDATE cart SET quantity = ? WHERE cus_id = ? AND pro_id = ? AND size = ?";
         try (Connection connection = db.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, quantity);
             statement.setInt(2, customerId);
             statement.setInt(3, productId);
-            statement.executeUpdate();
+            statement.setString(4, size);
+
+            int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -150,8 +150,10 @@ public class CartDAO {
         } else {
             for (CartItem item : cartItems) {
                 System.out.println(item.getProduct().getPro_name()
-                        + item.getQuantity());
+                        + item.getQuantity() + item.getSize());
             }
         }
     }
 }
+
+

@@ -14,6 +14,7 @@ import shop.DAO.guest.productDetails.ProductDetailsDAO;
 import shop.model.Customer;
 import shop.model.Feedback;
 import shop.model.Product;
+import shop.model.ProductSize;
 
 @WebServlet(name = "ProductDetailController", urlPatterns = {"/detail", "/checkPurchase", "/addFeedback"})
 @MultipartConfig(
@@ -77,8 +78,14 @@ public class ProductDetailsController extends HttpServlet {
 
         // Lấy chi tiết sản phẩm
         Product productDetails = dao.getProductDetails(productId);
+           
         List<Feedback> feedbackOfProduct = dao.getFeedBackofProduct(productId);
         List<Product> suggestProducts = dao.getSuggestProducts(productId);
+
+        
+        List<ProductSize> productSizes = dao.getSizeByProductId(productId);
+        request.setAttribute("productSizes", productSizes);
+
         request.setAttribute("averageRating", productDetails);
         request.setAttribute("feedbackCount", productDetails);
 
@@ -239,3 +246,5 @@ public class ProductDetailsController extends HttpServlet {
         return "Product Details Controller";
     }
 }
+
+

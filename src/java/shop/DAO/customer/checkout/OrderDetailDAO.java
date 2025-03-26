@@ -24,14 +24,15 @@ public class OrderDetailDAO extends DBcontext {
      * @throws SQLException If a database access error occurs
      */
     public void insertOrderDetail(OrderDetail orderDetail) throws SQLException {
-        String sql = "INSERT INTO OrderDetail (order_id, pro_id, quantity, price_per_unit) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO OrderDetail (order_id, pro_id,size, quantity, price_per_unit) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, orderDetail.getOrder_id());
             statement.setInt(2, orderDetail.getPro_id());
-            statement.setInt(3, orderDetail.getQuantity());
-            statement.setBigDecimal(4, orderDetail.getPrice_per_unit());
+            statement.setString(3, orderDetail.getSize());
+            statement.setInt(4, orderDetail.getQuantity());
+            statement.setBigDecimal(5, orderDetail.getPrice_per_unit());
 
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted == 0) {
@@ -40,16 +41,4 @@ public class OrderDetailDAO extends DBcontext {
         }
     }
 
-    public static void main(String[] args) {
-        OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
-
-        OrderDetail orderDetail = new OrderDetail(0, 1, 101, 2, new BigDecimal("299000"));
-
-        try {
-            orderDetailDAO.insertOrderDetail(orderDetail);
-            System.out.println("Order detail inserted successfully!");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 }
