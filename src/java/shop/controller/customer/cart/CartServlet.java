@@ -105,12 +105,6 @@ public class CartServlet extends HttpServlet {
                     int id = Integer.parseInt(proid);
                     Product product = proDAO.getProductById(id);
 
-                    if (product.getStock() <= 0) {
-                        session.setAttribute("error", "The product is out of stock.");
-                        response.sendRedirect("detail?id=" + id);
-                        return;
-                    }
-
                     if (product == null) {
                         request.setAttribute("error", "Product not found");
                         request.getRequestDispatcher("jsp/customer/cart.jsp").forward(request, response);

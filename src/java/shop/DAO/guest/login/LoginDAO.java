@@ -80,7 +80,7 @@ public class LoginDAO extends DBcontext {
                 String username = resultSet.getString(4);
                 String phone = resultSet.getString(5);
                 String address = resultSet.getString(6);
-                customer = new Customer(id, name, email, username, phone, address);
+            customer = new Customer(id, name, email, username, phone, address);
             }
 
         } catch (SQLException e) {
@@ -90,7 +90,7 @@ public class LoginDAO extends DBcontext {
         return customer;
     }
 
-    public Customer getCustomerByEmail(String emailInput) {
+public Customer getCustomerByEmail(String emailInput) {
         Customer customer = null;
         connection = getConnection();
 
