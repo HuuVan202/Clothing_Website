@@ -15,18 +15,30 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/customer/cart.css"/>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous"/>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="${pageContext.request.contextPath}/JS/customer/cart.js"></script>
     </head>
     <body>
         <jsp:include page="../common/layout/header.jsp"></jsp:include>
             <div>
-                <h2>My Cart</h2> 
+                <h2 class="container text-start">My Cart</h2> 
             </div>
-        <c:if test="${empty sessionScope.cart or empty sessionScope.cart.items}">
-            <div class="empty-cart">
-                <img src="${pageContext.request.contextPath}/img/icon/header/empty-cart.png" width="30%" height="30%" alt="Cart-empty"/>
-            </div>
-        </c:if>
-       
+        <c:choose>
+            <c:when test="${not empty sessionScope.orderMessage}">
+                <div class="order-success-container" style="text-align: center; margin: 30px 0;">
+                    <img src="${pageContext.request.contextPath}/img/icon/header/success.jpg" 
+                         style="width: 600px; height: 400px;" 
+                         alt="Order-Success"/>
+                </div>
+                <c:remove var="orderMessage" scope="session"/>
+            </c:when>
+
+            <c:when test="${empty sessionScope.cart or empty sessionScope.cart.items}">
+                <div class="empty-cart">
+                    <img src="${pageContext.request.contextPath}/img/icon/header/empty-cart.png" width="30%" height="30%" alt="Cart-empty"/>
+                </div>
+            </c:when>
+        </c:choose>
         <c:if test="${not empty sessionScope.cart and not empty sessionScope.cart.items}">
             <table>
                 <tr>
@@ -34,6 +46,7 @@
                     <td class="name_product">Name</td>
                     <td class="img_product">Image</td>
                     <td class="price_product">Price</td>
+                    <td class="price_product">Size</td>
                     <td class="quantity_product">Quantity</td>
                     <td class="total_product">Total</td>
                     <td class="remove_product">Action</td>
@@ -49,28 +62,28 @@
                             </a>
                         </td>
                         <td class="price_product"><fmt:formatNumber value="${i.product.salePrice}" /> VND</td>
+                        <td>${i.size != null ? i.size : 'Default'}</td>
                         <td class="quantity_product">
-                            <c:choose>
-                                <c:when test="${i.product.stock > 0}">
-                                    <form action="Cart" method="POST">
-                                        <input type="hidden" name="pro_id" value="${i.product.pro_id}" />
-                                        <input type="hidden" name="action" value="updateQuantity"/>
-                                        <input type="number" name="quantity" value="${i.quantity}" min="0" max="${i.product.stock}" 
-                                               onchange="checkStock(this, ${i.product.stock}); this.form.submit();" />
-                                    </form>
-                                </c:when>
-                                <c:otherwise>
-                                    <span class="text-danger text-bold">Sold Out</span>
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
-
-                        <td class="total_product"><fmt:formatNumber value="${i.product.salePrice * i.quantity}" /> VND</td>
-                        <td class="remove_product"> 
-                            <form action="Cart" method="POST">
+                            <form class="ajax-form">
                                 <input type="hidden" name="pro_id" value="${i.product.pro_id}" />
+                                <input type="hidden" name="size" value="${i.size}" />
+                                <input type="hidden" name="action" value="updateQuantity"/>
+                                <input type="number" class="quantity-input" 
+                                       name="quantity" value="${i.quantity}"
+                                       onkeydown="return false;"
+                                       min="1" max="${i.stock}"
+                                       onchange="checkStock(this, ${i.stock}); this.form.submit();"/>
+                            </form>
+                        </td>
+                        <td class="total_product" data-value="${i.product.salePrice * i.quantity}">
+                            <fmt:formatNumber value="${i.product.salePrice * i.quantity}" /> VND
+                        </td>
+                        <td class="remove_product">
+                            <form class="ajax-form">
+                                <input type="hidden" name="pro_id" value="${i.product.pro_id}" />
+                                <input type="hidden" name="size" value="${i.size}" />
                                 <input type="hidden" name="action" value="delete"/>
-                                <input type="submit" value="Delete" onclick="return confirmDelete();"/>
+                                <button type="button" class="delete-btn btn btn-danger">Delete</button>
                             </form>
                         </td>
                     </tr>
@@ -93,16 +106,18 @@
     </c:if>
 
     <jsp:include page="../common/layout/footer.jsp"></jsp:include>
-</body>
-</html>
-<script>
-    function confirmDelete() {
-        return confirm("Do you want to remove the product from your shopping cart?");
-    }
-    function checkStock(input, stock) {
-        var quantity = parseInt(input.value);
-        if (quantity === stock) {
-            alert("You have selected the maximum quantity in stock!");
+    <script>
+
+        function checkStock(input, stock) {
+            var quantity = parseInt(input.value);
+            if (quantity === stock) {
+                alert("You have selected the maximum quantity in stock!");
+            }
         }
-    }
-</script>
+
+    </script>
+</body>
+
+</html>
+
+

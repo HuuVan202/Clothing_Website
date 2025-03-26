@@ -44,7 +44,8 @@ public class MyOrderDetailDAO extends DBcontext {
                 int quantity = resultSet.getInt(4);
                 BigDecimal price = resultSet.getBigDecimal(5);
 
-                OrderDetail orDetail = new OrderDetail(orderDetailID, order_ID, pro_id, quantity, price);
+//                OrderDetail orDetail = new OrderDetail(orderDetailID, order_ID, pro_id, quantity,'M', price);
+                OrderDetail orDetail = new OrderDetail(orderDetailID, order_ID, pro_id, quantity, "M", price);
                 listOrderDetail.add(orDetail);
             }
 

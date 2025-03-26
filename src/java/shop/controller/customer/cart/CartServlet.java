@@ -4,6 +4,7 @@
  */
 package shop.controller.customer.cart;
 
+import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,6 +20,7 @@ import shop.model.CartItem;
 import shop.model.CartUtil;
 import shop.model.Customer;
 import shop.model.Product;
+import shop.model.ProductSize;
 
 /**
  *
@@ -65,6 +67,23 @@ public class CartServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        CartUtil cart = (CartUtil) session.getAttribute("cart");
+        ProductDAO productDAO = new ProductDAO();
+
+        if (cart != null) {
+            List<CartItem> items = cart.getItems();
+            for (CartItem item : items) {
+                int stock = productDAO.getStockBySize(
+                        item.getProduct().getPro_id(),
+                        item.getSize()
+                );
+                item.setStock(stock);
+            }
+
+            session.setAttribute("cart", cart);
+        }
+
         request.getRequestDispatcher("jsp/customer/cart.jsp").forward(request, response);
     }
 
@@ -100,10 +119,18 @@ public class CartServlet extends HttpServlet {
         switch (action) {
             case "add":
                 String proid = request.getParameter("pro_id");
+                String size = request.getParameter("size");
 
                 try {
                     int id = Integer.parseInt(proid);
                     Product product = proDAO.getProductById(id);
+
+                    int stock = proDAO.getStockBySize(id, size);
+                    if (stock <= 0) {
+                        session.setAttribute("error", "The product is out of stock.");
+                        response.sendRedirect("detail?id=" + id);
+                        return;
+                    }
 
                     if (product == null) {
                         request.setAttribute("error", "Product not found");
@@ -112,23 +139,21 @@ public class CartServlet extends HttpServlet {
                     }
 
                     CartItem existingItem = cart.getItems().stream()
-                            .filter(i -> i.getProduct().getPro_id() == id)
+                            .filter(i -> i.getProduct().getPro_id() == id && i.getSize().equals(size))
                             .findFirst().orElse(null);
 
                     if (existingItem != null) {
                         existingItem.setQuantity(existingItem.getQuantity() + 1);
-                        cart.updateItemToCart(id, existingItem.getQuantity());
+                        cart.updateItemToCart(id, size, existingItem.getQuantity());
                         CartDAO.addCartItem(customer.getCus_id(), existingItem);
                     } else {
-                        CartItem newItem = new CartItem(product, 1);
+                        CartItem newItem = new CartItem(product, 1, size);
                         cart.addItemToCart(newItem);
-                        CartDAO.saveCartToDatabase(customer.getCus_id(), cart);
+                        CartDAO.addIem(customer.getCus_id(), newItem);
                     }
 
                     session.setAttribute("cart", cart);
-
                     session.setAttribute("size", cart.getItems().size());
-
                     session.setAttribute("successMessage", "Product has been added to cart!");
 
                     response.sendRedirect("detail?id=" + id);
@@ -137,53 +162,60 @@ public class CartServlet extends HttpServlet {
                     request.getRequestDispatcher("jsp/customer/cart.jsp").forward(request, response);
                 }
                 break;
-
             case "delete":
                 String idDelete = request.getParameter("pro_id");
+                String sizeDelete = request.getParameter("size");
+
                 try {
                     int id = Integer.parseInt(idDelete);
-                    cart.removeItemToCart(id);
 
-                    CartDAO.removeCartItem(customer.getCus_id(), id);
+                    int sizeBefore = cart.getItems().size();
+                    cart.removeItemToCart(id, sizeDelete);
+                    int sizeAfter = cart.getItems().size();
 
+                    CartDAO.removeCartItem(customer.getCus_id(), id, sizeDelete);
                     session.setAttribute("cart", cart);
-                    session.setAttribute("size", cart.getItems().size());
-                    response.sendRedirect("Cart");
+                    System.out.println("Item deleted successfully");
 
+                    session.setAttribute("size", cart.getItems().size());
+
+                    response.sendRedirect("Cart");
                 } catch (NumberFormatException e) {
                     request.getRequestDispatcher("jsp/customer/cart.jsp").forward(request, response);
                 }
                 break;
 
             case "updateQuantity":
-                String idUpdate = request.getParameter("pro_id");
-                String quantityUpdate = request.getParameter("quantity");
-
+                String proId = request.getParameter("pro_id");
+                String quantityStr = request.getParameter("quantity");
                 try {
-                    int productId = Integer.parseInt(idUpdate);
-                    int quantity = Integer.parseInt(quantityUpdate);
+                    int id = Integer.parseInt(proId);
+                    int quantity = Integer.parseInt(quantityStr);
+                    String sizeUpdate = request.getParameter("size");
 
-                    cart.updateItemToCart(productId, quantity);
-                    CartDAO.updateCartItem(customer.getCus_id(), productId, quantity);
+                    CartDAO.updateCartItem(customer.getCus_id(), id, sizeUpdate, quantity);
+
+                    for (CartItem item : cart.getItems()) {
+                        if (item.getProduct().getPro_id() == id && item.getSize().equals(sizeUpdate)) {
+                            item.setQuantity(quantity);
+                            break;
+                        }
+                    }
+
                     session.setAttribute("cart", cart);
                     session.setAttribute("size", cart.getItems().size());
+
                     response.sendRedirect("Cart");
-
                 } catch (NumberFormatException e) {
-                    request.setAttribute("error", "error");
+                    session.setAttribute("error", "Số lượng không hợp lệ");
+                    response.sendRedirect("Cart");
                 }
-
-                break;
-
-            default:
-                response.sendRedirect("jsp/common/home.jsp");
                 break;
         }
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write("{\"status\":\"success\"}");
 
-//        session.setAttribute("cart", cart);
-//        
-//        session.setAttribute("size", cart.getItems().size());
-        //   request.getRequestDispatcher("jsp/guest/productDetail.jsp").forward(request, response);
     }
 
     /**
@@ -197,3 +229,5 @@ public class CartServlet extends HttpServlet {
     }// </editor-fold>
 
 }
+
+

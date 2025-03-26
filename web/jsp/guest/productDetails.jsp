@@ -24,7 +24,23 @@
         <!-- Product Details Section -->
         <div class="container my-5">
             <h1 class="text-center mb-4">Product Details</h1>
-
+            <c:if test="${not empty sessionScope.error or not empty sessionScope.successMessage}">
+                <div id="flash-message" class="alert text-center ${not empty sessionScope.error ? 'alert-danger' : 'alert-success'}">
+                    ${not empty sessionScope.error ? sessionScope.error : sessionScope.successMessage}
+                </div>
+                <c:remove var="error" scope="session"/>
+                <c:remove var="successMessage" scope="session"/>
+                <script>
+                    setTimeout(function () {
+                        var element = document.getElementById('flash-message');
+                        element.style.transition = 'opacity 0.3s ease-out';
+                        element.style.opacity = '0';
+                        setTimeout(function () {
+                            element.remove();
+                        }, 300);
+                    }, 3000);
+                </script>
+            </c:if>
             <div class="row justify-content-center">
                 <div class="col-lg-10 col-md-12 border p-4 rounded shadow-sm bg-light">
                     <c:choose>
@@ -39,40 +55,40 @@
                                 <div class="col-md-6">
                                     <p><strong>Product ID:</strong> ${pd.pro_id}</p>
                                     <p><strong>Name:</strong> ${pd.pro_name}</p>
-                                    <p><strong>Size:</strong> ${pd.size}</p>
-                                    <p><strong>Type:</strong> ${pd.type.type_name}</p>
-                                    <p>
-                                        <c:if test="${pd.stock >0}">
-                                            <strong>Stock:</strong> ${pd.stock}
-                                        </c:if>
-                                        <c:if  test="${pd.stock <=0}">
-                                            <strong>Stock:</strong> <span class="text-danger">Out of stock</span>
-                                        </c:if>
-                                    </p>
-
-                                    <p><strong>Price:</strong> 
-                                        <c:if test="${pd.discount > 0}">
-                                            <span class="text-decoration-line-through text-muted">${pd.formattedPrice} VND</span>
-                                            <span class="text-danger fw-bold">${pd.formattedDiscountedPrice} VND</span>
-                                            <span class="badge bg-danger ms-2">-${pd.discount}%</span>
-                                        </c:if>
-                                        <c:if test="${pd.discount == 0}">
-                                            <span class="fw-bold">${pd.formattedPrice} VND</span>
-                                        </c:if>
-                                    </p>
-                                    <p><strong>Rating:</strong> ${pd.averageRating} 
-                                        <span class="text-warning fs-5">★</span> (${pd.feedbackCount})
-                                    </p>
-                                    <div class="d-flex flex-column gap-2 w-100">
-                                        <form action="Cart" method="post" class="m-0">
-                                            <input type="hidden" name="pro_id" value="${pd.pro_id}" />
-                                            <input type="hidden" name="action" value="add" />
+                                    <form action="Cart" method="post" class="m-0">
+                                        <input type="hidden" name="pro_id" value="${pd.pro_id}" />
+                                        <input type="hidden" name="action" value="add" />
+                                        <p><strong>Size:</strong> 
+                                            <c:if test="${not empty productSizes}">
+                                                <select id="size" name="size" required class="form-select w-50">
+                                                    <option value="" selected disabled>Please choose size</option>
+                                                    <c:forEach var="size" items="${productSizes}">
+                                                        <option value="${size.size}" ${param.size eq size.size ? 'selected' : ''}>${size.size}</option>
+                                                    </c:forEach>
+                                                </select>
+                                            </c:if>
+                                        </p>
+                                        <p><strong>Type:</strong> ${pd.type.type_name}</p>
+                                        <p><strong>Price:</strong> 
+                                            <c:if test="${pd.discount > 0}">
+                                                <span class="text-decoration-line-through text-muted">${pd.formattedPrice} VND</span>
+                                                <span class="text-danger fw-bold">${pd.formattedDiscountedPrice} VND</span>
+                                                <span class="badge bg-danger ms-2">-${pd.discount}%</span>
+                                            </c:if>
+                                            <c:if test="${pd.discount == 0}">
+                                                <span class="fw-bold">${pd.formattedPrice} VND</span>
+                                            </c:if>
+                                        </p>
+                                        <p><strong>Rating:</strong> ${pd.averageRating} 
+                                            <span class="text-warning fs-5">★</span> (${pd.feedbackCount})
+                                        </p>
+                                        <div class="d-flex flex-column gap-2 w-100">
                                             <button type="submit" class="btn btn-success w-50">Add to Cart</button>
-                                        </form>
-                                        <div>
-                                            <button type="button" class="btn btn-primary feedback-btn w-50" data-product-id="${pd.pro_id}">Give Feedback</button>
-                                            <div class="feedback-warning fw-bold text-danger mt-1"></div>
                                         </div>
+                                    </form>
+                                    <div class="mt-2">
+                                        <button type="button" class="btn btn-primary feedback-btn w-50" data-product-id="${pd.pro_id}">Give Feedback</button>
+                                        <div class="feedback-warning fw-bold text-danger mt-1"></div>
                                     </div>
                                 </div>
                             </div>
@@ -152,11 +168,6 @@
                                                 <div class="text-danger fw-bold">${s.formattedPrice} VND</div>
                                             </c:if>
                                         </div>
-                                        <form action="Cart" method="post">
-                                            <input type="hidden" name="pro_id" value="${pd.pro_id}" />
-                                            <input type="hidden" name="action" value="add" />
-                                            <button type="submit" class="btn btn-success mt-auto">Add to Cart</button>
-                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -220,3 +231,5 @@
         <script src="${pageContext.request.contextPath}/JS/guest/productDetails.js" defer></script>
     </body>
 </html>
+
+

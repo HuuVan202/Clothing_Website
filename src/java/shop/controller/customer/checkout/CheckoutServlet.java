@@ -122,7 +122,6 @@ public class CheckoutServlet extends HttpServlet {
         Customer customer = (Customer) session.getAttribute("customer");
         CartUtil cartUtil = (CartUtil) session.getAttribute("cart");
 
-        
         List<CartItem> cart = cartUtil.getItems();
         if (customer == null) {
             response.sendRedirect("Login");
@@ -152,10 +151,10 @@ public class CheckoutServlet extends HttpServlet {
 
                 int orderId = orderDAO.InsertOrder(order);
                 for (CartItem item : cart) {
-                    OrderDetail orderDetail = new OrderDetail(0, orderId, item.getProduct().getPro_id(), item.getQuantity(), item.getProduct().getSalePrice());
+                    OrderDetail orderDetail = new OrderDetail(0, orderId, item.getProduct().getPro_id(), item.getQuantity(),item.getSize(), item.getProduct().getSalePrice());
                     orderDetailDAO.insertOrderDetail(orderDetail);
 
-                    productDAO.updateStock(item.getProduct().getPro_id(), item.getQuantity());
+                    productDAO.updateStock(item.getProduct().getPro_id(), item.getSize(), item.getQuantity());
                 }
                 EmailService.sendMultiProductPaymentConfirmationCOD(customer.getEmail(), customer.getCus_name(), customer.getAddress(), totalPrice, cart);
 
@@ -166,7 +165,7 @@ public class CheckoutServlet extends HttpServlet {
                 session.removeAttribute("size");
 
                 session.setAttribute("orderMessage", "Order Successful");
-                response.sendRedirect("Checkout");
+                response.sendRedirect("Cart");
             } catch (SQLException e) {
                 e.printStackTrace();
                 response.sendRedirect("Checkout");
@@ -296,3 +295,5 @@ public class CheckoutServlet extends HttpServlet {
     }// </editor-fold>
 
 }
+
+

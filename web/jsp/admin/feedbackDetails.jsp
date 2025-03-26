@@ -48,7 +48,7 @@
                         <th>Brand</th>
                         <th>Price</th>
                         <th>Discount</th>
-                        <th>Stock</th>
+<!--                        <th>Stock</th>-->
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -66,7 +66,7 @@
                         <td>${feedback[2].brand}</td>
                         <td>${feedback[2].getFormattedPrice()} VND</td>
                         <td>${feedback[2].discount}%</td>
-                        <td>${feedback[2].stock}</td>
+<!--                        <td>${feedback[2].stock}</td>-->
                         <td>${feedback[2].status}</td>
                     </tr>
                 </tbody>
