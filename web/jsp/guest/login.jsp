@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>LOGIN</title>
+        <title>Login</title>
 <!--        <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/guest/login.css"/>-->
         <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/common/layout/layout.css"/>

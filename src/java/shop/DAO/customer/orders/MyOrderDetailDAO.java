@@ -24,9 +24,10 @@ public class MyOrderDetailDAO extends DBcontext {
 
         try {
             String sql = """
-                         SELECT TOP (1000) [order_detail_id]
+                         SELECT [order_detail_id]
                                ,[order_id]
                                ,[pro_id]
+                               ,[size]
                                ,[quantity]
                                ,[price_per_unit]
                            FROM [ClothingShopDB].[dbo].[OrderDetail]
@@ -41,11 +42,12 @@ public class MyOrderDetailDAO extends DBcontext {
                 int orderDetailID = resultSet.getInt(1);
                 int order_ID = resultSet.getInt(2);
                 int pro_id = resultSet.getInt(3);
-                int quantity = resultSet.getInt(4);
-                BigDecimal price = resultSet.getBigDecimal(5);
+                String size = resultSet.getString(4);
+                int quantity = resultSet.getInt(5);
+                BigDecimal price = resultSet.getBigDecimal(6);
 
 //                OrderDetail orDetail = new OrderDetail(orderDetailID, order_ID, pro_id, quantity,'M', price);
-                OrderDetail orDetail = new OrderDetail(orderDetailID, order_ID, pro_id, quantity, "M", price);
+                OrderDetail orDetail = new OrderDetail(orderDetailID, order_ID, pro_id, quantity, size, price);
                 listOrderDetail.add(orDetail);
             }
 
@@ -101,7 +103,7 @@ public class MyOrderDetailDAO extends DBcontext {
     public static void main(String[] args) {
         MyOrderDetailDAO dao = new MyOrderDetailDAO();
 
-        System.out.println(dao.getProductByID(1));
+        System.out.println(dao.getListOrderDetail(1));
     }
 
 }

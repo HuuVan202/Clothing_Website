@@ -40,6 +40,7 @@
                                 <tr>
                                     <th>Picture</th>
                                     <th>Product Name</th>
+                                    <th>Size</th>
                                     <th>Quantity</th>
                                     <th>Price</th>
                                     <th>Total</th>    
@@ -54,6 +55,7 @@
                                 <tr>
                                     <td><img src="${p.image}" alt="Product Image" width="100" height="100" class="img-thumbnail"></td>
                                     <td><a style="color: black" href="detail?id=${o.pro_id}">${p.pro_name}</a></td>
+                                    <td>${o.size}</td>
                                     <td>${o.quantity}</td>
                                     <td>${o.getFormattedPrice(p.salePrice)} VND</td>
                                     <td>${o.getFormattedPrice(p.salePrice * o.quantity)} VND</td>
