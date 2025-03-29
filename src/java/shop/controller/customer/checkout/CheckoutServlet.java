@@ -166,10 +166,18 @@ public class CheckoutServlet extends HttpServlet {
                 session.removeAttribute("size");
 
                 session.setAttribute("orderMessage", "Order Successful");
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 response.sendRedirect("Checkout");
+=======
+                response.sendRedirect("Order");
+>>>>>>> Stashed changes
+=======
+                response.sendRedirect("Order");
+>>>>>>> Stashed changes
             } catch (SQLException e) {
                 e.printStackTrace();
-                response.sendRedirect("Checkout");
+                response.sendRedirect("Order");
             }
         } else if ("bank_transfer".equals(paymentMethod)) {
             String vnp_Version = "2.1.0";

@@ -122,8 +122,16 @@ public class VNPayReturnServlet extends HttpServlet {
         } else {
             message = "Thanh toán thất bại! Mã lỗi: " + vnp_ResponseCode;
         }
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
         session.setAttribute("orderMessage", "Order Successful");
         response.sendRedirect("Checkout");
+=======
+        response.sendRedirect("Order");
+>>>>>>> Stashed changes
+=======
+        response.sendRedirect("Order");
+>>>>>>> Stashed changes
     }
 
     /**

@@ -11,6 +11,46 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/customer/checkout.css"/>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous"/>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<<<<<<< Updated upstream
+=======
+        <style>
+            td input {
+                border: none;
+                outline: none;
+                width: 100%;
+                background: none;
+                padding: 0;
+            }
+
+            td input.editing {
+                border: 1px solid #007bff;  
+                background-color: #f0f8ff; /* Màu nền nhạt khi chỉnh sửa */
+                padding: 5px; /* Thêm padding để dễ nhìn hơn */
+                border-radius: 4px;
+            }
+            .success {
+                color: green; /* Màu chữ xanh */
+                background-color: rgba(0, 255, 0, 0.1); /* Nền xanh nhạt */
+                border: 2px solid green; /* Viền xanh đậm hơn */
+                padding: 10px 15px; /* Khoảng cách bên trong */
+                border-radius: 5px; /* Bo tròn góc */
+                font-weight: bold; /* Chữ đậm */
+                display: inline-block; /* Để nó không bị kéo dài toàn bộ hàng */
+                margin-top: 10px
+            }
+
+            .error {
+                color: red;
+                background-color: rgba(255, 0, 0, 0.1);
+                border: 1px solid red;
+                padding: 10px 15px; /* Khoảng cách bên trong */
+                border-radius: 5px; /* Bo tròn góc */
+                font-weight: bold; /* Chữ đậm */
+                display: inline-block; /* Để nó không bị kéo dài toàn bộ hàng */
+                margin-top: 10px
+            }
+        </style>
+>>>>>>> Stashed changes
     </head>
     <body>
         <jsp:include page="../../jsp/common/layout/header.jsp"></jsp:include>

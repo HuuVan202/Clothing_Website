@@ -77,8 +77,21 @@ public class ProductDetailsController extends HttpServlet {
 
         // Lấy chi tiết sản phẩm
         Product productDetails = dao.getProductDetails(productId);
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
         List<Feedback> feedbackOfProduct = dao.getFeedBackofProduct(productId);
         List<Product> suggestProducts = dao.getSuggestProducts(productId);
+=======
+=======
+>>>>>>> Stashed changes
+
+        List<Feedback> feedbackOfProduct = dao.getFeedBackofProduct(productId);
+        List<Product> suggestProducts = dao.getSuggestProducts(productId);
+
+        List<ProductSize> productSizes = dao.getSizeByProductId(productId);
+        request.setAttribute("productSizes", productSizes);
+
+>>>>>>> Stashed changes
         request.setAttribute("averageRating", productDetails);
         request.setAttribute("feedbackCount", productDetails);
 

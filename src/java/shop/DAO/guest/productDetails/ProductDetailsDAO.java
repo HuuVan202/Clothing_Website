@@ -278,4 +278,65 @@ public class ProductDetailsDAO {
         }
         return false;
     }
+<<<<<<< Updated upstream
+=======
+
+    public boolean addFeedback(String customerId, String productId, int rating, String comment) {
+        // First check if customer can give feedback
+        int cusId = Integer.parseInt(customerId);
+        int proId = Integer.parseInt(productId);
+
+        if (!canCustomerGiveFeedback(cusId, proId)) {
+            return false;
+        }
+
+        String sql = "INSERT INTO Feedback (cus_id, pro_id, rating, comment, feedback_date) VALUES (?, ?, ?, ?, GETDATE())";
+        try {
+            conn = getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, cusId);
+            ps.setInt(2, proId);
+            ps.setInt(3, rating);
+            ps.setString(4, comment);
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.out.println("Error adding feedback: " + e.getMessage());
+        } finally {
+            closeResources();
+        }
+        return false;
+    }
+
+    public List<ProductSize> getSizeByProductId(int proId) {
+        List<ProductSize> sizes = new ArrayList<>();
+        String sql = "SELECT ps.size_id, ps.pro_id, ps.size, ps.stock "
+                + "FROM ProductSize ps "
+                + "WHERE ps.pro_id = ?";
+
+        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, proId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                sizes.add(new ProductSize(
+                        resultSet.getInt("size_id"),
+                        resultSet.getInt("pro_id"),
+                        resultSet.getString("size"),
+                        resultSet.getInt("stock")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return sizes;
+    }
+
+   
+
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 }

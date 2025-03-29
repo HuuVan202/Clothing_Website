@@ -53,7 +53,15 @@ public class CartDAO {
         return cart;
     }
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     public static void saveCartToDatabase(int customerId, CartUtil cart) {
+=======
+    public static void addItem(int customerId, CartItem cartItem) {
+>>>>>>> Stashed changes
+=======
+    public static void addItem(int customerId, CartItem cartItem) {
+>>>>>>> Stashed changes
         DBcontext db = new DBcontext();
 
         String sql = "MERGE INTO cart AS target "
@@ -71,6 +79,22 @@ public class CartDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public boolean addToCart(int customerId, int productId, String size, int quantity) {
+        DBcontext db = new DBcontext();
+
+        String sql = "INSERT INTO cart_items (customer_id, product_id, size, quantity) VALUES (?, ?, ?, ?)";
+        try (Connection connection = db.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, customerId);
+            statement.setInt(2, productId);
+            statement.setString(3, size);
+            statement.setInt(4, quantity);
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -139,6 +163,7 @@ public class CartDAO {
         }
     }
 
+   
     public static void main(String[] args) {
         CartDAO dao = new CartDAO();
         int customerId = 1;

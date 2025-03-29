@@ -21,12 +21,28 @@
             <div>
                 <h2>My Cart</h2> 
             </div>
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+
+
+>>>>>>> Stashed changes
+=======
+
+
+>>>>>>> Stashed changes
         <c:if test="${empty sessionScope.cart or empty sessionScope.cart.items}">
             <div class="empty-cart">
                 <img src="${pageContext.request.contextPath}/img/icon/header/empty-cart.png" width="30%" height="30%" alt="Cart-empty"/>
             </div>
         </c:if>
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
        
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
         <c:if test="${not empty sessionScope.cart and not empty sessionScope.cart.items}">
             <table>
                 <tr>
@@ -50,6 +66,8 @@
                         </td>
                         <td class="price_product"><fmt:formatNumber value="${i.product.salePrice}" /> VND</td>
                         <td class="quantity_product">
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             <c:choose>
                                 <c:when test="${i.product.stock > 0}">
                                     <form action="Cart" method="POST">
@@ -63,6 +81,23 @@
                                     <span class="text-danger text-bold">Sold Out</span>
                                 </c:otherwise>
                             </c:choose>
+=======
+=======
+>>>>>>> Stashed changes
+                            <form class="ajax-form" onsubmit="return validateQuantity(this, ${i.stock})">
+                                <input type="hidden" name="pro_id" value="${i.product.pro_id}" />
+                                <input type="hidden" name="size" value="${i.size}" />
+                                <input type="hidden" name="action" value="updateQuantity"/>
+                                <input type="number" class="quantity-input" 
+                                       name="quantity" 
+                                       value="${i.quantity}"
+                                       min="1" 
+                                       max="${i.stock}"
+                                       data-original-value="${i.quantity}"
+                                       onchange="showError(this, ${i.stock})"
+                                       onfocus="this.dataset.originalValue = this.value"/>
+                            </form>
+>>>>>>> Stashed changes
                         </td>
 
                         <td class="total_product"><fmt:formatNumber value="${i.product.salePrice * i.quantity}" /> VND</td>
@@ -93,6 +128,47 @@
     </c:if>
 
     <jsp:include page="../common/layout/footer.jsp"></jsp:include>
+<<<<<<< Updated upstream
+=======
+    <script>
+        function showError(input, stock) {
+            const errorDiv = input.parentElement.querySelector('.error-message');
+            const quantity = parseInt(input.value) || 0;
+
+            if (quantity > stock) {
+                input.value = stock;
+                input.classList.add('is-invalid');
+
+                alert(`Maximum product in stock`);
+
+                return false;
+            }
+
+        }
+
+        function validateQuantity(form, stock) {
+            const quantity = parseInt(form.quantity.value) || 0;
+            if (quantity > stock) {
+                form.quantity.value = stock;
+                form.quantity.classList.add('is-invalid');
+                return false;
+            }
+            return true;
+        }
+
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                input.dataset.original = input.value;
+
+                input.addEventListener('focus', function () {
+                    this.dataset.original = this.value;
+                });
+            });
+        });
+    </script>
+>>>>>>> Stashed changes
 </body>
 </html>
 <script>

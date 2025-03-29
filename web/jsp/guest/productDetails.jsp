@@ -39,6 +39,7 @@
                                 <div class="col-md-6">
                                     <p><strong>Product ID:</strong> ${pd.pro_id}</p>
                                     <p><strong>Name:</strong> ${pd.pro_name}</p>
+<<<<<<< Updated upstream
                                     <p><strong>Size:</strong> ${pd.size}</p>
                                     <p><strong>Type:</strong> ${pd.type.type_name}</p>
                                     <p>
@@ -67,6 +68,46 @@
                                         <form action="Cart" method="post" class="m-0">
                                             <input type="hidden" name="pro_id" value="${pd.pro_id}" />
                                             <input type="hidden" name="action" value="add" />
+=======
+                                    <form action="Cart" method="post" class="m-0">
+                                        <input type="hidden" name="pro_id" value="${pd.pro_id}" />
+                                        <input type="hidden" name="action" value="add" />
+                                        <p><strong>Size:</strong> 
+                                            <select id="size" name="size" required class="form-select w-50" onchange="updateMaxQuantity()">
+                                                <option value="" selected disabled>Please choose size</option>
+                                                <c:forEach var="size" items="${productSizes}">
+                                                    <option value="${size.size}" 
+                                                            data-stock="${size.stock}"
+                                                            ${param.size eq size.size ? 'selected' : ''}
+                                                            ${size.stock == 0 ? 'disabled style="color:red;"' : ''}>
+                                                        ${size.size} 
+                                                        <c:choose>
+                                                            <c:when test="${size.stock == 0}">(Out of stock)</c:when>
+                                                            <c:otherwise>(Stock ${size.stock})</c:otherwise>
+                                                        </c:choose>
+                                                    </option>
+                                                </c:forEach>
+                                            </select>
+                                        </p>
+                                        <p><strong>Quantity:</strong> 
+                                            <input class="form-control w-50" type="number" id="quantityInput" name="quantity" min="1" disabled/>
+                                        </p>
+                                        <p><strong>Type:</strong> ${pd.type.type_name}</p>
+                                        <p><strong>Price:</strong> 
+                                            <c:if test="${pd.discount > 0}">
+                                                <span class="text-decoration-line-through text-muted">${pd.formattedPrice} VND</span>
+                                                <span class="text-danger fw-bold">${pd.formattedDiscountedPrice} VND</span>
+                                                <span class="badge bg-danger ms-2">-${pd.discount}%</span>
+                                            </c:if>
+                                            <c:if test="${pd.discount == 0}">
+                                                <span class="fw-bold">${pd.formattedPrice} VND</span>
+                                            </c:if>
+                                        </p>
+                                        <p><strong>Rating:</strong> ${pd.averageRating} 
+                                            <span class="text-warning fs-5">★</span> (${pd.feedbackCount})
+                                        </p>
+                                        <div class="d-flex flex-column gap-2 w-100">
+>>>>>>> Stashed changes
                                             <button type="submit" class="btn btn-success w-50">Add to Cart</button>
                                         </form>
                                         <div>
@@ -218,5 +259,38 @@
         <jsp:include page="../common/layout/footer.jsp" />
 
         <script src="${pageContext.request.contextPath}/JS/guest/productDetails.js" defer></script>
+        <script>
+                                                function updateMaxQuantity() {
+                                                    const sizeSelect = document.getElementById("size");
+                                                    const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
+                                                    const quantityInput = document.getElementById("quantityInput");
+                                                    quantityInput.value = 1;
+
+                                                    if (selectedOption.value && selectedOption.getAttribute("data-stock") > 0) {
+                                                        const stock = parseInt(selectedOption.getAttribute("data-stock"));
+
+                                                        quantityInput.disabled = false;
+
+                                                        quantityInput.max = stock;
+
+                                                        if (parseInt(quantityInput.value) > stock) {
+
+                                                            quantityInput.value = stock;
+
+                                                        }
+
+                                                    } else {
+                                                        quantityInput.disabled = true;
+                                                    }
+                                                }
+
+                                                document.addEventListener("DOMContentLoaded", function () {
+                                                    document.getElementById("size").addEventListener("change", updateMaxQuantity);
+
+                                                    if (document.getElementById("size").value) {
+                                                        updateMaxQuantity();
+                                                    }
+                                                });
+        </script>
     </body>
 </html>
