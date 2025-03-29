@@ -59,7 +59,8 @@ public class CartDAO {
         return cart;
     }
 
-    public static void addIem(int customerId, CartItem cartItem) {
+
+    public static void addItem(int customerId, CartItem cartItem) {
         DBcontext db = new DBcontext();
 
         String sql = "INSERT INTO cart (cus_id, pro_id, size, quantity) VALUES (?, ?, ?, ?)";
@@ -74,6 +75,22 @@ public class CartDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public boolean addToCart(int customerId, int productId, String size, int quantity) {
+        DBcontext db = new DBcontext();
+
+        String sql = "INSERT INTO cart_items (customer_id, product_id, size, quantity) VALUES (?, ?, ?, ?)";
+        try (Connection connection = db.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, customerId);
+            statement.setInt(2, productId);
+            statement.setString(3, size);
+            statement.setInt(4, quantity);
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -155,5 +172,3 @@ public class CartDAO {
         }
     }
 }
-
-

@@ -41,6 +41,8 @@
                     }, 3000);
                 </script>
             </c:if>
+
+
             <div class="row justify-content-center">
                 <div class="col-lg-10 col-md-12 border p-4 rounded shadow-sm bg-light">
                     <c:choose>
@@ -55,180 +57,225 @@
                                 <div class="col-md-6">
                                     <p><strong>Product ID:</strong> ${pd.pro_id}</p>
                                     <p><strong>Name:</strong> ${pd.pro_name}</p>
-                                    <form action="Cart" method="post" class="m-0">
-                                        <input type="hidden" name="pro_id" value="${pd.pro_id}" />
-                                        <input type="hidden" name="action" value="add" />
-                                        <p><strong>Size:</strong> 
-                                            <c:if test="${not empty productSizes}">
-                                                <select id="size" name="size" required class="form-select w-50">
+                                    <div class="d-flex flex-column gap-2 w-100">
+                                        <form action="Cart" method="post" class="m-0">
+                                            <input type="hidden" name="pro_id" value="${pd.pro_id}" />
+                                            <input type="hidden" name="action" value="add" />
+                                            <p><strong>Size:</strong> 
+                                                <select id="size" name="size" required class="form-select w-50" onchange="updateMaxQuantity()">
                                                     <option value="" selected disabled>Please choose size</option>
                                                     <c:forEach var="size" items="${productSizes}">
-                                                        <option value="${size.size}" ${param.size eq size.size ? 'selected' : ''}>${size.size}</option>
+                                                        <option value="${size.size}" 
+                                                                data-stock="${size.stock}"
+                                                                ${param.size eq size.size ? 'selected' : ''}
+                                                                ${size.stock == 0 ? 'disabled style="color:red;"' : ''}>
+                                                            ${size.size} 
+                                                            <c:choose>
+                                                                <c:when test="${size.stock == 0}">(Out of stock)</c:when>
+                                                                <c:otherwise>(Stock ${size.stock})</c:otherwise>
+                                                            </c:choose>
+                                                        </option>
                                                     </c:forEach>
                                                 </select>
-                                            </c:if>
-                                        </p>
-                                        <p><strong>Type:</strong> ${pd.type.type_name}</p>
-                                        <p><strong>Price:</strong> 
-                                            <c:if test="${pd.discount > 0}">
-                                                <span class="text-decoration-line-through text-muted">${pd.formattedPrice} VND</span>
-                                                <span class="text-danger fw-bold">${pd.formattedDiscountedPrice} VND</span>
-                                                <span class="badge bg-danger ms-2">-${pd.discount}%</span>
-                                            </c:if>
-                                            <c:if test="${pd.discount == 0}">
-                                                <span class="fw-bold">${pd.formattedPrice} VND</span>
-                                            </c:if>
-                                        </p>
-                                        <p><strong>Rating:</strong> ${pd.averageRating} 
-                                            <span class="text-warning fs-5">★</span> (${pd.feedbackCount})
-                                        </p>
-                                        <div class="d-flex flex-column gap-2 w-100">
-                                            <button type="submit" class="btn btn-success w-50">Add to Cart</button>
+                                            </p>
+                                            <p><strong>Quantity:</strong> 
+                                                <input class="form-control w-50" type="number" id="quantityInput" name="quantity" min="1" disabled/>
+                                            </p>
+                                            <p><strong>Type:</strong> ${pd.type.type_name}</p>
+                                            <p><strong>Price:</strong> 
+                                                <c:if test="${pd.discount > 0}">
+                                                    <span class="text-decoration-line-through text-muted">${pd.formattedPrice} VND</span>
+                                                    <span class="text-danger fw-bold">${pd.formattedDiscountedPrice} VND</span>
+                                                    <span class="badge bg-danger ms-2">-${pd.discount}%</span>
+                                                </c:if>
+                                                <c:if test="${pd.discount == 0}">
+                                                    <span class="fw-bold">${pd.formattedPrice} VND</span>
+                                                </c:if>
+                                            </p>
+                                            <p><strong>Rating:</strong> ${pd.averageRating} 
+                                                <span class="text-warning fs-5">★</span> (${pd.feedbackCount})
+                                            </p>
+                                            <div class="d-flex flex-column gap-2 w-100">
+
+                                                <button type="submit" class="btn btn-success w-50">Add to Cart</button>
+                                            </div>
+                                        </form>
+                                        <div class="mt-2">
+                                            <button type="button" class="btn btn-primary feedback-btn w-50" data-product-id="${pd.pro_id}">Give Feedback</button>
+                                            <div class="feedback-warning fw-bold text-danger mt-1"></div>
                                         </div>
-                                    </form>
-                                    <div class="mt-2">
-                                        <button type="button" class="btn btn-primary feedback-btn w-50" data-product-id="${pd.pro_id}">Give Feedback</button>
-                                        <div class="feedback-warning fw-bold text-danger mt-1"></div>
                                     </div>
                                 </div>
-                            </div>
-                        </c:when>
-                        <c:otherwise>
-                            <p class="text-danger text-center">${productDetailsMessage}</p>
-                        </c:otherwise>
-                    </c:choose>
+                            </c:when>
+                            <c:otherwise>
+                                <p class="text-danger text-center">${productDetailsMessage}</p>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Feedback Section -->
-        <div class="container my-5">
-            <h3>Feedbacks:</h3>
-            <div class="d-flex justify-content-center">
-                <div class="col-lg-6 col-md-8 col-sm-12 border rounded p-4 bg-light shadow-sm" style="max-height: 250px; overflow-y: auto;">
+            <!-- Feedback Section -->
+            <div class="container my-5">
+                <h3>Feedbacks:</h3>
+                <div class="d-flex justify-content-center">
+                    <div class="col-lg-6 col-md-8 col-sm-12 border rounded p-4 bg-light shadow-sm" style="max-height: 250px; overflow-y: auto;">
+                        <c:choose>
+                            <c:when test="${not empty feedbackOfProduct}">
+                                <c:forEach var="f" items="${feedbackOfProduct}">
+                                    <div class="border-bottom pb-2 mb-2">
+                                        <div class="d-flex justify-content-between">
+                                            <span class="fw-bold">${f.cus_name}</span>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <span class="text-warning">
+                                                    <c:forEach begin="1" end="${f.rating}">★</c:forEach>
+                                                    <c:forEach begin="${f.rating + 1}" end="5">☆</c:forEach>
+                                                    </span>
+                                                    <span class="text-muted small">${f.feedback_date}</span>
+                                            </div>
+                                        </div>
+                                        <p class="mt-1 mb-0">${f.comment}</p>
+                                    </div>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <p class="text-muted text-center">${feedbackOfProductMessage}</p>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suggested Products Section -->
+            <div class="container my-5">
+                <h3>Suggestions:</h3>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
                     <c:choose>
-                        <c:when test="${not empty feedbackOfProduct}">
-                            <c:forEach var="f" items="${feedbackOfProduct}">
-                                <div class="border-bottom pb-2 mb-2">
-                                    <div class="d-flex justify-content-between">
-                                        <span class="fw-bold">${f.cus_name}</span>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <span class="text-warning">
-                                                <c:forEach begin="1" end="${f.rating}">★</c:forEach>
-                                                <c:forEach begin="${f.rating + 1}" end="5">☆</c:forEach>
-                                                </span>
-                                                <span class="text-muted small">${f.feedback_date}</span>
+                        <c:when test="${not empty suggestProducts}">
+                            <c:forEach items="${suggestProducts}" var="s">
+                                <div class="col">
+                                    <div class="border rounded p-3 text-center h-100 d-flex flex-column justify-content-between position-relative bg-light shadow-sm">
+                                        <!-- Discount Badge -->
+                                        <c:if test="${s.discount > 0}">
+                                            <div class="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 rounded">
+                                                -${s.discount}%
+                                            </div>
+                                        </c:if>
+                                        <!-- Product Image -->
+                                        <a class="text-decoration-none text-dark" href="detail?id=${s.pro_id}">
+                                            <img src="${s.image}" class="img-fluid rounded mb-2" alt="${s.pro_name}">
+                                        </a>
+                                        <!-- Product Name (Giới hạn chiều cao để tránh lệch) -->
+                                        <a class="text-decoration-none text-dark" href="detail?id=${s.pro_id}">
+                                            <h6 class="fw-bold" style="max-height: 100px">
+                                                ${s.pro_name}
+                                            </h6>
+                                        </a>
+                                        <!-- Price & Add to Cart (Căn đều nhau) -->
+                                        <div class="mt-auto">
+                                            <div>
+                                                <c:if test="${s.discount > 0}">
+                                                    <span class="original-price text-decoration-line-through">${s.formattedPrice} VND</span>
+                                                    <span class="discount-price">${s.formattedDiscountedPrice} VND</span>
+                                                </c:if>
+                                                <c:if test="${s.discount == 0}">
+                                                    <div class="text-danger fw-bold">${s.formattedPrice} VND</div>
+                                                </c:if>
+                                            </div>
                                         </div>
                                     </div>
-                                    <p class="mt-1 mb-0">${f.comment}</p>
                                 </div>
                             </c:forEach>
                         </c:when>
                         <c:otherwise>
-                            <p class="text-muted text-center">${feedbackOfProductMessage}</p>
+                            <p class="text-muted text-center">${suggestProductsMessage}</p>
                         </c:otherwise>
                     </c:choose>
                 </div>
             </div>
-        </div>
 
-        <!-- Suggested Products Section -->
-        <div class="container my-5">
-            <h3>Suggestions:</h3>
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
-                <c:choose>
-                    <c:when test="${not empty suggestProducts}">
-                        <c:forEach items="${suggestProducts}" var="s">
-                            <div class="col">
-                                <div class="border rounded p-3 text-center h-100 d-flex flex-column justify-content-between position-relative bg-light shadow-sm">
-                                    <!-- Discount Badge -->
-                                    <c:if test="${s.discount > 0}">
-                                        <div class="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 rounded">
-                                            -${s.discount}%
-                                        </div>
-                                    </c:if>
-                                    <!-- Product Image -->
-                                    <a class="text-decoration-none text-dark" href="detail?id=${s.pro_id}">
-                                        <img src="${s.image}" class="img-fluid rounded mb-2" alt="${s.pro_name}">
-                                    </a>
-                                    <!-- Product Name (Giới hạn chiều cao để tránh lệch) -->
-                                    <a class="text-decoration-none text-dark" href="detail?id=${s.pro_id}">
-                                        <h6 class="fw-bold" style="max-height: 100px">
-                                            ${s.pro_name}
-                                        </h6>
-                                    </a>
-                                    <!-- Price & Add to Cart (Căn đều nhau) -->
-                                    <div class="mt-auto">
-                                        <div>
-                                            <c:if test="${s.discount > 0}">
-                                                <span class="original-price text-decoration-line-through">${s.formattedPrice} VND</span>
-                                                <span class="discount-price">${s.formattedDiscountedPrice} VND</span>
-                                            </c:if>
-                                            <c:if test="${s.discount == 0}">
-                                                <div class="text-danger fw-bold">${s.formattedPrice} VND</div>
-                                            </c:if>
-                                        </div>
+            <!-- Feedback Modal -->
+            <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="feedbackModalLabel">Give Feedback</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="feedbackForm">
+                                <input type="hidden" name="pro_id" value="${pd.pro_id}">
+                                <div class="mb-3">
+                                    <label class="form-label">Rating:</label>
+                                    <div class="rating d-flex justify-content-center">
+                                        <input type="radio" name="rating" value="5" id="star5"><label for="star5">★</label>
+                                        <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
+                                        <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
+                                        <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
+                                        <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
+                                    </div>
+                                    <div id="ratingWarning" class="feedback-warning text-danger fw-bold" style="display: none;"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="comment" class="form-label">Comment:</label>
+                                    <textarea class="form-control" id="comment" name="comment" rows="3" maxlength="500"></textarea>
+                                    <div class="d-flex justify-content-between">
+                                        <div id="commentWarning" class="feedback-warning text-danger fw-bold" style="display: none;"></div>
+                                        <small class="text-muted">Characters remaining: <span id="charCount">500</span></small>
                                     </div>
                                 </div>
-                            </div>
-                        </c:forEach>
-                    </c:when>
-                    <c:otherwise>
-                        <p class="text-muted text-center">${suggestProductsMessage}</p>
-                    </c:otherwise>
-                </c:choose>
-            </div>
-        </div>
 
-        <!-- Feedback Modal -->
-        <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="feedbackModalLabel">Give Feedback</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="feedbackForm">
-                            <input type="hidden" name="pro_id" value="${pd.pro_id}">
-                            <div class="mb-3">
-                                <label class="form-label">Rating:</label>
-                                <div class="rating d-flex justify-content-center">
-                                    <input type="radio" name="rating" value="5" id="star5"><label for="star5">★</label>
-                                    <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
-                                    <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
-                                    <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
-                                    <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
+                                <!-- Error Message -->
+                                <div id="feedbackError" class="alert alert-danger d-none"></div>
+                                <div id="successMessage" class="alert alert-success" style="display: none;"></div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Submit Feedback</button>
                                 </div>
-                                <div id="ratingWarning" class="feedback-warning text-danger fw-bold" style="display: none;"></div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="comment" class="form-label">Comment:</label>
-                                <textarea class="form-control" id="comment" name="comment" rows="3" maxlength="500"></textarea>
-                                <div class="d-flex justify-content-between">
-                                    <div id="commentWarning" class="feedback-warning text-danger fw-bold" style="display: none;"></div>
-                                    <small class="text-muted">Characters remaining: <span id="charCount">500</span></small>
-                                </div>
-                            </div>
-
-                            <!-- Error Message -->
-                            <div id="feedbackError" class="alert alert-danger d-none"></div>
-                            <div id="successMessage" class="alert alert-success" style="display: none;"></div>
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Submit Feedback</button>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Footer -->
-        <jsp:include page="../common/layout/footer.jsp" />
+            <!-- Footer -->
+            <jsp:include page="../common/layout/footer.jsp" />
 
-        <script src="${pageContext.request.contextPath}/JS/guest/productDetails.js" defer></script>
+            <script src="${pageContext.request.contextPath}/JS/guest/productDetails.js" defer></script>
+            <script>
+                                                    function updateMaxQuantity() {
+                                                        const sizeSelect = document.getElementById("size");
+                                                        const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
+                                                        const quantityInput = document.getElementById("quantityInput");
+                                                        quantityInput.value = 1;
+
+                                                        if (selectedOption.value && selectedOption.getAttribute("data-stock") > 0) {
+                                                            const stock = parseInt(selectedOption.getAttribute("data-stock"));
+
+                                                            quantityInput.disabled = false;
+
+                                                            quantityInput.max = stock;
+
+                                                            if (parseInt(quantityInput.value) > stock) {
+
+                                                                quantityInput.value = stock;
+
+                                                            }
+
+                                                        } else {
+                                                            quantityInput.disabled = true;
+                                                        }
+                                                    }
+
+                                                    document.addEventListener("DOMContentLoaded", function () {
+                                                        document.getElementById("size").addEventListener("change", updateMaxQuantity);
+
+                                                        if (document.getElementById("size").value) {
+                                                            updateMaxQuantity();
+                                                        }
+                                                    });
+            </script>
     </body>
 </html>
 

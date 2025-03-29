@@ -23,22 +23,13 @@
             <div>
                 <h2 class="container text-start">My Cart</h2> 
             </div>
-        <c:choose>
-            <c:when test="${not empty sessionScope.orderMessage}">
-                <div class="order-success-container" style="text-align: center; margin: 30px 0;">
-                    <img src="${pageContext.request.contextPath}/img/icon/header/success.jpg" 
-                         style="width: 600px; height: 400px;" 
-                         alt="Order-Success"/>
-                </div>
-                <c:remove var="orderMessage" scope="session"/>
-            </c:when>
 
-            <c:when test="${empty sessionScope.cart or empty sessionScope.cart.items}">
-                <div class="empty-cart">
-                    <img src="${pageContext.request.contextPath}/img/icon/header/empty-cart.png" width="30%" height="30%" alt="Cart-empty"/>
-                </div>
-            </c:when>
-        </c:choose>
+        <c:if test="${empty sessionScope.cart or empty sessionScope.cart.items}">
+            <div class="empty-cart">
+                <img src="${pageContext.request.contextPath}/img/icon/header/empty-cart.png" width="30%" height="30%" alt="Cart-empty"/>
+            </div>
+        </c:if>
+
         <c:if test="${not empty sessionScope.cart and not empty sessionScope.cart.items}">
             <table>
                 <tr>
@@ -64,15 +55,18 @@
                         <td class="price_product"><fmt:formatNumber value="${i.product.salePrice}" /> VND</td>
                         <td>${i.size != null ? i.size : 'Default'}</td>
                         <td class="quantity_product">
-                            <form class="ajax-form">
+                            <form class="ajax-form" onsubmit="return validateQuantity(this, ${i.stock})">
                                 <input type="hidden" name="pro_id" value="${i.product.pro_id}" />
                                 <input type="hidden" name="size" value="${i.size}" />
                                 <input type="hidden" name="action" value="updateQuantity"/>
                                 <input type="number" class="quantity-input" 
-                                       name="quantity" value="${i.quantity}"
-                                       onkeydown="return false;"
-                                       min="1" max="${i.stock}"
-                                       onchange="checkStock(this, ${i.stock}); this.form.submit();"/>
+                                       name="quantity" 
+                                       value="${i.quantity}"
+                                       min="1" 
+                                       max="${i.stock}"
+                                       data-original-value="${i.quantity}"
+                                       onchange="showError(this, ${i.stock})"
+                                       onfocus="this.dataset.originalValue = this.value"/>
                             </form>
                         </td>
                         <td class="total_product" data-value="${i.product.salePrice * i.quantity}">
@@ -107,7 +101,6 @@
 
     <jsp:include page="../common/layout/footer.jsp"></jsp:include>
     <script>
-
         function checkStock(input, stock) {
             var quantity = parseInt(input.value);
             if (quantity === stock) {
@@ -115,9 +108,37 @@
             }
         }
 
+        function showError(input, stock) {
+            const errorDiv = input.parentElement.querySelector('.error-message');
+            const quantity = parseInt(input.value) || 0;
+            if (quantity > stock) {
+                input.value = stock;
+                input.classList.add('is-invalid');
+                alert(`Maximum product in stock`);
+                return false;
+            }
+            return true;
+        }
+
+        function validateQuantity(form, stock) {
+            const quantity = parseInt(form.quantity.value) || 0;
+            if (quantity > stock) {
+                form.quantity.value = stock;
+                form.quantity.classList.add('is-invalid');
+                return false;
+            }
+            return true;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                input.dataset.original = input.value;
+                input.addEventListener('focus', function () {
+                    this.dataset.original = this.value;
+                });
+            });
+        });
     </script>
 </body>
-
 </html>
-
 

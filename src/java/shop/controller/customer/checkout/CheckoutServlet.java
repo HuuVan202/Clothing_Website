@@ -151,7 +151,7 @@ public class CheckoutServlet extends HttpServlet {
 
                 int orderId = orderDAO.InsertOrder(order);
                 for (CartItem item : cart) {
-                    OrderDetail orderDetail = new OrderDetail(0, orderId, item.getProduct().getPro_id(), item.getQuantity(),item.getSize(), item.getProduct().getSalePrice());
+                    OrderDetail orderDetail = new OrderDetail(0, orderId, item.getProduct().getPro_id(), item.getQuantity(), item.getSize(), item.getProduct().getSalePrice());
                     orderDetailDAO.insertOrderDetail(orderDetail);
 
                     productDAO.updateStock(item.getProduct().getPro_id(), item.getSize(), item.getQuantity());
@@ -164,11 +164,11 @@ public class CheckoutServlet extends HttpServlet {
                 session.removeAttribute("cart");
                 session.removeAttribute("size");
 
-                session.setAttribute("orderMessage", "Order Successful");
-                response.sendRedirect("Cart");
+                response.sendRedirect("Order");
+
             } catch (SQLException e) {
                 e.printStackTrace();
-                response.sendRedirect("Checkout");
+                response.sendRedirect("Order");
             }
         } else if ("bank_transfer".equals(paymentMethod)) {
             String vnp_Version = "2.1.0";
@@ -295,5 +295,3 @@ public class CheckoutServlet extends HttpServlet {
     }// </editor-fold>
 
 }
-
-
