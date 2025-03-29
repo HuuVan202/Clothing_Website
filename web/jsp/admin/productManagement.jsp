@@ -153,7 +153,7 @@
                                                                 <c:set var="sizesWithStock" value="${sizesWithStock}${not empty sizesWithStock ? ', ' : ''}${size.size}" />
                                                             </c:if>
                                                         </c:forEach>
-                                                        <c:choose>
+                                                        <c:choose> 
                                                             <c:when test="${hasStock}">
                                                                 ${sizesWithStock}
                                                             </c:when>

@@ -43,6 +43,17 @@
                 padding: 5px 10px;
             }
 
+            .success-message {
+                background-color: #d4edda; /* Màu nền xanh nhạt */
+                color: #155724; /* Màu chữ xanh đậm */
+                padding: 10px 15px;
+                border-left: 5px solid #28a745; /* Viền trái màu xanh lá */
+                border-radius: 5px;
+                font-size: 16px;
+                font-weight: bold;
+                margin: 10px 0;
+                display: inline-block;
+            }
         </style>
     </head>
     <body>
@@ -149,6 +160,9 @@
                                                     </c:forEach>  
                                                 </tbody>
                                             </table>
+                                            <c:if test="${not empty requestScope.messCancle}">
+                                                <p class="success-message">${requestScope.messCancle}</p>
+                                            </c:if>
                                         </c:if>
                                         <c:if test="${not hasProcessing}">
                                             <p class="alert alert-warning" style="width: 400px">There are currently no orders processing.</p>
@@ -275,7 +289,7 @@
         <jsp:include page="../common/layout/footer.jsp"></jsp:include>
         <script>
             function confirmCancel(event, orderId) {
-                event.preventDefault(); // Ngăn chặn chuyển hướng mặc định
+                event.preventDefault(); 
                 if (confirm("Are you sure you want to cancel this order?")) {
                     window.location.href = "Cancel?id=" + orderId; // 
                 }

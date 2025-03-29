@@ -59,7 +59,7 @@ public class SignupServlet extends HttpServlet {
 
         SignupDAO signupDAO = new SignupDAO();
         String message = null;
-
+  
         if (fullName == null || fullName.trim().isEmpty()
                 || userName == null || userName.trim().isEmpty()
                 || passWord == null || passWord.trim().isEmpty()

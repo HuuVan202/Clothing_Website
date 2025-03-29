@@ -19,7 +19,7 @@ import shop.model.AccountGG;
 public class LoginByGG {
 
     public String getToken(String code) throws IOException, InterruptedException {
-        // Debug: In mã code để kiểm tra có hợp lệ không
+      
         System.out.println("Authorization Code: " + code);
 
         // Kiểm tra nếu mã code bị trống hoặc null
@@ -27,7 +27,7 @@ public class LoginByGG {
             throw new IOException("Authorization code is null or empty.");
         }
 
-        // Tạo request body dạng x-www-form-urlencoded
+       
         String requestBody = "client_id=" + URLEncoder.encode(Iconstant.GOOGLE_CLIENT_ID, StandardCharsets.UTF_8)
                 + "&client_secret=" + URLEncoder.encode(Iconstant.GOOGLE_CLIENT_SECRET, StandardCharsets.UTF_8)
                 + "&redirect_uri=" + URLEncoder.encode(Iconstant.GOOGLE_REDIRECT_URI, StandardCharsets.UTF_8)

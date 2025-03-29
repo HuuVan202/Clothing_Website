@@ -63,7 +63,7 @@ public class EmailService {
                 }
             }
 
-            String content = "<h3>Hello " + customerName + ",</h3>"
+            String content = "<h3>Dear " + customerName + ",</h3>"
                     + "<p>Thank you for purchasing in our store.</p>"
                     + "<table border='1' style='border-collapse: collapse; width: 100%; text-align: left;'>"
                     + "<tr><th style='padding: 10px;'>Product</th><th style='padding: 10px;'>Size</th><th style='padding: 10px;'>Quantity</th><th style='padding: 10px;'>Price</th><th style='padding: 10px;'>Payment</th></tr>"

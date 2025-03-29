@@ -30,8 +30,9 @@ public class MyOrderDAO extends DBcontext {
                                ,[tracking]
                                ,[order_date]
                                ,[payment_method]
-                           FROM [ClothingShopDB].[dbo].[Order]
-                           WHERE [cus_id] = ?""";
+                         FROM [ClothingShopDB].[dbo].[Order]
+                         WHERE [cus_id] = ?
+                         ORDER BY [order_date] DESC;""";
 
             statement = connection.prepareCall(sql);
             statement.setInt(1, cusId);

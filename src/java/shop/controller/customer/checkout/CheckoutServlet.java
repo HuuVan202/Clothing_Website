@@ -165,7 +165,7 @@ public class CheckoutServlet extends HttpServlet {
                 session.removeAttribute("size");
 
                 session.setAttribute("orderMessage", "Order Successful");
-                response.sendRedirect("Cart");
+                response.sendRedirect("Order");
             } catch (SQLException e) {
                 e.printStackTrace();
                 response.sendRedirect("Checkout");

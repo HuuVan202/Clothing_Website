@@ -23,22 +23,14 @@
             <div>
                 <h2 class="container text-start">My Cart</h2> 
             </div>
-        <c:choose>
-            <c:when test="${not empty sessionScope.orderMessage}">
-                <div class="order-success-container" style="text-align: center; margin: 30px 0;">
-                    <img src="${pageContext.request.contextPath}/img/icon/header/success.jpg" 
-                         style="width: 600px; height: 400px;" 
-                         alt="Order-Success"/>
-                </div>
-                <c:remove var="orderMessage" scope="session"/>
-            </c:when>
 
-            <c:when test="${empty sessionScope.cart or empty sessionScope.cart.items}">
-                <div class="empty-cart">
-                    <img src="${pageContext.request.contextPath}/img/icon/header/empty-cart.png" width="30%" height="30%" alt="Cart-empty"/>
-                </div>
-            </c:when>
-        </c:choose>
+
+        <c:if test="${empty sessionScope.cart or empty sessionScope.cart.items}">
+            <div class="empty-cart">
+                <img src="${pageContext.request.contextPath}/img/icon/header/empty-cart.png" width="30%" height="30%" alt="Cart-empty"/>
+            </div>
+        </c:if>
+
         <c:if test="${not empty sessionScope.cart and not empty sessionScope.cart.items}">
             <table>
                 <tr>

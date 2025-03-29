@@ -12,6 +12,19 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Check OTP</title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/guest/checkOTP.css">
+        <style>
+            .error-message {
+                color: #D8000C; /* Màu chữ đỏ */
+                background-color: #FFD2D2; /* Nền hồng nhạt */
+                padding: 10px 15px;
+                border: 1px solid #D8000C;
+                border-radius: 5px;
+                font-weight: bold;
+                display: block;
+                text-align: center;
+                margin-top: 10px
+            }
+        </style>
     </head>
     <body>
         <div class="container height-100 d-flex justify-content-center align-items-center">
