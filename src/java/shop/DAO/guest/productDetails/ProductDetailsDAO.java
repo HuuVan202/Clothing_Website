@@ -229,6 +229,7 @@ public class ProductDetailsDAO {
         return false;
     }
 
+
     public boolean addFeedback(String customerId, String productId, int rating, String comment) {
         // First check if customer can give feedback
         int cusId = Integer.parseInt(customerId);
@@ -282,5 +283,3 @@ public class ProductDetailsDAO {
     }
 
 }
-
-

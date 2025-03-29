@@ -122,7 +122,9 @@ public class VNPayReturnServlet extends HttpServlet {
         } else {
             message = "error " + vnp_ResponseCode;
         }
-        response.sendRedirect("Cart");
+
+        response.sendRedirect("Order");
+
     }
 
     /**
@@ -150,5 +152,3 @@ public class VNPayReturnServlet extends HttpServlet {
     }// </editor-fold>
 
 }
-
-

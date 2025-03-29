@@ -7,7 +7,7 @@ public class DBcontext {
     private final String jdbcURL = "jdbc:sqlserver://localhost\\ADMIN:1433;databaseName=ClothingShopDB;encrypt=false";
     private final String jdbcUsername = "sa";
 
-    private final String jdbcPassword = "123456";
+    private final String jdbcPassword = "12345";
 
     protected Connection connection;
     protected PreparedStatement statement;

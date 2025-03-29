@@ -86,6 +86,9 @@ public class ProductDetailsController extends HttpServlet {
         List<ProductSize> productSizes = dao.getSizeByProductId(productId);
         request.setAttribute("productSizes", productSizes);
 
+
+
+
         request.setAttribute("averageRating", productDetails);
         request.setAttribute("feedbackCount", productDetails);
 
