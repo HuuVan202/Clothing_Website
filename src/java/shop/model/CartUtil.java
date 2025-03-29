@@ -1,10 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package shop.model;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import shop.DAO.customer.cart.CartDAO;
@@ -20,7 +15,6 @@ public class CartUtil {
 
     public CartUtil() {
         items = new ArrayList<>();
-
     }
 
     public CartUtil(int customerId) {
@@ -40,28 +34,31 @@ public class CartUtil {
     public void addItemToCart(CartItem item) {
         CartDAO.addCartItem(customerId, item);
         items.add(item);
-
     }
 
-    public void removeItemToCart(int productId) {
-        CartDAO.removeCartItem(customerId, productId);
-        items.removeIf(i -> i.getProduct().getPro_id() == productId);
-
+    public void removeItemToCart(int productId, String size) {
+        CartDAO.removeCartItem(customerId, productId, size);
+        items.removeIf(i -> i.getProduct().getPro_id() == productId && i.getSize().equals(size));
     }
 
-    public void updateItemToCart(int productId, int quantity) {
-        CartDAO.updateCartItem(customerId, productId, quantity);
-        for (CartItem item : items) {
-            if (item.getProduct().getPro_id() == productId) {
-                item.setQuantity(quantity);
-                break;
+    public void updateItemToCart(int productId, String size, int quantity) {
+        boolean updateSuccessful = CartDAO.updateCartItem(customerId, productId, size, quantity);
+
+        if (updateSuccessful) {
+            for (CartItem item : items) {
+                if (item.getProduct().getPro_id() == productId && item.getSize().equals(size)) {
+                    item.setQuantity(quantity);
+                    break;
+                }
             }
+        } else {
+            System.out.println("Update cart item failed");
         }
     }
 
-    public int getItemQuantity(int productId) {
+    public int getItemQuantity(int productId, String size) {
         for (CartItem item : items) {
-            if (item.getProduct().getPro_id() == productId) {
+            if (item.getProduct().getPro_id() == productId && item.getSize().equals(size)) {
                 return item.getQuantity();
             }
         }
@@ -71,5 +68,6 @@ public class CartUtil {
     public List<CartItem> getItems() {
         return items;
     }
-
 }
+
+

@@ -1,164 +1,115 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="java.util.List" %>
+<%@ page import="shop.model.CartItem" %>
+<%@ page import="java.math.BigDecimal" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Checkout Page</title>
+        <meta charset="UTF-8">
+        <title>Shopping Cart</title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/common/layout/layout.css"/>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/customer/checkout.css"/>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/common/home.css"/>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/customer/cart.css"/>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous"/>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-<<<<<<< Updated upstream
-=======
-        <style>
-            td input {
-                border: none;
-                outline: none;
-                width: 100%;
-                background: none;
-                padding: 0;
-            }
-
-            td input.editing {
-                border: 1px solid #007bff;  
-                background-color: #f0f8ff; /* Màu nền nhạt khi chỉnh sửa */
-                padding: 5px; /* Thêm padding để dễ nhìn hơn */
-                border-radius: 4px;
-            }
-            .success {
-                color: green; /* Màu chữ xanh */
-                background-color: rgba(0, 255, 0, 0.1); /* Nền xanh nhạt */
-                border: 2px solid green; /* Viền xanh đậm hơn */
-                padding: 10px 15px; /* Khoảng cách bên trong */
-                border-radius: 5px; /* Bo tròn góc */
-                font-weight: bold; /* Chữ đậm */
-                display: inline-block; /* Để nó không bị kéo dài toàn bộ hàng */
-                margin-top: 10px
-            }
-
-            .error {
-                color: red;
-                background-color: rgba(255, 0, 0, 0.1);
-                border: 1px solid red;
-                padding: 10px 15px; /* Khoảng cách bên trong */
-                border-radius: 5px; /* Bo tròn góc */
-                font-weight: bold; /* Chữ đậm */
-                display: inline-block; /* Để nó không bị kéo dài toàn bộ hàng */
-                margin-top: 10px
-            }
-        </style>
->>>>>>> Stashed changes
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="${pageContext.request.contextPath}/JS/customer/cart.js"></script>
     </head>
     <body>
-        <jsp:include page="../../jsp/common/layout/header.jsp"></jsp:include>
-        <c:if test="${not empty sessionScope.orderMessage}">
-            <div class="alert alert-success">
-                ${sessionScope.orderMessage}
+        <jsp:include page="../common/layout/header.jsp"></jsp:include>
+            <div>
+                <h2 class="container text-start">My Cart</h2> 
             </div>
-            <c:remove var="orderMessage" scope="session"/>
-        </c:if>
-        <div class="container-checkout">
-            <div class="column">
-                <h3>My Information</h3>
-                <c:if test="${not empty sessionScope.customer}">
-                    <table>
-                        <tbody>
-                            <tr class="customer-name">
-                                <td>Full name</td>
-                                <td>${sessionScope.customer.cus_name}</td>
-                            </tr>
-                            <tr class="customer-email">
-                                <td>Email</td>
-                                <td>${sessionScope.customer.email}</td>
-                            </tr>
-                            <tr class="customer-phone">
-                                <td>Phone</td>
-                                <td>${sessionScope.customer.phone}</td>
-                            </tr>
-                            <tr class="customer-address">
-                                <td>Address</td>
-                                <td>${sessionScope.customer.address}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <form action="profile">
-                        <button class="update" type="submit">Update Information</button>
-                    </form>
+        <c:choose>
+            <c:when test="${not empty sessionScope.orderMessage}">
+                <div class="order-success-container" style="text-align: center; margin: 30px 0;">
+                    <img src="${pageContext.request.contextPath}/img/icon/header/success.jpg" 
+                         style="width: 600px; height: 400px;" 
+                         alt="Order-Success"/>
+                </div>
+                <c:remove var="orderMessage" scope="session"/>
+            </c:when>
 
-
-
-                </c:if>
-            </div>
-            <div class="column">
-                <h3>My Cart</h3>
-
-                <form action="Checkout" method="post">
-                    <c:if test="${not empty sessionScope.cart}">
-                        <table border="1">
-                            <thead>
-                                <tr>
-                                    <td class="name_product">Name</td>
-                                    <td class="img_product">Image</td>
-                                    <td class="price_product">Price</td>
-                                    <td class="quantity_product">Quantity</td>
-                                    <td class="total_product">TotalPirce</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:if test="${not empty sessionScope.cart and not empty sessionScope.cart.items}">
-                                    <c:forEach var="cartItem" items="${sessionScope.cart.items}">
-                                        <tr>
-                                            <td class="name_product">${cartItem.product.pro_name}</td>
-                                            <td class="img_product"><img src="${cartItem.product.image}" width="100px"></td>
-                                            <td class="price_product"><fmt:formatNumber value="${cartItem.product.salePrice}" /> VND</td>
-                                            <td class="quantity_product">${cartItem.quantity}</td>
-                                            <td class="total_product"><fmt:formatNumber value="${cartItem.product.salePrice * cartItem.quantity}" /> VND</td>
-                                        </tr>
-                                    </c:forEach>
-                                </c:if>
-                            </tbody>
-                        </table>
-                        <c:set var="total" value="0"/>
-                        <c:forEach var="cartItem" items="${sessionScope.cart.items}">
-                            <c:set var="total" value="${total + (cartItem.quantity * cartItem.product.salePrice)}"/>
-                        </c:forEach>
-                        <h3 class="total_price">TOTAL: <fmt:formatNumber value="${total}" /> VND</h3>
-                    </c:if>
-                    <form action="Checkout" method="post">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="payment_method"  value="cash" checked>
-                            <label class="form-check-label" for="cash">
-                                Cash on Delivery
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="payment_method" value="bank_transfer">
-                            <label class="form-check-label" for="bank_transfer">
-                                Banking
-                            </label>
-                        </div>
-
-                        <input type="hidden" name="amount" value="${total}">
-                        <input type="hidden" name="vnp_OrderInfo" value="1">
-                        <input type="hidden" name="language" value="vn">
-
-                        <c:if test="${sessionScope.admin.role.toLowerCase() != 'admin'}">
-                            <button type="submit" class="checkout">Proceed to Payment</button>
-                        </c:if>
-                    </form>
-
-
+            <c:when test="${empty sessionScope.cart or empty sessionScope.cart.items}">
+                <div class="empty-cart">
+                    <img src="${pageContext.request.contextPath}/img/icon/header/empty-cart.png" width="30%" height="30%" alt="Cart-empty"/>
+                </div>
+            </c:when>
+        </c:choose>
+        <c:if test="${not empty sessionScope.cart and not empty sessionScope.cart.items}">
+            <table>
+                <tr>
+                    <td class="no_product">No</td>
+                    <td class="name_product">Name</td>
+                    <td class="img_product">Image</td>
+                    <td class="price_product">Price</td>
+                    <td class="price_product">Size</td>
+                    <td class="quantity_product">Quantity</td>
+                    <td class="total_product">Total</td>
+                    <td class="remove_product">Action</td>
+                </tr>
+                <c:set var="o" value="${sessionScope.cart}"/>
+                <c:forEach items="${o.items}" var="i" varStatus="loop">
+                    <tr>
+                        <td class="no_product">${loop.index+1}</td>
+                        <td class="name_product"><a href="detail?id=${i.product.pro_id}" style="text-decoration: none;color: black">${i.product.pro_name}</a></td>
+                        <td class="img_product">
+                            <a href="detail?id=${i.product.pro_id}">
+                                <img src="${pageContext.request.contextPath}/${i.product.image}" alt="${i.product.pro_name}" style="height: 100px; width: 100px"/>
+                            </a>
+                        </td>
+                        <td class="price_product"><fmt:formatNumber value="${i.product.salePrice}" /> VND</td>
+                        <td>${i.size != null ? i.size : 'Default'}</td>
+                        <td class="quantity_product">
+                            <form class="ajax-form">
+                                <input type="hidden" name="pro_id" value="${i.product.pro_id}" />
+                                <input type="hidden" name="size" value="${i.size}" />
+                                <input type="hidden" name="action" value="updateQuantity"/>
+                                <input type="number" class="quantity-input" 
+                                       name="quantity" value="${i.quantity}"
+                                       onkeydown="return false;"
+                                       min="1" max="${i.stock}"
+                                       onchange="checkStock(this, ${i.stock}); this.form.submit();"/>
+                            </form>
+                        </td>
+                        <td class="total_product" data-value="${i.product.salePrice * i.quantity}">
+                            <fmt:formatNumber value="${i.product.salePrice * i.quantity}" /> VND
+                        </td>
+                        <td class="remove_product">
+                            <form class="ajax-form">
+                                <input type="hidden" name="pro_id" value="${i.product.pro_id}" />
+                                <input type="hidden" name="size" value="${i.size}" />
+                                <input type="hidden" name="action" value="delete"/>
+                                <button type="button" class="delete-btn btn btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                </c:forEach>    
+            </table>
+            <c:set var="total" value="0"/>
+            <c:forEach items="${o.items}" var="i">
+                <c:set var="total" value="${total + (i.quantity * i.product.salePrice)}"/>
+            </c:forEach>
+            <h3 style="font-family: inherit">TOTAL: <fmt:formatNumber value="${total}" /> VND</h3>
+            <div class="checkout_btn">
+                <form action="Checkout">
+                    <button style="border-radius: 20px" class="btn btn-success" type="submit">
+                        <h3>Check Out</h3>
+                    </button>
                 </form>
             </div>
-
-        </form>
-    </div>
-</div>
-<jsp:include page="../common/layout/footer.jsp"></jsp:include>
-
+    </c:if>
+    <jsp:include page="../common/layout/footer.jsp"></jsp:include>
+    <script>
+        function checkStock(input, stock) {
+            var quantity = parseInt(input.value);
+            if (quantity === stock) {
+                alert("You have selected the maximum quantity in stock!");
+            }
+        }
+    </script>
 </body>
-
 </html>

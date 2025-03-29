@@ -4,7 +4,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Dashboard</title>
+        <title>Feedback Management</title>
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -68,8 +68,8 @@
                                     <input type="hidden" name="pro_name" value="${search}">
                                     <input type="hidden" name="rating" value="${selectedRating}">
                                     <select name="order" class="form-select" onchange="this.form.submit()">
-                                        <option value="asc" ${sortOrder == 'asc' ? 'selected' : ''}>Oldest First</option>
-                                        <option value="desc" ${sortOrder == 'desc' ? 'selected' : ''}>Newest First</option>
+                                        <option value="asc" ${sortOrder == 'asc' ? 'selected' : ''}>Oldest</option>
+                                        <option value="desc" ${sortOrder == 'desc' ? 'selected' : ''}>Newest</option>
                                     </select>
                                 </form>
                             </div>

@@ -6,6 +6,7 @@ package shop.model;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -27,12 +28,25 @@ public class Product {
     private int discount;
     private BigDecimal discountedPrice, salePrice;
     private Type type;
+    private List<ProductSize> productSizes;
 
     private static final NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
     private Double averageRating;
     private int feedbackCount;
+    private String[] stocks;
 
     public Product() {
+    }
+
+    public Product(int pro_id, String pro_name, BigDecimal price, String image, String gender, String brand, String status, int discount) {
+        this.pro_id = pro_id;
+        this.pro_name = pro_name;
+        this.price = price;
+        this.image = image;
+        this.gender = gender;
+        this.brand = brand;
+        this.status = status;
+        this.discount = discount;
     }
 
     public Product(int pro_id, String pro_name, BigDecimal price, int stock, String image, String size, String gender, String brand, String status, int discount) {
@@ -224,8 +238,27 @@ public class Product {
         this.feedbackCount = feedbackCount;
     }
 
+    public String[] getStocks() {
+        return stocks;
+    }
+
+    public void setStocks(String[] stocks) {
+        this.stocks = stocks;
+    }
+
+    public List<ProductSize> getProductSizes() {
+        return productSizes;
+    }
+
+    public void setProductSizes(List<ProductSize> productSizes) {
+        this.productSizes = productSizes;
+    }
+
     @Override
     public String toString() {
-        return "Product{" + "pro_id=" + pro_id + ", pro_name=" + pro_name + ", price=" + price + ", stock=" + stock + ", image=" + image + ", size=" + size + ", gender=" + gender + ", brand=" + brand + ", type_id=" + type_id + ", status=" + status + ", discount=" + discount + '}';
+        return "Product{" + "pro_id=" + pro_id + ", pro_name=" + pro_name + ", price=" + price
+                + ", image=" + image + ", gender=" + gender + ", brand=" + brand
+                + ", type_id=" + type_id + ", status=" + status + ", discount=" + discount
+                + ", productSizes=" + (productSizes != null ? productSizes : "[]") + '}';
     }
 }

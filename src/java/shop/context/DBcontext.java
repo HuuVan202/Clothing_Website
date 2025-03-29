@@ -7,7 +7,7 @@ public class DBcontext {
     private final String jdbcURL = "jdbc:sqlserver://localhost\\ADMIN:1433;databaseName=ClothingShopDB;encrypt=false";
     private final String jdbcUsername = "sa";
 
-    private final String jdbcPassword = "12345";
+    private final String jdbcPassword = "123456";
 
     protected Connection connection;
     protected PreparedStatement statement;
@@ -15,7 +15,7 @@ public class DBcontext {
 
     public Connection getConnection() {
         Connection connection = null;
-        try {
+        try {    
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             connection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
         } catch (SQLException | ClassNotFoundException e) {

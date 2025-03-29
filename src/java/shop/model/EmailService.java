@@ -54,6 +54,7 @@ public class EmailService {
 
                         tableRows.append("<tr>")
                                 .append("<td style='padding: 10px;'>").append(item.getProduct().getPro_name()).append("</td>")
+                                .append("<td style='padding: 10px;'>").append(item.getSize()).append("</td>")
                                 .append("<td style='padding: 10px;'>").append(item.getQuantity()).append("</td>")
                                 .append("<td style='padding: 10px;'>").append(String.format("%,.0f", subtotal)).append(" VND</td>")
                                 .append("<td style='padding: 10px;'>").append("COD</td>")
@@ -65,7 +66,7 @@ public class EmailService {
             String content = "<h3>Hello " + customerName + ",</h3>"
                     + "<p>Thank you for purchasing in our store.</p>"
                     + "<table border='1' style='border-collapse: collapse; width: 100%; text-align: left;'>"
-                    + "<tr><th style='padding: 10px;'>Product</th><th style='padding: 10px;'>Quantity</th><th style='padding: 10px;'>Price</th><th style='padding: 10px;'>Payment</th></tr>"
+                    + "<tr><th style='padding: 10px;'>Product</th><th style='padding: 10px;'>Size</th><th style='padding: 10px;'>Quantity</th><th style='padding: 10px;'>Price</th><th style='padding: 10px;'>Payment</th></tr>"
                     + tableRows.toString()
                     + "</table>"
                     + "<p><b>Delivery Address:</b> " + addressCus + "</p>"
@@ -111,6 +112,7 @@ public class EmailService {
 
                         tableRows.append("<tr>")
                                 .append("<td style='padding: 10px;'>").append(item.getProduct().getPro_name()).append("</td>")
+                                .append("<td style='padding: 10px;'>").append(item.getSize()).append("</td>")
                                 .append("<td style='padding: 10px;'>").append(item.getQuantity()).append("</td>")
                                 .append("<td style='padding: 10px;'>").append(String.format("%,.0f", subtotal)).append(" VND</td>")
                                 .append("<td style='padding: 10px;'>").append("Paid money</td>")
@@ -122,7 +124,7 @@ public class EmailService {
             String content = "<h3>Hello " + customerName + ",</h3>"
                     + "<p>Thank you for purchasing in our store.</p>"
                     + "<table border='1' style='border-collapse: collapse; width: 100%; text-align: left;'>"
-                    + "<tr><th style='padding: 10px;'>Product</th><th style='padding: 10px;'>Quantity</th><th style='padding: 10px;'>Price</th><th style='padding: 10px;'>Payment</th></tr>"
+                    + "<tr><th style='padding: 10px;'>Product</th><th style='padding: 10px;'>Size</th><th style='padding: 10px;'>Quantity</th><th style='padding: 10px;'>Price</th><th style='padding: 10px;'>Payment</th></tr>"
                     + tableRows.toString()
                     + "</table>"
                     + "<p><b>Delivery Address:</b> " + addressCus + "</p>"
@@ -144,3 +146,5 @@ public class EmailService {
 
     }
 }
+
+

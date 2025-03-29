@@ -37,41 +37,6 @@ import shop.model.OrderDetail;
 @WebServlet(name = "VNPayReturnServlet", urlPatterns = {"/vnpayreturn"})
 public class VNPayReturnServlet extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet VNPayReturnServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet VNPayReturnServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -91,7 +56,6 @@ public class VNPayReturnServlet extends HttpServlet {
         CartUtil cartUtil = (CartUtil) session.getAttribute("cart");
         List<CartItem> cart = cartUtil.getItems();
 
-        String message;
         OrderDAO orderDAO = new OrderDAO();
         OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
         ProductDAO productDAO = new ProductDAO();
@@ -99,63 +63,33 @@ public class VNPayReturnServlet extends HttpServlet {
         if ("00".equals(vnp_ResponseCode)) {
             try {
                 BigDecimal totalPrice = new BigDecimal(vnp_Amount).divide(new BigDecimal(100));
-
                 Order order = new Order(0, customer.getCus_id(), totalPrice, "processing", new java.util.Date(), "bank_transfer");
                 int orderId = orderDAO.InsertOrder(order);
                 for (CartItem item : cart) {
-                    OrderDetail orderDetail = new OrderDetail(0, orderId, item.getProduct().getPro_id(), item.getQuantity(), item.getProduct().getSalePrice());
+                    OrderDetail orderDetail = new OrderDetail(0, orderId, item.getProduct().getPro_id(), item.getQuantity(), item.getSize(), item.getProduct().getSalePrice());
                     orderDetailDAO.insertOrderDetail(orderDetail);
-
-                    productDAO.updateStock(item.getProduct().getPro_id(), item.getQuantity());
+                    productDAO.updateStock(item.getProduct().getPro_id(), item.getSize(), item.getQuantity());
                 }
                 EmailService.sendMultiProductPaymentConfirmationVNPay(customer.getEmail(), customer.getCus_name(), customer.getAddress(), totalPrice, cart);
-
                 CartDAO cartDAO = new CartDAO();
                 cartDAO.removeAllCartItems(customer.getCus_id());
-
                 session.removeAttribute("cart");
                 session.removeAttribute("size");
-
             } catch (SQLException ex) {
                 Logger.getLogger(VNPayReturnServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else {
-            message = "Thanh toán thất bại! Mã lỗi: " + vnp_ResponseCode;
         }
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        session.setAttribute("orderMessage", "Order Successful");
-        response.sendRedirect("Checkout");
-=======
-        response.sendRedirect("Order");
->>>>>>> Stashed changes
-=======
-        response.sendRedirect("Order");
->>>>>>> Stashed changes
+        response.sendRedirect("Cart");
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        doGet(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
-
+    }
 }

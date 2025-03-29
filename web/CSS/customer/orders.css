@@ -59,17 +59,17 @@ a.cancel:hover {
     background-color: #a71d2a; /* Màu đỏ đậm khi hover */
 }
 
-/* CSS cho thông báo successCancel */
-.message.successCancel {
-    display: block;
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #28a745; /* Màu xanh lá */
-    color: white;
-    border-radius: 5px;
-    text-align: center;
-    font-weight: bold;
-    animation: fadeIn 0.5s ease-in-out;
+.successCancel {
+    background-color: #dfffd9; /* Màu nền xanh nhạt */
+    color: #006400; /* Màu chữ xanh đậm */
+    border: 2px solid #008000; /* Viền xanh đậm */
+    padding: 10px 20px; /* Khoảng cách bên trong */
+    border-radius: 5px; /* Bo tròn viền */
+    display: inline-block; /* Hiển thị dạng block nội tuyến */
+    font-weight: bold; /* Chữ đậm */
+    margin-bottom: 20px;
+    width: 350px;
+    
 }
 
 /* Hiệu ứng fade in */

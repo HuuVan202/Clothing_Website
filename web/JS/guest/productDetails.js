@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     this.classList.add('btn-danger');
 
                     if (data.message === 'already_reviewed') {
-                        warningDiv.textContent = 'Sorry, you have to order this product again to be able to send another feedback.';
+                        warningDiv.textContent = 'Sorry, you can only feedback once for this product.';
                     } else {
                         warningDiv.textContent = 'Sorry, you must have ordered and received this product to be able to give feedback.';
                     }
@@ -191,3 +191,5 @@ document.addEventListener('DOMContentLoaded', function () {
         feedbackForm.addEventListener('submit', validateFeedbackForm);
     }
 });
+
+

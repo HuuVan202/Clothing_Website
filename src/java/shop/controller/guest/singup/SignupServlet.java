@@ -107,7 +107,7 @@ public class SignupServlet extends HttpServlet {
         return Pattern.matches(regex, password);
     }
 
-    public static boolean isValidPhoneNumber(String phoneNumber) {
+    public  boolean isValidPhoneNumber(String phoneNumber) {
         // Kiểm tra nếu phoneNumber là null hoặc rỗng
         if (phoneNumber == null || phoneNumber.isEmpty()) {
             return false;

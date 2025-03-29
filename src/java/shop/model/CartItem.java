@@ -14,13 +14,17 @@ public class CartItem {
 
     private Product product;
     private int quantity;
+    private String size;
+    private int stock;
 
     public CartItem() {
+        this.size = "Default";
     }
 
-    public CartItem(Product product, int quantity) {
+    public CartItem(Product product, int quantity, String size) {
         this.product = product;
         this.quantity = quantity;
+        this.size = size;
     }
 
     public Product getProduct() {
@@ -39,6 +43,23 @@ public class CartItem {
         this.quantity = quantity;
     }
 
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = (size != null) ? size : "Default"; 
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+    
+
     public BigDecimal getTotalPrice() {
         if (product != null) {
             return product.getDiscountedPrice().multiply(BigDecimal.valueOf(quantity));
@@ -46,3 +67,5 @@ public class CartItem {
         return BigDecimal.ZERO;
     }
 }
+
+
