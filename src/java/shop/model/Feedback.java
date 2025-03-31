@@ -20,12 +20,12 @@ public class Feedback {
     private int rating;
     private String comment;
     private Date feedback_date;
+    private String purchasedSizes;
 
     public Feedback(int rating, String comment) {
         this.rating = rating;
         this.comment = comment;
     }
-    
 
     public Feedback(int feedback_id, int order_id, int pro_id, int cus_id, int rating, String comment, Date feedback_date) {
         this.feedback_id = feedback_id;
@@ -44,7 +44,7 @@ public class Feedback {
         this.feedback_date = feedback_date;
     }
 
-    public Feedback(int feedback_id, int pro_id, int cus_id, String cus_name, int rating, String comment, Date feedback_date) {
+    public Feedback(int feedback_id, int pro_id, int cus_id, String cus_name, int rating, String comment, Date feedback_date, String purchasedSizes) {
         this.feedback_id = feedback_id;
         this.pro_id = pro_id;
         this.cus_id = cus_id;
@@ -52,6 +52,7 @@ public class Feedback {
         this.rating = rating;
         this.comment = comment;
         this.feedback_date = feedback_date;
+        this.purchasedSizes = purchasedSizes;
     }
 
     public Feedback() {
@@ -121,9 +122,25 @@ public class Feedback {
         this.feedback_date = feedback_date;
     }
 
-    @Override
-    public String toString() {
-        return "Feedback{" + "feedback_id=" + feedback_id + ", order_id=" + order_id + ", pro_id=" + pro_id + ", cus_id=" + cus_id + ", rating=" + rating + ", comment=" + comment + ", feedback_date=" + feedback_date + '}';
+    public String getPurchasedSizes() {
+        return purchasedSizes;
     }
 
+    public void setPurchasedSizes(String purchasedSizes) {
+        this.purchasedSizes = purchasedSizes;
+    }
+
+    @Override
+    public String toString() {
+        return "Feedback{"
+                + "feedback_id=" + feedback_id
+                + ", order_id=" + order_id
+                + ", pro_id=" + pro_id
+                + ", cus_id=" + cus_id
+                + ", rating=" + rating
+                + ", comment='" + comment + '\''
+                + ", feedback_date=" + feedback_date
+                + ", purchasedSizes='" + purchasedSizes + '\''
+                + '}';
+    }
 }

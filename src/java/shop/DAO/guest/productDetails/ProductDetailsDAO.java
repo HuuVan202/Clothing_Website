@@ -50,8 +50,9 @@ public class ProductDetailsDAO {
                 + "           WHEN p.discount > 0 THEN p.price * (1 - p.discount / 100.0) "
                 + "           ELSE p.price "
                 + "       END AS discounted_price, "
-                + "       CAST(COALESCE((SELECT AVG(CAST(rating AS DECIMAL(2,1))) FROM Feedback WHERE pro_id = p.pro_id), 0) AS DECIMAL(10,2)) AS averageRating, "
-                + "       COALESCE((SELECT COUNT(*) FROM Feedback WHERE pro_id = p.pro_id), 0) AS feedbackCount "
+                + "       CAST(COALESCE((SELECT AVG(CAST(rating AS DECIMAL(2,1))) FROM Feedback WHERE pro_id = p.pro_id), 0) AS DECIMAL(2,1)) AS averageRating, "
+                + "       COALESCE((SELECT COUNT(*) FROM Feedback WHERE pro_id = p.pro_id), 0) AS feedbackCount, "
+                + "       COALESCE((SELECT SUM(od.quantity) FROM OrderDetail od WHERE od.pro_id = p.pro_id), 0) AS soldProduct "
                 + "FROM Product p "
                 + "JOIN Type t ON p.type_id = t.type_id "
                 + "LEFT JOIN ProductSize ps ON p.pro_id = ps.pro_id "
@@ -78,6 +79,7 @@ public class ProductDetailsDAO {
                 pd.setDiscountedPrice(rs.getBigDecimal("discounted_price"));
                 pd.setAverageRating(rs.getDouble("averageRating"));
                 pd.setFeedbackCount(rs.getInt("feedbackCount"));
+                pd.setSoldProduct(rs.getInt("soldProduct"));
                 return pd;
             }
         } catch (SQLException e) {
@@ -88,16 +90,59 @@ public class ProductDetailsDAO {
         return null;
     }
 
-    public List<Feedback> getFeedBackofProduct(int pro_id) {
+    public List<Feedback> getFilteredFeedbackOfProduct(int pro_id, String filterType) {
         List<Feedback> feedback = new ArrayList<>();
-        String sql = "SELECT f.feedback_id, f.pro_id, c.cus_name, f.rating, f.comment, f.feedback_date "
-                + "FROM Feedback f "
-                + "JOIN Customer c ON f.cus_id = c.cus_id "
-                + "WHERE f.pro_id = ?";
+
+        String baseSql = """
+        SELECT 
+            f.feedback_id, 
+            f.pro_id, 
+            f.cus_id,
+            c.cus_name, 
+            f.rating, 
+            f.comment, 
+            f.feedback_date,
+            (
+                SELECT STRING_AGG(od.size, ', ')
+                FROM [Order] o
+                JOIN OrderDetail od ON o.order_id = od.order_id
+                WHERE o.cus_id = f.cus_id 
+                  AND od.pro_id = f.pro_id 
+                  AND o.tracking = 'delivered'
+            ) AS purchasedSizes
+        FROM Feedback f
+        JOIN Customer c ON f.cus_id = c.cus_id
+        WHERE f.pro_id = ?
+    """;
+
+        switch (filterType) {
+            case "5star":
+                baseSql += " AND f.rating = 5 ORDER BY f.feedback_date DESC";
+                break;
+            case "4star":
+                baseSql += " AND f.rating = 4 ORDER BY f.feedback_date DESC";
+                break;
+            case "3star":
+                baseSql += " AND f.rating = 3 ORDER BY f.feedback_date DESC";
+                break;
+            case "2star":
+                baseSql += " AND f.rating = 2 ORDER BY f.feedback_date DESC";
+                break;
+            case "1star":
+                baseSql += " AND f.rating = 1 ORDER BY f.feedback_date DESC";
+                break;
+            case "oldest":
+                baseSql += " ORDER BY f.feedback_date ASC";
+                break;
+            case "all":
+            default:
+                baseSql += " ORDER BY f.rating DESC, f.feedback_date DESC";
+                break;
+        }
 
         try {
             conn = getConnection();
-            ps = conn.prepareStatement(sql);
+            ps = conn.prepareStatement(baseSql);
             ps.setInt(1, pro_id);
             rs = ps.executeQuery();
 
@@ -105,67 +150,101 @@ public class ProductDetailsDAO {
                 Feedback f = new Feedback();
                 f.setFeedback_id(rs.getInt("feedback_id"));
                 f.setPro_id(rs.getInt("pro_id"));
+                f.setCus_id(rs.getInt("cus_id"));
                 f.setCus_name(rs.getString("cus_name"));
                 f.setRating(rs.getInt("rating"));
                 f.setComment(rs.getString("comment"));
                 f.setFeedback_date(rs.getDate("feedback_date"));
-
+                f.setPurchasedSizes(rs.getString("purchasedSizes"));
                 feedback.add(f);
             }
         } catch (SQLException e) {
-            System.out.println("Error getting feedback: " + e.getMessage());
+            System.out.println("Error getting filtered feedback: " + e.getMessage());
         } finally {
             closeResources();
         }
         return feedback;
     }
-
-    public List<Product> getSuggestProducts(Integer pro_id) {
-        List<Product> list = new ArrayList<>();
-        String sql
-                = "WITH OrderedProducts AS ( "
-                + "    SELECT TOP 5 p.pro_id, p.pro_name, p.image, p.discount, p.price, "
-                + "           (p.price * (1 - p.discount / 100.0)) AS discounted_price, "
-                + "           COALESCE(SUM(od.quantity), 0) AS total_order "
-                + // Xử lý nếu không có order thì mặc định là 0
-                "    FROM Product p "
-                + "    LEFT JOIN OrderDetail od ON p.pro_id = od.pro_id "
-                + "    WHERE p.type_id = (SELECT type_id FROM Product WHERE pro_id = ?) "
-                + "    AND p.pro_id != ? "
-                + // Không lấy lại chính sản phẩm đang xem
-                "    AND p.status = 'active' "
-                + "    GROUP BY p.pro_id, p.pro_name, p.image, p.discount, p.price "
-                + "    ORDER BY total_order DESC "
-                + // Sắp xếp theo số lượng đặt hàng nhiều nhất
-                "), "
-                + "AdditionalProducts AS ( "
-                + "    SELECT TOP (5 - (SELECT COUNT(*) FROM OrderedProducts)) "
-                + // Chỉ lấy thêm sản phẩm nếu thiếu
-                "           p.pro_id, p.pro_name, p.image, p.discount, p.price, "
-                + "           (p.price * (1 - p.discount / 100.0)) AS discounted_price, "
-                + "           0 AS total_order "
-                + // Các sản phẩm này không có order
-                "    FROM Product p "
-                + "    WHERE p.type_id = (SELECT type_id FROM Product WHERE pro_id = ?) "
-                + "    AND p.pro_id NOT IN (SELECT pro_id FROM OrderedProducts) "
-                + // Không lặp lại sản phẩm đã có order
-                "    AND p.pro_id != ? "
-                + // Không lấy lại chính sản phẩm đang xem
-                "    AND p.status = 'active' "
-                + "    ORDER BY p.pro_id DESC "
-                + // Lấy sản phẩm mới nhất trước
-                ") "
-                + "SELECT * FROM OrderedProducts "
-                + "UNION ALL "
-                + "SELECT * FROM AdditionalProducts"; // Kết hợp hai bảng OrderedProducts & AdditionalProducts
+    
+    public Feedback getFeedbackByCustomer(String customerId, String productId) {
+        String sql = "SELECT f.feedback_id, f.pro_id, f.rating, f.comment, f.feedback_date, "
+                + "(SELECT STRING_AGG(od.size, ', ') FROM [Order] o JOIN OrderDetail od ON o.order_id = od.order_id "
+                + "WHERE o.cus_id = f.cus_id AND od.pro_id = f.pro_id AND o.tracking = 'delivered') AS purchasedSizes "
+                + "FROM Feedback f WHERE f.cus_id = ? AND f.pro_id = ?";
 
         try {
             conn = getConnection();
             ps = conn.prepareStatement(sql);
-            ps.setInt(1, pro_id); // Lấy type_id của sản phẩm hiện tại
-            ps.setInt(2, pro_id); // Không lấy lại chính sản phẩm
-            ps.setInt(3, pro_id); // Lấy thêm sản phẩm cùng type_id nếu thiếu
-            ps.setInt(4, pro_id); // Không lấy lại chính sản phẩm
+            ps.setString(1, customerId);
+            ps.setString(2, productId);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Feedback fb = new Feedback();
+                fb.setFeedback_id(rs.getInt("feedback_id"));
+                fb.setPro_id(rs.getInt("pro_id"));
+                fb.setRating(rs.getInt("rating"));
+                fb.setComment(rs.getString("comment"));
+                fb.setFeedback_date(rs.getDate("feedback_date"));
+                fb.setPurchasedSizes(rs.getString("purchasedSizes"));
+                return fb;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving customer feedback: " + e.getMessage());
+        } finally {
+            closeResources();
+        }
+        return null;
+    }
+
+    public List<Product> getSuggestProducts(int pro_id) {
+        List<Product> list = new ArrayList<>();
+        String sql
+                = "WITH CurrentProduct AS ( "
+                + "    SELECT pro_id, price, discount, "
+                + "           (price * (1 - discount / 100.0)) AS current_discounted_price, "
+                + "           type_id "
+                + "    FROM Product "
+                + "    WHERE pro_id = ? "
+                + "), "
+                + "FilteredProducts AS ( "
+                + "    SELECT TOP 10 p.pro_id, p.pro_name, p.image, p.discount, p.price, "
+                + "           (p.price * (1 - p.discount / 100.0)) AS discounted_price, "
+                + "           COALESCE(SUM(od.quantity), 0) AS soldProduct, "
+                + "           CAST(COALESCE((SELECT AVG(CAST(rating AS DECIMAL(2,1))) "
+                + "                          FROM Feedback f WHERE f.pro_id = p.pro_id), 0) AS DECIMAL(2,1)) AS averageRating "
+                + "    FROM Product p "
+                + "    LEFT JOIN OrderDetail od ON p.pro_id = od.pro_id, "
+                + "         CurrentProduct cp "
+                + "    WHERE p.pro_id != cp.pro_id "
+                + "      AND p.type_id = cp.type_id "
+                + "      AND p.status = 'active' "
+                + "      AND (p.price * (1 - p.discount / 100.0)) BETWEEN cp.current_discounted_price * 0.8 AND cp.current_discounted_price * 1.2 "
+                + "    GROUP BY p.pro_id, p.pro_name, p.image, p.discount, p.price "
+                + "    ORDER BY soldProduct DESC, averageRating DESC, p.pro_id DESC "
+                + "), "
+                + "AdditionalProducts AS ( "
+                + "    SELECT TOP (10 - (SELECT COUNT(*) FROM FilteredProducts)) "
+                + "           p.pro_id, p.pro_name, p.image, p.discount, p.price, "
+                + "           (p.price * (1 - p.discount / 100.0)) AS discounted_price, "
+                + "           0 AS soldProduct, "
+                + "           CAST(COALESCE((SELECT AVG(CAST(rating AS DECIMAL(2,1))) "
+                + "                          FROM Feedback f WHERE f.pro_id = p.pro_id), 0) AS DECIMAL(2,1)) AS averageRating "
+                + "    FROM Product p, CurrentProduct cp "
+                + "    WHERE p.pro_id != cp.pro_id "
+                + "      AND p.type_id = cp.type_id "
+                + "      AND p.status = 'active' "
+                + "      AND p.pro_id NOT IN (SELECT pro_id FROM FilteredProducts) "
+                + "    ORDER BY p.pro_id DESC "
+                + ") "
+                + "SELECT * FROM FilteredProducts "
+                + "UNION ALL "
+                + "SELECT * FROM AdditionalProducts";
+
+        try {
+            conn = getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, pro_id); // CurrentProduct
 
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -176,6 +255,8 @@ public class ProductDetailsDAO {
                 p.setDiscount(rs.getInt("discount"));
                 p.setPrice(rs.getBigDecimal("price"));
                 p.setDiscountedPrice(rs.getBigDecimal("discounted_price"));
+                p.setAverageRating(rs.getDouble("averageRating"));
+                p.setSoldProduct(rs.getInt("soldProduct")); // ✅ mới thêm
                 list.add(p);
             }
         } catch (SQLException e) {
@@ -257,6 +338,23 @@ public class ProductDetailsDAO {
         }
         return false;
     }
+    
+    public boolean updateFeedback(int feedbackId, int rating, String comment) {
+        String sql = "UPDATE Feedback SET rating = ?, comment = ?, feedback_date = GETDATE() WHERE feedback_id = ?";
+        try {
+            conn = getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, rating);
+            ps.setString(2, comment);
+            ps.setInt(3, feedbackId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error updating feedback: " + e.getMessage());
+        } finally {
+            closeResources();
+        }
+        return false;
+    }
 
     public List<ProductSize> getSizeByProductId(int proId) {
         List<ProductSize> sizes = new ArrayList<>();
@@ -281,5 +379,4 @@ public class ProductDetailsDAO {
         }
         return sizes;
     }
-
 }

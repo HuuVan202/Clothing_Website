@@ -1,3 +1,18 @@
+.rating-stars {
+    color: #f5a623;
+    font-size: 16px;
+}
+
+.feedback-count .underline {
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+.rating-divider {
+    color: #ccc;
+    margin: 0 4px;
+}
+
 .rating {
     display: flex;
     flex-direction: row-reverse;
@@ -13,7 +28,7 @@
     position: relative;
     width: 1.1em;
     font-size: 2em;
-    color: #ccc; /* Default gray color */
+    color: #ccc;
     cursor: pointer;
 }
 
@@ -24,12 +39,49 @@
 }
 
 .rating > input:checked ~ label {
-    color: #FFD700; /* Gold color for selected stars */
+    color: #FFD700;
 }
 
 .rating:not(:checked) > label:hover,
 .rating:not(:checked) > label:hover ~ label {
     color: #FFD700;
+}
+
+.feedback-warning {
+    color: red;
+    margin-top: 5px;
+    display: none;
+}
+
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.scroll-left {
+    left: -40px;
+}
+
+.scroll-right {
+    right: -40px;
+}
+
+@media (max-width: 768px) {
+    .scroll-btn {
+        display: none;
+    }
 }
 
 .feedback-warning {
