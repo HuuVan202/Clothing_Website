@@ -53,20 +53,70 @@ $(document).ready(function () {
     }
 
     // Hàm cập nhật bảng orders
+// Hàm cập nhật bảng orders
     function updateOrderTable(htmlContent) {
         let tbody = $('tbody');
         tbody.html(htmlContent || '<tr><td colspan="7">No orders found</td></tr>');
 
-        // Xử lý lại các nút sau khi cập nhật bảng
-        $('tbody .btn-details').off('click').on('click', function () {
+        // Xử lý các nút details
+        $('tbody .btn-details, tbody a:contains("Details")').off('click').on('click', function () {
             let orderId = $(this).closest('tr').find('td:first').text();
             loadOrderDetails(orderId);
         });
 
-        $('tbody .btn-update').off('click').on('click', function () {
-            let orderId = $(this).closest('tr').find('td:first').text();
-            console.log("Update button clicked for orderId: " + orderId); // Debug log
-            loadUpdateDetails(orderId);
+        // Xử lý từng hàng
+        $('tbody tr').each(function () {
+            let row = $(this);
+            let orderId = row.find('td:first').text().trim();
+            let status = row.find('td:eq(4)').text().trim().toLowerCase(); // Cột thứ 5 là Tracking status
+
+            let updateBtn = row.find('a:contains("Update")');
+            if (!updateBtn.length) {
+                updateBtn = row.find('button:contains("Update")');
+            }
+
+            if (status === 'delivered' || status === 'shipping'||status === 'canceled' || status === 'pending_delivery') {
+                // Lưu lại style hiện tại
+                let currentStyle = {
+                    'background-color': updateBtn.css('background-color'),
+                    'border-radius': updateBtn.css('border-radius'),
+                    'padding': updateBtn.css('padding'),
+                    'color': updateBtn.css('color'),
+                    'font-family': updateBtn.css('font-family'),
+                    'font-size': updateBtn.css('font-size'),
+                    'text-decoration': 'none',
+                    'display': updateBtn.css('display') || 'inline-block',
+                    'text-align': 'center'
+                };
+
+                updateBtn.css({
+                    ...currentStyle,
+                    'background-color': '#687588', // Màu xám đậm hơn một chút
+                    'opacity': '0.6',
+                    'cursor': 'not-allowed',
+                    'pointer-events': 'none' // Chặn tất cả sự kiện chuột
+                });
+
+                // Thêm thuộc tính để chặn click
+                updateBtn.attr('disabled', 'disabled');
+
+                // Xóa tất cả sự kiện click
+                updateBtn.off('click');
+                updateBtn.attr('onclick', 'return false;');
+
+                // Nếu là thẻ a, ngăn hành vi mặc định
+                if (updateBtn.is('a')) {
+                    updateBtn.attr('href', 'javascript:void(0);');
+                }
+            } else {
+                // Đảm bảo nút Update hoạt động bình thường
+                updateBtn.css('cursor', 'pointer');
+                updateBtn.prop('disabled', false);
+                updateBtn.off('click').on('click', function () {
+                    console.log("Update button clicked for orderId: " + orderId);
+                    loadUpdateDetails(orderId);
+                });
+            }
         });
     }
 
@@ -186,12 +236,7 @@ $(document).ready(function () {
         switch (currentStatus.toLowerCase()) {
             case 'processing':
                 options += '<option value="processing">Processing</option>';
-                options += '<option value="shipping">Shipping</option>';
-                options += '<option value="canceled">Canceled</option>';
-                break;
-            case 'shipping':
-                options += '<option value="shipping">Shipping</option>';
-                options += '<option value="delivered">Delivered</option>';
+                options += '<option value="pending_delivery">Pending Delivery</option>';
                 options += '<option value="canceled">Canceled</option>';
                 break;
             default:
