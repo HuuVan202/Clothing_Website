@@ -33,6 +33,7 @@ public class Product {
     private static final NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
     private Double averageRating;
     private int feedbackCount;
+    private int soldProduct; 
     private String[] stocks;
 
     public Product() {
@@ -71,7 +72,7 @@ public class Product {
         this.size = size;
         this.gender = gender;
         this.brand = brand;
-        this.type_id = type_id;
+        this.type_id = cat_id;
         this.status = status;
         this.discount = discount;
         this.discountedPrice = discountedPrice;
@@ -229,13 +230,20 @@ public class Product {
         this.averageRating = averageRating;
     }
 
-// Getter và Setter cho feedbackCount
     public int getFeedbackCount() {
         return feedbackCount;
     }
 
     public void setFeedbackCount(int feedbackCount) {
         this.feedbackCount = feedbackCount;
+    }
+
+    public int getSoldProduct() {
+        return soldProduct;
+    }
+
+    public void setSoldProduct(int soldProduct) {
+        this.soldProduct = soldProduct;
     }
 
     public String[] getStocks() {
