@@ -119,6 +119,7 @@
                                         </p>               
                                         <div class="d-flex flex-column gap-2 w-100">
                                             <button type="submit" class="btn btn-success w-50">Add to Cart</button>
+
                                         </div>
                                     </form>
                                     <div class="mt-2">

@@ -162,14 +162,12 @@
         let form = document.querySelector("form");
 
         if (button.innerText === "Update Information") {
-            // Bỏ readonly và thêm class "editing" để áp dụng CSS
             inputs.forEach(input => {
                 input.removeAttribute("readonly");
                 input.classList.add("editing");
             });
             button.innerText = "Save";
         } else {
-            // Xóa class "editing" để quay về trạng thái mặc định
             inputs.forEach(input => input.classList.remove("editing"));
             form.submit(); // Gửi form
         }

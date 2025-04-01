@@ -17,6 +17,8 @@ public class Customer {
     private String phone;
     private String address;
 
+    public Customer() {
+    }
     public Customer(int cus_id, String cus_name, String email, String username, String phone, String address) {
         this.cus_id = cus_id;
         this.cus_name = cus_name;
