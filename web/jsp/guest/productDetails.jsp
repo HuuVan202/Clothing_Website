@@ -66,12 +66,12 @@
                                                     <option value="" selected disabled>Please choose size</option>
                                                     <c:forEach var="size" items="${productSizes}">
                                                         <option value="${size.size}" 
-                                                                data-stock="${size.stock}"
+                                                                data-stock="${size.stock >= 0 ? size.stock : 0}"
                                                                 ${param.size eq size.size ? 'selected' : ''}
-                                                                ${size.stock == 0 ? 'disabled style="color:red;"' : ''}>
+                                                                ${size.stock <= 0 ? 'disabled style="color:red;"' : ''}>
                                                             ${size.size} 
                                                             <c:choose>
-                                                                <c:when test="${size.stock == 0}">(Out of stock)</c:when>
+                                                                <c:when test="${size.stock <= 0}">(Out of stock)</c:when>
                                                                 <c:otherwise>(Stock ${size.stock})</c:otherwise>
                                                             </c:choose>
                                                         </option>

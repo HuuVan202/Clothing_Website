@@ -47,6 +47,8 @@
                                     <option value="shipping">Shipping</option>
                                     <option value="delivered">Delivered</option>
                                     <option value="canceled">Canceled</option>
+                                    <option value="pending_delivery">Pending Delivery</option>
+
                                 </select>
                                 <select id="sortSelect" class="form-select" style="min-width: 180px">
                                     <option selected disabled="true">Sort by</option>
