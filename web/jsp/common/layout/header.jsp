@@ -39,38 +39,22 @@
                 </c:if>
             </ul>
 
-
-            <div class="cart me-3">
-                <a href="https://m.me/580890381776714" class="d-block link-dark text-decoration-none" style="color: white">
-                    <img
-                        class="border"
-
-                        src="${pageContext.request.contextPath}/img/icon/header/icons8-messages-100.png"
-
-                        title="Chat With Admin"
-
-                        alt="messages-icon"
-                        />
-                </a>
-            </div>
-
-            <div class="cart me-3">
+            <div class="cart me-3 position-relative">
                 <a href="Cart" class="d-block link-dark text-decoration-none" style="color: white">
-                    <img
-                        class="border"
-
-                        src="${pageContext.request.contextPath}/img/icon/header/icons8-shopping-cart-100.png"
-
-                        title="Cart"
-
-                        alt="cart-icon"
-                        />
-                    <c:if test="${not empty sessionScope.customer}">
-                        <span>${size}</span>
-                    </c:if>
+                    <img class="border" 
+                         src="${pageContext.request.contextPath}/img/icon/header/icons8-shopping-cart-100.png" 
+                         title="Cart" 
+                         alt="cart-icon" 
+                         style="width: 40px; height: 40px;"/>
                 </a>
+                <c:if test="${not empty sessionScope.customer && size > 0}">
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+                          style="font-size: 0.6em;">
+                        ${size}
+                    </span>
+                </c:if>
             </div>
-
+                         
             <div class="dropdown text-end user-services">
                 <a
                     class="d-block link-dark text-decoration-none"

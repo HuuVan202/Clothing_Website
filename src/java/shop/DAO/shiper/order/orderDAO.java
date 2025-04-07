@@ -9,8 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Connection;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,11 +24,30 @@ import shop.model.Product;
  */
 public class orderDAO {
 
+    public Order getOrderById(int id) {
+        Order order = null;
+        String sql = "SELECT * FROM [dbo].[Order]  WHERE order_id = ?";
+        try (Connection connection = new DBcontext().getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                order = new Order();
+                order.setOrder_id(rs.getInt("order_id"));
+                order.setCus_id(rs.getInt("cus_id"));
+                order.setTracking(rs.getString("tracking"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return order;
+    }
+
     public static List<Order> getAllOrderPending() {
         List<Order> orders = new ArrayList<>();
         String sql = "SELECT o.*, c.* FROM [dbo].[Order] o "
                 + "JOIN [dbo].[Customer] c ON o.cus_id = c.cus_id "
-                + "WHERE o.tracking = 'pending_delivery'";
+                + "WHERE o.tracking = 'pending_delivery'"
+                + "Order By order_date DESC";
 
         try (Connection connection = new DBcontext().getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
@@ -72,7 +89,8 @@ public class orderDAO {
         List<Order> orders = new ArrayList<>();
         String sql = "SELECT o.*, c.* FROM [dbo].[Order] o "
                 + "JOIN [dbo].[Customer] c ON o.cus_id = c.cus_id "
-                + "WHERE o.tracking = 'shipping'";
+                + "WHERE o.tracking = 'shipping'"
+                + "Order By order_date DESC";
 
         try (Connection connection = new DBcontext().getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
@@ -115,7 +133,8 @@ public class orderDAO {
         String sql = "SELECT o.*, c.* \n"
                 + "FROM [dbo].[Order] o \n"
                 + "JOIN [dbo].[Customer] c ON o.cus_id = c.cus_id \n"
-                + "WHERE o.tracking IN ('delivered', 'canceled')    ";
+                + "WHERE o.tracking IN ('delivered', 'canceled')  "
+                + "Order By order_date DESC";
 
         try (Connection connection = new DBcontext().getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
@@ -200,6 +219,146 @@ public class orderDAO {
         }
     }
 
+    public List<Order> searchPendingByCustomerName(String name) {
+        List<Order> orders = new ArrayList<>();
+        String sql = "SELECT o.*, c.* \n"
+                + "FROM [dbo].[Order] o \n"
+                + "JOIN [dbo].[Customer] c ON o.cus_id = c.cus_id \n"
+                + "WHERE o.tracking = 'pending_delivery' \n"
+                + "AND c.cus_name COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?";
+
+        try (Connection connection = new DBcontext().getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, "%" + name + "%");
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                int orderId = rs.getInt("order_id");
+                int cus_id = rs.getInt("cus_id");
+                BigDecimal totalPrice = rs.getBigDecimal("total_price");
+                String tracking = rs.getString("tracking");
+                Date orderDate = rs.getDate("order_date");
+                String paymentMethod = rs.getString("payment_method");
+
+                Order order = new Order();
+                order.setOrder_id(orderId);
+                order.setCus_id(cus_id);
+                order.setTotal_price(totalPrice);
+                order.setTracking(tracking);
+                order.setOrder_date(orderDate);
+                order.setPayment_method(paymentMethod);
+
+                Customer customer = new Customer();
+                customer.setCus_name(rs.getString("cus_name"));
+                customer.setEmail(rs.getString("email"));
+                customer.setUsername(rs.getString("username"));
+                customer.setPhone(rs.getString("phone"));
+                customer.setAddress(rs.getString("address"));
+                order.setCustomer(customer);
+
+                orders.add(order);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return orders;
+    }
+
+    public List<Order> searchShippingByCustomerName(String name) {
+        List<Order> orders = new ArrayList<>();
+
+        String sql = "SELECT o.*, c.* \n"
+                + "FROM [dbo].[Order] o \n"
+                + "JOIN [dbo].[Customer] c ON o.cus_id = c.cus_id \n"
+                + "WHERE o.tracking = 'shipping' \n"
+                + "AND c.cus_name COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?";
+
+        try (Connection connection = new DBcontext().getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, "%" + name + "%");
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                int orderId = rs.getInt("order_id");
+                int cus_id = rs.getInt("cus_id");
+                BigDecimal totalPrice = rs.getBigDecimal("total_price");
+                String tracking = rs.getString("tracking");
+                Date orderDate = rs.getDate("order_date");
+                String paymentMethod = rs.getString("payment_method");
+
+                Order order = new Order();
+                order.setOrder_id(orderId);
+                order.setCus_id(cus_id);
+                order.setTotal_price(totalPrice);
+                order.setTracking(tracking);
+                order.setOrder_date(orderDate);
+                order.setPayment_method(paymentMethod);
+
+                Customer customer = new Customer();
+                customer.setCus_name(rs.getString("cus_name"));
+                customer.setEmail(rs.getString("email"));
+                customer.setUsername(rs.getString("username"));
+                customer.setPhone(rs.getString("phone"));
+                customer.setAddress(rs.getString("address"));
+                order.setCustomer(customer);
+
+                orders.add(order);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return orders;
+    }
+
+    public List<Order> searchDeliveredAndCanceledByCustomerName(String name) {
+        List<Order> orders = new ArrayList<>();
+        String sql = "SELECT o.*, c.* \n"
+                + "FROM [dbo].[Order] o \n"
+                + "JOIN [dbo].[Customer] c ON o.cus_id = c.cus_id \n"
+                + "WHERE (o.tracking = 'canceled' \n"
+                + "OR o.tracking = 'delivered')\n"
+                + "AND c.cus_name COLLATE SQL_Latin1_General_CP1_CI_AI LIKE ?";
+
+        try (Connection connection = new DBcontext().getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, "%" + name + "%");
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                int orderId = rs.getInt("order_id");
+                int cus_id = rs.getInt("cus_id");
+                BigDecimal totalPrice = rs.getBigDecimal("total_price");
+                String tracking = rs.getString("tracking");
+                Date orderDate = rs.getDate("order_date");
+                String paymentMethod = rs.getString("payment_method");
+
+                Order order = new Order();
+                order.setOrder_id(orderId);
+                order.setCus_id(cus_id);
+                order.setTotal_price(totalPrice);
+                order.setTracking(tracking);
+                order.setOrder_date(orderDate);
+                order.setPayment_method(paymentMethod);
+
+                Customer customer = new Customer();
+                customer.setCus_name(rs.getString("cus_name"));
+                customer.setEmail(rs.getString("email"));
+                customer.setUsername(rs.getString("username"));
+                customer.setPhone(rs.getString("phone"));
+                customer.setAddress(rs.getString("address"));
+                order.setCustomer(customer);
+
+                orders.add(order);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return orders;
+    }
+
     public int getShippingOrdersCount() {
         String sql = "SELECT COUNT(*) FROM [dbo].[Order] "
                 + "WHERE tracking = 'shipping'";
@@ -256,41 +415,4 @@ public class orderDAO {
         return 0;
     }
 
-    public static void main(String[] args) {
-        System.out.println("Danh sách chi tiết đơn hàng:");
-        System.out.println("-------------------------------------");
-        orderDAO dao = new orderDAO();
-        int orderId = 1;
-        List<OrderDetail> orderDetails = dao.getOrderDetails(orderId);
-
-        if (orderDetails.isEmpty()) {
-            System.out.println("Không tìm thấy chi tiết nào cho đơn hàng ID: " + orderId);
-        } else {
-            DecimalFormat currencyFormat = new DecimalFormat("###,###₫");
-
-            System.out.println("Mã đơn hàng: " + orderDetails.get(0).getOrder_id());
-            System.out.println("-------------------------------------");
-
-            for (OrderDetail detail : orderDetails) {
-                System.out.println("Mã chi tiết: " + detail.getOrder_detail_id());
-                System.out.println("Sản phẩm: " + detail.getProduct().getPro_name());
-                System.out.println("Hình ảnh: " + detail.getProduct().getImage());
-                System.out.println("Size: " + detail.getSize());
-                System.out.println("Số lượng: " + detail.getQuantity());
-                System.out.println("Đơn giá: " + currencyFormat.format(detail.getPrice_per_unit()));
-
-                BigDecimal total = detail.getPrice_per_unit().multiply(new BigDecimal(detail.getQuantity()));
-                System.out.println("Thành tiền: " + currencyFormat.format(total));
-                System.out.println("-------------------------------------");
-            }
-
-            System.out.println("Tổng cộng: " + orderDetails.size() + " sản phẩm trong đơn hàng");
-
-            // Tính tổng giá trị đơn hàng
-            BigDecimal orderTotal = orderDetails.stream()
-                    .map(d -> d.getPrice_per_unit().multiply(new BigDecimal(d.getQuantity())))
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-            System.out.println("Tổng giá trị đơn hàng: " + currencyFormat.format(orderTotal));
-        }
-    }
 }

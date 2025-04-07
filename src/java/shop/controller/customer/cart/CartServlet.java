@@ -130,11 +130,25 @@ public class CartServlet extends HttpServlet {
                         Product product = proDAO.getProductById(id);
 
                         List<ProductSize> productSizes = proDAO.getSizeByProductId(id);
+
                         session.setAttribute("productSizes", productSizes);
 
                         if (product == null) {
                             request.setAttribute("error", "Product not found");
                             request.getRequestDispatcher("jsp/customer/cart.jsp").forward(request, response);
+                            return;
+                        }
+
+                        ProductSize productSize = proDAO.getProductSize(id, size);
+
+                        int cartQuantity = cart.getItems().stream()
+                                .filter(item -> item.getProduct().getPro_id() == id && item.getSize().equals(size))
+                                .mapToInt(CartItem::getQuantity)
+                                .sum();
+
+                        if (quantityAdd > (productSize.getStock() - cartQuantity)) {
+                            session.setAttribute("error", "Cannot add more than available stock");
+                            response.sendRedirect("detail?id=" + id);
                             return;
                         }
 
@@ -146,7 +160,6 @@ public class CartServlet extends HttpServlet {
                             existingItem.setQuantity(existingItem.getQuantity() + quantityAdd);
                             cart.updateItemToCart(id, size, existingItem.getQuantity());
                             CartDAO.addCartItem(customer.getCus_id(), existingItem);
-
                         } else {
                             CartItem newItem = new CartItem(product, quantityAdd, size);
                             cart.addItemToCart(newItem);

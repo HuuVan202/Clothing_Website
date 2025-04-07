@@ -86,17 +86,23 @@
                                 <c:set var="hasShipping" value="false"/>
                                 <c:set var="hasDelivered" value="false"/>
                                 <c:set var="hasCanceled" value="false"/>
+                                <c:set var="hasPending" value="false"/>
+
 
                                 <c:forEach items="${requestScope.listOrder}" var="o">
                                     <c:if test="${o.tracking eq 'processing'}">
                                         <c:set var="hasProcessing" value="true"/>
                                     </c:if>
+                                    <c:if test="${o.tracking eq 'pending_delivery'}">
+                                        <c:set var="hasPending" value="true"/>
+                                    </c:if> 
                                     <c:if test="${o.tracking eq 'shipping'}">
                                         <c:set var="hasShipping" value="true"/>
                                     </c:if>
                                     <c:if test="${o.tracking eq 'delivered'}">
                                         <c:set var="hasDelivered" value="true"/>
                                     </c:if>
+
                                     <c:if test="${o.tracking.toLowerCase() eq 'canceled'}">
                                         <c:set var="hasCanceled" value="true"/>
                                     </c:if>
@@ -108,6 +114,7 @@
                                         <h3></h3>
                                         <select id="orderStatus" onchange="filterOrders()">
                                             <option value="processing">Processing</option>
+                                            <option value="pending_delivery">Pending Delivery</option>
                                             <option value="shipping">Shipping</option>
                                             <option value="delivered">Delivered</option>
                                             <option value="canceled">Canceled</option>
@@ -151,6 +158,46 @@
                                             </table>
                                         </c:if>
                                         <c:if test="${not hasProcessing}">
+                                            <p class="alert alert-warning" style="width: 400px">There are currently no orders processing.</p>
+                                        </c:if>
+                                    </div>
+
+                                    <div id="pendingTable">
+                                        <h3>Pending Orders</h3>
+                                        <c:if test="${hasPending}">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Full Name</th>
+                                                        <th>Date</th>
+                                                        <th>Status</th>
+                                                        <th>Payment</th>
+                                                        <th>Total</th>
+                                                        <th>Actions</th> 
+                                                    </tr>
+                                                </thead>
+                                                <tbody>   
+                                                    <c:forEach items="${requestScope.listOrder}" var="o">                                
+                                                        <c:if test="${o.tracking eq 'pending_delivery'}">
+                                                            <tr>
+                                                                <td>${sessionScope.customer.cus_name}</td>
+                                                                <td>${o.order_date}</td>
+                                                                <td>${o.tracking}</td>
+                                                                <td>${o.payment_method}</td>
+                                                                <td>${o.getFormattedPrice()} VND</td>
+                                                                <td>
+                                                                    <a href="OrderDetail?id=${o.order_id}" class="view">View</a>
+                                                                    <c:if test="${o.tracking eq 'pending_delivery'}">
+                                                                        <a href="#" onclick="confirmCancel(event, '${o.order_id}')" class="cancel">Cancel</a>
+                                                                    </c:if>
+                                                                </td>
+                                                            </tr>
+                                                        </c:if>
+                                                    </c:forEach>  
+                                                </tbody>
+                                            </table>
+                                        </c:if>
+                                        <c:if test="${not hasPending}">
                                             <p class="alert alert-warning" style="width: 400px">There are currently no orders processing.</p>
                                         </c:if>
                                     </div>
@@ -288,6 +335,7 @@
                 // Danh sách các bảng
                 var tables = {
                     processing: document.getElementById("processingTable"),
+                    pending_delivery: document.getElementById("pendingTable"),
                     shipping: document.getElementById("shippingTable"),
                     delivered: document.getElementById("deliveredTable"),
                     canceled: document.getElementById("canceledTable")

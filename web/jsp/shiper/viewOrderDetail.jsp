@@ -48,24 +48,14 @@
     <body>
 
         <div class="d-flex h-100">
-            <jsp:include page="../common/layout/manageSibarShiper.jsp"></jsp:include>
-
-                <!-- Main Content -->
-                <div class="flex-grow-1 d-flex flex-column" style="overflow-y: auto;">
-                    <!-- Shipper Header -->
-                    <header class="bg-white shadow-sm p-3 d-flex justify-content-between align-items-center">
-                        <div>
-                            <h5 class="mb-0"><i class="bi bi-truck me-2"></i> Shipper Dashboard</h5>
+            <div class="flex-grow-1 d-flex flex-column" style="overflow-y: auto;">
+                <div class="">
+                    <div class="card h-100">
+                        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-list-task me-2"></i> Order Details</h5>
                         </div>
-                    </header>
-                    <div class="">
-                        <!-- Current Deliveries -->
-                        <div class="card h-100">
-                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0"><i class="bi bi-list-task me-2"></i> Current Deliveries</h5>
-                                <button class="btn btn-sm btn-outline-primary">View All</button>
-                            </div>
-                            <div class="card-body">
+                        <div class="card-body">
+
                             <c:choose>
                                 <c:when test="${empty orderDetails}">
                                     <div class="alert alert-info">No shipping orders currently</div>
@@ -94,35 +84,42 @@
                                                                  width="80" 
                                                                  alt="${detail.product.pro_name}" 
                                                                  class="img-thumbnail">
-                                                        </td>                                                        
+                                                        </td>
                                                         <td>${detail.size}</td>
                                                         <td>${detail.quantity}</td>
                                                         <td>
-                                                            <fmt:formatNumber 
-                                                                value="${detail.price_per_unit}" 
-                                                                />
-                                                            VND
-                                                        </td>        
+                                                            <fmt:formatNumber value="${detail.price_per_unit}" /> VND
+                                                        </td>
                                                         <td>
-                                                            <fmt:formatNumber 
-                                                                value="${detail.price_per_unit * detail.quantity}" 
-                                                                />
-                                                            VND
-                                                        </td>                                                       
-
-                                                    </c:forEach>
+                                                            <fmt:formatNumber value="${detail.price_per_unit * detail.quantity}" /> VND
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
                                             </tbody>
                                         </table>
                                     </div>
 
+
+                                    <form action="orderServlet" method="post"
+                                          onsubmit="return confirm('Confirm status change for order #${order.order_id}?')" class="text-end mt-3">
+                                        <input type="hidden" name="action" value="updateStatus">
+                                        <input type="hidden" name="order_id" value="${order.order_id}">
+                                        <button type="submit" name="tracking" value="shipping" class="btn btn-primary btn-sm">
+                                            <i class="bi bi-truck"></i> Shipping
+                                        </button>
+                                        <button type="submit" name="tracking" value="canceled" class="btn btn-danger btn-sm ms-1">
+                                            <i class="bi bi-x-lg"></i> Cancel
+                                        </button>
+                                    </form>
+
                                 </c:otherwise>
                             </c:choose>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-</body>
+    </body>
 </html>

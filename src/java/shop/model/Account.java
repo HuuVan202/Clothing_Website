@@ -10,16 +10,33 @@ package shop.model;
  */
 public class Account {
 
+    private int accountID;
     private String username;
     private String password;
     private String role;
     private String acc_status;
+
+    public Account(int accountID, String username, String password, String role, String acc_status) {
+        this.accountID = accountID;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.acc_status = acc_status;
+    }
 
     public Account(String username, String password, String role, String acc_status) {
         this.username = username;
         this.password = password;
         this.role = role;
         this.acc_status = acc_status;
+    }
+
+    public int getAccountID() {
+        return accountID;
+    }
+
+    public void setAccountID(int accountID) {
+        this.accountID = accountID;
     }
 
     public String getUsername() {

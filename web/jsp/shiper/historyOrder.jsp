@@ -64,12 +64,19 @@
                         </div>
                     </header>
                     <hr>
-                    <div class="container-fluid p-3">
-                        <div class="card">
-                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0"><i class="bi bi-list-task me-2"></i> History Deliveries</h5>
-                            </div>
-                            <div class="card-body">
+                    <div class="container row">
+                        <form action="orderHistory" method="post" class="d-flex">
+                            <input class="form-control me-2 w-50"type="text" name="cus_name" placeholder="Enter name" value="${name}">
+                        <button class="btn btn-primary "type="submit">Search</button>
+                    </form> 
+                </div>
+                <hr>
+                <div class="container-fluid p-3">
+                    <div class="card">
+                        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-list-task me-2"></i> History Deliveries</h5>
+                        </div>
+                        <div class="card-body">
                             <c:choose>
                                 <c:when test="${empty historyDeli}">
                                     <div class="alert alert-info">No shipping orders history</div>
@@ -79,6 +86,7 @@
                                         <table class="table table-hover align-middle">
                                             <thead class="table-light">
                                                 <tr>
+                                                    <th>No</th>
                                                     <th>Order ID</th>
                                                     <th>Name</th>
                                                     <th>Phone</th>
@@ -92,8 +100,9 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <c:forEach var="order" items="${historyDeli}">
+                                                <c:forEach var="order" items="${historyDeli}" varStatus="loop">
                                                     <tr>
+                                                        <td>${loop.index+1}</td>
                                                         <td>#${order.order_id}</td>
                                                         <td>${order.customer.cus_name}</td>
                                                         <td>${order.customer.phone}</td>
@@ -114,9 +123,12 @@
                                                             </c:if>
                                                         </td>
                                                         <td>
-                                                            <a href="orderDetailServlet?id=${order.order_id}" class="btn btn-sm btn-outline-primary">
+                                                            <button type="button" class="btn btn-sm btn-outline-info"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#orderDetailModal"
+                                                                    data-order-id="${order.order_id}">
                                                                 <i class="bi bi-eye"></i> View
-                                                            </a>
+                                                            </button>
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
@@ -131,5 +143,50 @@
                 <hr>
             </div>
         </div>
+        <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Nội dung AJAX load ở đây -->
+                        <div id="orderDetailContent" class="text-center text-muted">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading order detail...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            var orderDetailModal = document.getElementById('orderDetailModal');
+            orderDetailModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var orderId = button.getAttribute('data-order-id');
+                var contentDiv = document.getElementById('orderDetailContent');
+
+// Show loading
+                contentDiv.innerHTML = `
+   <div class="spinner-border" role="status">
+       <span class="visually-hidden">Loading...</span>
+   </div>
+   <p class="mt-2">Loading order detail...</p>
+`;
+
+// Gửi AJAX
+                fetch('${pageContext.request.contextPath}/orderDetailServlet?id=' + orderId)
+                        .then(response => response.text())
+                        .then(data => {
+                            contentDiv.innerHTML = data;
+                        })
+                        .catch(error => {
+                            contentDiv.innerHTML = '<div class="alert alert-danger">Failed to load order detail.</div>';
+                            console.error('Error loading detail:', error);
+                        });
+            });
+        </script>
     </body>
 </html>

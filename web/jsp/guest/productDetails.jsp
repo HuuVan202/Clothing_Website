@@ -79,8 +79,6 @@
                                         </span>
                                         <span class="rating-divider">|</span>
                                         <span class="feedback-count"><span class="text-decoration-underline fw-bold">${pd.feedbackCount}</span> Feedback</span>
-                                        <span class="rating-divider">|</span>
-                                        <span class="sold-count fw-bold">${pd.soldProduct}</span> Sold
                                     </div>
 
                                     <c:if test="${pd.discount > 0}">
@@ -101,14 +99,16 @@
                                             <select id="size" name="size" required class="form-select w-50" onchange="updateMaxQuantity()">
                                                 <option value="" selected disabled>Please choose size</option>
                                                 <c:forEach var="size" items="${productSizes}">
+                                                    <c:set var="cartQuantity" value="${cartItems[size.size] != null ? cartItems[size.size].quantity : 0}" />
                                                     <option value="${size.size}" 
                                                             data-stock="${size.stock}"
+                                                            data-cart-quantity="${cartQuantity}"
                                                             ${param.size eq size.size ? 'selected' : ''}
-                                                            ${size.stock == 0 ? 'disabled style="color:red;"' : ''}>
+                                                            ${(size.stock - cartQuantity) < 1 ? 'disabled style="color:red;"' : ''}>
                                                         ${size.size} 
                                                         <c:choose>
-                                                            <c:when test="${size.stock == 0}">(Out of stock)</c:when>
-                                                            <c:otherwise>(Stock ${size.stock})</c:otherwise>
+                                                            <c:when test="${(size.stock - cartQuantity) < 1}">(Out of stock)</c:when>
+                                                            <c:otherwise>(Stock ${size.stock - cartQuantity})</c:otherwise>
                                                         </c:choose>
                                                     </option>
                                                 </c:forEach>
@@ -119,7 +119,6 @@
                                         </p>               
                                         <div class="d-flex flex-column gap-2 w-100">
                                             <button type="submit" class="btn btn-success w-50">Add to Cart</button>
-
                                         </div>
                                     </form>
                                     <div class="mt-2">
@@ -299,86 +298,88 @@
                                 const sizeSelect = document.getElementById("size");
                                 const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
                                 const quantityInput = document.getElementById("quantityInput");
-                                quantityInput.value = 1;
 
-                                if (selectedOption.value && selectedOption.getAttribute("data-stock") > 0) {
+                                quantityInput.value = "";
+
+                                if (selectedOption.value) {
                                     const stock = parseInt(selectedOption.getAttribute("data-stock"));
+                                    const cartQuantity = parseInt(selectedOption.getAttribute("data-cart-quantity")) || 0;
+                                    const availableQuantity = stock - cartQuantity;
 
-                                    quantityInput.disabled = false;
-
-                                    quantityInput.max = stock;
-
-                                    if (parseInt(quantityInput.value) > stock) {
-
-                                        quantityInput.value = stock;
-
+                                    if (availableQuantity > 0) {
+                                        quantityInput.disabled = false;
+                                        quantityInput.min = 1;
+                                        quantityInput.max = availableQuantity;
+                                        quantityInput.value = 1;
+                                    } else {
+                                        quantityInput.disabled = true;
+                                        quantityInput.value = "";
                                     }
-
                                 } else {
                                     quantityInput.disabled = true;
+                                    quantityInput.value = "";
                                 }
                             }
 
                             document.addEventListener("DOMContentLoaded", function () {
-                                document.getElementById("size").addEventListener("change", updateMaxQuantity);
-
-                                if (document.getElementById("size").value) {
+                                const sizeSelect = document.getElementById("size");
+                                if (sizeSelect) {
+                                    sizeSelect.addEventListener("change", updateMaxQuantity);
                                     updateMaxQuantity();
                                 }
-                            });
 
-                            function scrollCards(containerId, direction) {
-                                const container = document.getElementById(containerId);
-                                if (container) {
-                                    container.scrollBy({left: direction * 250, behavior: "smooth"});
+                                function scrollCards(containerId, direction) {
+                                    const container = document.getElementById(containerId);
+                                    if (container) {
+                                        container.scrollBy({left: direction * 250, behavior: "smooth"});
+                                    }
                                 }
-                            }
 
-                            document.querySelectorAll('.feedback-btn').forEach(button => {
-                                button.addEventListener('click', async function (e) {
-                                    e.preventDefault();
-                                    const productId = this.dataset.productId;
-                                    const warningDiv = this.parentElement.querySelector('.feedback-warning');
+                                document.querySelectorAll('.feedback-btn').forEach(button => {
+                                    button.addEventListener('click', async function (e) {
+                                        e.preventDefault();
+                                        const productId = this.dataset.productId;
+                                        const warningDiv = this.parentElement.querySelector('.feedback-warning');
 
-                                    // 👉 Đây là Give Feedback nên cần check
-                                    try {
-                                        const response = await fetch(`checkPurchase?pro_id=${productId}`, {
-                                            method: 'GET',
-                                            headers: {'Accept': 'application/json'}
-                                        });
+                                        try {
+                                            const response = await fetch(`checkPurchase?pro_id=${productId}`, {
+                                                method: 'GET',
+                                                headers: {'Accept': 'application/json'}
+                                            });
 
-                                        if (!response.ok)
-                                            throw new Error('Network response was not ok');
+                                            if (!response.ok)
+                                                throw new Error('Network response was not ok');
 
-                                        const data = await response.json();
+                                            const data = await response.json();
 
-                                        this.classList.remove('btn-danger');
-                                        this.classList.add('btn-primary');
-                                        warningDiv.style.display = 'none';
+                                            this.classList.remove('btn-danger');
+                                            this.classList.add('btn-primary');
+                                            warningDiv.style.display = 'none';
 
-                                        if (data.status === 'error') {
-                                            this.classList.remove('btn-primary');
-                                            this.classList.add('btn-danger');
+                                            if (data.status === 'error') {
+                                                this.classList.remove('btn-primary');
+                                                this.classList.add('btn-danger');
 
-                                            if (data.message === 'not_logged_in') {
-                                                window.location.href = 'Login';
+                                                if (data.message === 'not_logged_in') {
+                                                    window.location.href = 'Login';
+                                                    return;
+                                                }
+
+                                                warningDiv.textContent = data.message === 'already_reviewed'
+                                                        ? 'Sorry, you can only feedback once for this product.'
+                                                        : 'Sorry, you must have ordered and received this product to be able to give feedback.';
+                                                warningDiv.style.display = 'block';
                                                 return;
                                             }
 
-                                            warningDiv.textContent = data.message === 'already_reviewed'
-                                                    ? 'Sorry, you can only feedback once for this product.'
-                                                    : 'Sorry, you must have ordered and received this product to be able to give feedback.';
-                                            warningDiv.style.display = 'block';
-                                            return;
+                                            const modal = new bootstrap.Modal(document.getElementById('feedbackModal'));
+                                            modal.show();
+                                        } catch (error) {
+                                            const errorDiv = document.getElementById('feedbackError');
+                                            errorDiv.style.display = 'block';
+                                            errorDiv.textContent = 'An error occurred. Please try again later.';
                                         }
-
-                                        const modal = new bootstrap.Modal(document.getElementById('feedbackModal'));
-                                        modal.show();
-                                    } catch (error) {
-                                        const errorDiv = document.getElementById('feedbackError');
-                                        errorDiv.style.display = 'block';
-                                        errorDiv.textContent = 'An error occurred. Please try again later.';
-                                    }
+                                    });
                                 });
                             });
         </script>

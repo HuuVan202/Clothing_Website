@@ -22,6 +22,12 @@ public class ProductSize {
         this.stock = stock;
     }
 
+    public ProductSize( int pro_id, String size, int stock) {
+        this.pro_id = pro_id;
+        this.size = size;
+        this.stock = stock;
+    }
+
     public ProductSize(String size, int stock) {
 
         this.size = size;

@@ -22,6 +22,8 @@ import shop.model.Order;
 @WebServlet(name = "shippingOrderServlet", urlPatterns = {"/shippingOrderServlet"})
 public class shippingOrderServlet extends HttpServlet {
 
+    orderDAO dao = new orderDAO();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -86,10 +88,16 @@ public class shippingOrderServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
 
-        if ("updateStatus".equals(action)) {
-            updateOrderStatus(request, response);
-        } else {
-            processRequest(request, response);
+        switch (action) {
+            case "updateStatus":
+                updateOrderStatus(request, response);
+                break;
+            case "searchNameShipping":
+                searchNameShipping(request, response);
+                break;
+            default:
+                processRequest(request, response);
+                break;
         }
     }
 
@@ -115,6 +123,24 @@ public class shippingOrderServlet extends HttpServlet {
         }
 
         response.sendRedirect("shippingOrderServlet");
+    }
+
+    private void searchNameShipping(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
+        try {
+            String name = request.getParameter("cus_name");
+            if (name == null) {
+                name = "";
+            }
+            List<Order> orders = dao.searchShippingByCustomerName(name);
+            request.setAttribute("shippingOrders", orders);
+            request.setAttribute("name", name);
+            request.getRequestDispatcher("jsp/shiper/shippingOrder.jsp").forward(request, response);
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
