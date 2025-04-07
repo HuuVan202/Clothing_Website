@@ -22,6 +22,8 @@ import shop.model.Order;
 @WebServlet(name = "orderServlet", urlPatterns = {"/orderServlet"})
 public class orderServlet extends HttpServlet {
 
+    orderDAO dao = new orderDAO();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -64,8 +66,10 @@ public class orderServlet extends HttpServlet {
 
         if ("updateStatus".equals(action)) {
             updateOrderStatus(request, response);
+        } else if ("searchNamePending".equals(action)) {
+            searchNamePending(request, response);
         } else {
-            List<Order> pendingOrders = orderDAO.getAllOrderPending();
+            List<Order> pendingOrders = dao.getAllOrderPending();
             request.setAttribute("pendingOrders", pendingOrders);
 
             request.getRequestDispatcher("jsp/shiper/checkOrder.jsp").forward(request, response);
@@ -85,10 +89,16 @@ public class orderServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
 
-        if ("updateStatus".equals(action)) {
-            updateOrderStatus(request, response);
-        } else {
-            processRequest(request, response);
+        switch (action) {
+            case "updateStatus":
+                updateOrderStatus(request, response);
+                break;
+            case "searchNamePending":
+                searchNamePending(request, response);
+                break;
+            default:
+                processRequest(request, response);
+                break;
         }
     }
 
@@ -98,7 +108,7 @@ public class orderServlet extends HttpServlet {
             int orderId = Integer.parseInt(request.getParameter("order_id"));
             String newStatus = request.getParameter("tracking");
 
-            boolean success = orderDAO.updateOrderStatus(orderId, newStatus);
+            boolean success = dao.updateOrderStatus(orderId, newStatus);
 
             if (success) {
                 request.getSession().setAttribute("message", "Order #" + orderId + " status updated to " + newStatus);
@@ -116,8 +126,27 @@ public class orderServlet extends HttpServlet {
         response.sendRedirect("orderServlet");
     }
 
+    private void searchNamePending(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
+        try {
+            String name = request.getParameter("cus_name");
+            if (name == null) {
+                name = "";
+            }
+            List<Order> orders = dao.searchPendingByCustomerName(name);
+            request.setAttribute("pendingOrders", orders);
+            request.setAttribute("name", name);
+            request.getRequestDispatcher("jsp/shiper/checkOrder.jsp").forward(request, response);
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @Override
     public String getServletInfo() {
         return "Servlet quản lý đơn hàng cho shipper";
     }
+
 }

@@ -64,12 +64,19 @@
                         </div>
                     </header>
                     <hr>
-                    <div class="container-fluid p-3">
-                        <div class="card">
-                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0"><i class="bi bi-list-task me-2"></i> Current Deliveries</h5>
-                            </div>
-                            <div class="card-body">
+                    <div class="container row">
+                        <form action="shippingOrderServlet?action=searchNameShipping" method="post" class="d-flex">
+                            <input class="form-control me-2 w-50"type="text" name="cus_name" placeholder="Enter name" value="${name}">
+                        <button class="btn btn-primary "type="submit">Search</button>
+                    </form> 
+                </div>
+                <hr>
+                <div class="container-fluid p-3">
+                    <div class="card">
+                        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-list-task me-2"></i> Order in transit</h5>
+                        </div>
+                        <div class="card-body">
                             <c:choose>
                                 <c:when test="${empty shippingOrders}">
                                     <div class="alert alert-info">No shipping orders currently</div>
@@ -79,6 +86,7 @@
                                         <table class="table table-hover align-middle">
                                             <thead class="table-light">
                                                 <tr>
+                                                    <th>No</th>
                                                     <th>Order ID</th>
                                                     <th>Name</th>
                                                     <th>Phone</th>
@@ -92,8 +100,9 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <c:forEach var="order" items="${shippingOrders}">
+                                                <c:forEach var="order" items="${shippingOrders}" varStatus="loop">
                                                     <tr>
+                                                        <td>${loop.index+1}</td>
                                                         <td>#${order.order_id}</td>
                                                         <td>${order.customer.cus_name}</td>
                                                         <td>${order.customer.phone}</td>
@@ -108,22 +117,13 @@
                                                         </td>
                                                         <td class="action-buttons">
                                                             <div class="d-flex gap-2">
-                                                                <a href="orderDetailServlet?id=${order.order_id}" class="btn btn-sm btn-outline-primary">
+                                                                <button type="button" class="btn btn-sm btn-outline-info"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#orderDetailModal"
+                                                                        data-order-id="${order.order_id}">
                                                                     <i class="bi bi-eye"></i> View
-                                                                </a>
-                                                                <form action="${pageContext.request.contextPath}/shippingOrderServlet" method="post"
-                                                                      onsubmit="return confirm('Confirm status change for order #${order.order_id}?')">
-                                                                    <input type="hidden" name="action" value="updateStatus">
-                                                                    <input type="hidden" name="order_id" value="${order.order_id}">
-                                                                    <button type="submit" name="tracking" value="delivered" 
-                                                                            class="btn btn-success btn-sm">
-                                                                        <i class="bi bi-check-lg"></i> Delivered
-                                                                    </button>
-                                                                    <button type="submit" name="tracking" value="canceled" 
-                                                                            class="btn btn-danger btn-sm ms-1">
-                                                                        <i class="bi bi-x-lg"></i> Cancel
-                                                                    </button>
-                                                                </form>
+                                                                </button>
+
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -139,5 +139,47 @@
                 <hr>
             </div>
         </div>
+        <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="orderDetailContent" class="text-center text-muted">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading order detail...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            var orderDetailModal = document.getElementById('orderDetailModal');
+            orderDetailModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var orderId = button.getAttribute('data-order-id');
+                var contentDiv = document.getElementById('orderDetailContent');
+
+                contentDiv.innerHTML = `
+   <div class="spinner-border" role="status">
+       <span class="visually-hidden">Loading...</span>
+   </div>
+   <p class="mt-2">Loading order detail...</p>
+`;
+
+                fetch('${pageContext.request.contextPath}/orderDetailServlet?id=' + orderId)
+                        .then(response => response.text())
+                        .then(data => {
+                            contentDiv.innerHTML = data;
+                        })
+                        .catch(error => {
+                            contentDiv.innerHTML = '<div class="alert alert-danger">Failed to load order detail.</div>';
+                            console.error('Error loading detail:', error);
+                        });
+            });
+        </script>
     </body>
 </html>

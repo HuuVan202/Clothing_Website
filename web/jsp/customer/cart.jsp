@@ -67,17 +67,18 @@
                                        data-original-value="${i.quantity}"
                                        onchange="showError(this, ${i.stock})"
                                        onfocus="this.dataset.originalValue = this.value"/>
+                                <div class="error-message"></div>
                             </form>
                         </td>
                         <td class="total_product" data-value="${i.product.salePrice * i.quantity}">
                             <fmt:formatNumber value="${i.product.salePrice * i.quantity}" /> VND
                         </td>
                         <td class="remove_product">
-                            <form class="ajax-form">
+                            <form method="post" action="Cart">
                                 <input type="hidden" name="pro_id" value="${i.product.pro_id}" />
                                 <input type="hidden" name="size" value="${i.size}" />
                                 <input type="hidden" name="action" value="delete"/>
-                                <button type="button" class="delete-btn btn btn-danger">Delete</button>
+                                <button type="submit" class="delete-btn btn btn-danger">Delete</button>
                             </form>
                         </td>
                     </tr>
@@ -95,50 +96,54 @@
                     </button>
                 </form>
             </div>
+        </c:if>
 
-        </form>
-    </c:if>
+        <jsp:include page="../common/layout/footer.jsp"></jsp:include>
+            <script>
+                function checkStock(input, stock) {
+                    var quantity = parseInt(input.value);
+                    if (quantity === stock) {
+                        alert("You have selected the maximum quantity in stock!");
+                    }
+                }
 
-    <jsp:include page="../common/layout/footer.jsp"></jsp:include>
-    <script>
-        function checkStock(input, stock) {
-            var quantity = parseInt(input.value);
-            if (quantity === stock) {
-                alert("You have selected the maximum quantity in stock!");
-            }
-        }
+                function showError(input, stock) {
+                    const errorDiv = input.parentElement.querySelector('.error-message');
+                    const quantity = parseInt(input.value) || 0;
+                    if (quantity > stock) {
+                        input.value = stock;
+                        input.classList.add('is-invalid');
+                        alert(`Maximum product in stock`);
+                        return false;
+                    }
+                    input.classList.remove('is-invalid');
+                    return true;
+                }
 
-        function showError(input, stock) {
-            const errorDiv = input.parentElement.querySelector('.error-message');
-            const quantity = parseInt(input.value) || 0;
-            if (quantity > stock) {
-                input.value = stock;
-                input.classList.add('is-invalid');
-                alert(`Maximum product in stock`);
-                return false;
-            }
-            return true;
-        }
+                function validateQuantity(form, stock) {
+                    const quantity = parseInt(form.quantity.value) || 0;
+                    if (quantity > stock) {
+                        form.quantity.value = stock;
+                        form.quantity.classList.add('is-invalid');
+                        alert(`Maximum product in stock.`);
+                        return false;
+                    }
+                    form.quantity.classList.remove('is-invalid');
+                    return true;
+                }
 
-        function validateQuantity(form, stock) {
-            const quantity = parseInt(form.quantity.value) || 0;
-            if (quantity > stock) {
-                form.quantity.value = stock;
-                form.quantity.classList.add('is-invalid');
-                return false;
-            }
-            return true;
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.quantity-input').forEach(input => {
-                input.dataset.original = input.value;
-                input.addEventListener('focus', function () {
-                    this.dataset.original = this.value;
+                document.addEventListener('DOMContentLoaded', function () {
+                    // Set up quantity inputs
+                    document.querySelectorAll('.quantity-input').forEach(input => {
+                        input.dataset.originalValue = input.value;
+                        input.addEventListener('change', function () {
+                            const form = this.closest('form');
+                            if (validateQuantity(form, parseInt(this.max))) {
+                                form.submit();
+                            }
+                        });
+                    });
                 });
-            });
-        });
-    </script>
-</body>
+        </script>
+    </body>
 </html>
-

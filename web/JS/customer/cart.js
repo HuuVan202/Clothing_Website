@@ -1,114 +1,134 @@
-
 $(document).ready(function () {
-    // Xử lý sự kiện thay đổi số lượng
+    // Handle quantity change event
     $('.quantity-input').on('change', function () {
         var form = $(this).closest('.ajax-form');
+        var stock = parseInt($(this).attr('max'));
+
+        // Validate quantity before sending AJAX request
+        if (!validateQuantity(form[0], stock)) {
+            return;
+        }
+
         var formData = form.serialize();
+        var currentRow = form.closest('tr');
+        var quantityInput = $(this);
+        var newQuantity = parseInt(quantityInput.val());
+
+        // Get price from price cell text (strip "VND" and formatting)
+        var priceCell = currentRow.find('.price_product').eq(0);
+        var priceText = priceCell.text().replace('VND', '').trim();
+        var price = parseFloat(priceText.replace(/\./g, ''));
+
+        // Prevent default form submission behavior
+        form.on('submit', function (e) {
+            e.preventDefault();
+            return false;
+        });
 
         $.ajax({
             url: '/ClothingShop/Cart',
             type: 'POST',
             data: formData,
             success: function (response) {
-                // Lấy thông tin hàng hiện tại
-                var row = form.closest('tr');
+                // Calculate the new total
+                var newTotal = price * newQuantity;
 
-                // Lấy giá từ data attribute để đảm bảo chính xác
-                var price = parseFloat(row.find('.price_product').data('price'));
-                var quantity = parseInt(form.find('.quantity-input').val());
+                // Update the total cell with the exact same format as JSP
+                var totalCell = currentRow.find('.total_product');
+                totalCell.attr('data-value', newTotal);
 
-                // Tính toán tổng tiền cho sản phẩm
-                var total = price * quantity;
+                // Format exactly like fmt:formatNumber in JSP
+                var formattedTotal = formatNumberExactly(newTotal) + " VND";
+                totalCell.text(formattedTotal);
 
-                // Cập nhật hiển thị và data attribute
-                row.find('.total_product')
-                        .text(total.toLocaleString('vi-VN') + ' VND')
-                        .data('value', total);
-
-                // Cập nhật tổng tiền giỏ hàng
+                // Update the cart total
                 updateCartTotal();
             },
             error: function (xhr, status, error) {
-                console.error("Lỗi: " + error);
-                console.error("Phản hồi: " + xhr.responseText);
-                alert('Có lỗi xảy ra khi cập nhật số lượng');
+                console.error("Error:", error);
+                alert('An error occurred while updating the quantity');
+                // Reset to original value on error
+                quantityInput.val(quantityInput.attr('data-original-value'));
             }
         });
     });
 
-    // Xử lý sự kiện xóa sản phẩm
-    $('.delete-btn').on('click', function () {
-        if (confirm("Bạn có muốn xóa sản phẩm khỏi giỏ hàng không?")) {
-            var form = $(this).closest('.ajax-form');
-            var formData = form.serialize();
+    // Handle delete button click
 
-            $.ajax({
-                url: '/ClothingShop/Cart',
-                type: 'POST',
-                data: formData,
-                success: function (response) {
-                    // Xóa hàng khỏi bảng
-                    form.closest('tr').remove();
 
-                    // Cập nhật số thứ tự
-                    updateRowNumbers();
-
-                    // Cập nhật tổng tiền
-                    updateCartTotal();
-
-                    // Kiểm tra nếu giỏ hàng trống thì reload trang
-                    if ($('table tbody tr').length === 0) {
-                        location.reload();
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Trạng thái: " + status);
-                    console.error("Lỗi: " + error);
-                    console.error("Phản hồi: " + xhr.responseText);
-
-                    let errorMsg = "Có lỗi xảy ra khi xóa sản phẩm\n";
-                    errorMsg += "Chi tiết: " + (xhr.responseText || error);
-                    alert(errorMsg);
-                }
-            });
-        }
+    // Stop default form submission for all ajax forms
+    $('.ajax-form').on('submit', function (e) {
+        e.preventDefault();
+        return false;
     });
-
-    // Khởi tạo giá trị data-value cho tất cả .total_product khi trang tải
-    initializeProductTotals();
 });
 
-// Hàm khởi tạo data-value cho tất cả total_product
-function initializeProductTotals() {
-    $('.total_product').each(function () {
-        var text = $(this).text();
-        var value = parseFloat(text.replace(/[^\d]/g, ''));
-        $(this).data('value', value);
-    });
+// Format number EXACTLY like fmt:formatNumber in JSP
+function formatNumberExactly(number) {
+    // Create a string version of the number
+    var str = number.toString();
 
-    // Đảm bảo mỗi price_product cũng có data-price
-    $('.price_product').each(function () {
-        var text = $(this).text();
-        var value = parseFloat(text.replace(/[^\d]/g, ''));
-        $(this).data('price', value);
-    });
+    // Add thousand separators - JSP uses dot (.) as the thousand separator
+    // This matches exactly the fmt:formatNumber output in Vietnamese locale
+    var parts = [];
+
+    // Process from the end of the string
+    for (var i = str.length; i > 0; i -= 3) {
+        var start = Math.max(0, i - 3);
+        parts.unshift(str.substring(start, i));
+    }
+
+    // Join all parts with dot as separator
+    return parts.join('.');
 }
 
-// Hàm cập nhật tổng tiền toàn bộ giỏ hàng
+// Update the cart total with exact same format
 function updateCartTotal() {
     var grandTotal = 0;
 
+    // Sum all product totals
     $('.total_product').each(function () {
-        var value = $(this).data('value');
-        grandTotal += parseFloat(value) || 0;
+        // Skip the header row
+        if ($(this).closest('tr').find('.no_product').text().includes('No')) {
+            return;
+        }
+
+        var value = parseInt($(this).attr('data-value')) || 0;
+        grandTotal += value;
     });
 
-    $('h3:contains("TOTAL:")').text('TOTAL: ' + grandTotal.toLocaleString('vi-VN') + ' VND');
+    // Update the total display with the exact same format as JSP
+    var formattedGrandTotal = formatNumberExactly(grandTotal) + " VND";
+    $('h3:contains("TOTAL:")').text('TOTAL: ' + formattedGrandTotal);
 }
 
-// Hàm cập nhật số thứ tự sau khi xóa
+// Update row numbers after deletion
 function updateRowNumbers() {
-    $('table tbody tr').each(function (index) {
-        $(this).find('.no_product').text(index + 1);
+    var index = 1;
+    $('table tr').each(function () {
+        // Skip the header row
+        if ($(this).find('.no_product').length && !$(this).find('.no_product').text().includes('No')) {
+            $(this).find('.no_product').text(index);
+            index++;
+        }
     });
+}
+
+// Function to ensure quantity validation
+function validateQuantity(form, stock) {
+    const quantity = parseInt(form.quantity.value) || 0;
+    if (quantity > stock) {
+        form.quantity.value = stock;
+        form.quantity.classList.add('is-invalid');
+        alert(`Maximum product in stock is ${stock}`);
+        return false;
+    }
+    if (quantity <= 0) {
+        form.quantity.value = 1;
+        form.quantity.classList.add('is-invalid');
+        alert(`Minimum quantity is 1`);
+        return false;
+    }
+    form.quantity.classList.remove('is-invalid');
+    return true;
 }

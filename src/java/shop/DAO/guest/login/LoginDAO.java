@@ -16,18 +16,19 @@ import shop.model.Customer;
  */
 public class LoginDAO extends DBcontext {
 
-        public Account checkLoginAccount(String userName, String passWord) {
+    public Account checkLoginAccount(String userName, String passWord) {
         Account account = null;
         connection = getConnection();
         HashPassword hash = new HashPassword();
 
         try {
             String sql = """
-                         SELECT [username]
-                               ,[password]
-                               ,[role]
-                               ,[acc_status]
-                         FROM [ClothingShopDB].[dbo].[Account]
+                        SELECT [accountID]
+                              ,[username]
+                              ,[password]
+                              ,[role]
+                              ,[acc_status]
+                          FROM [ClothingShopDB].[dbo].[Account]
                          WHERE [username] = ? AND [password] = ?""";
 
             String passHashed = hash.hashPassword(passWord);
@@ -38,12 +39,13 @@ public class LoginDAO extends DBcontext {
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                String userNameFinded = resultSet.getString(1);
-                String passwordFinded = resultSet.getString(2);
-                String role = resultSet.getString(3);
-                String status = resultSet.getString(4);
+                int accountID = resultSet.getInt(1);
+                String userNameFinded = resultSet.getString(2);
+                String passwordFinded = resultSet.getString(3);
+                String role = resultSet.getString(4);
+                String status = resultSet.getString(5);
 
-                account = new Account(userNameFinded, passwordFinded, role, status);
+                account = new Account(accountID, userNameFinded, passwordFinded, role, status);
             }
 
         } catch (SQLException e) {
@@ -52,7 +54,7 @@ public class LoginDAO extends DBcontext {
 
         return account;
     }
-    
+
     public Customer getCustomer(String userName) {
         Customer customer = null;
         connection = getConnection();
@@ -80,7 +82,7 @@ public class LoginDAO extends DBcontext {
                 String username = resultSet.getString(4);
                 String phone = resultSet.getString(5);
                 String address = resultSet.getString(6);
-            customer = new Customer(id, name, email, username, phone, address);
+                customer = new Customer(id, name, email, username, phone, address);
             }
 
         } catch (SQLException e) {
@@ -90,7 +92,7 @@ public class LoginDAO extends DBcontext {
         return customer;
     }
 
-public Customer getCustomerByEmail(String emailInput) {
+    public Customer getCustomerByEmail(String emailInput) {
         Customer customer = null;
         connection = getConnection();
 
@@ -125,14 +127,14 @@ public Customer getCustomerByEmail(String emailInput) {
 
         return customer;
     }
-    
+
     public static void main(String[] args) {
         LoginDAO loginDAO = new LoginDAO();
         Account c = loginDAO.checkLoginAccount("customer10", "Huuvan@2004");
 //        Customer c = loginDAO.getCustomer("huuvan2004");
 //        Customer c = loginDAO.getCustomerByEmail("donatellophan@gmail.com");
-    
-            System.out.println(c);
+
+        System.out.println(c);
         if (c != null) {
             System.out.println("Đăng nhập thành công!");
         } else {

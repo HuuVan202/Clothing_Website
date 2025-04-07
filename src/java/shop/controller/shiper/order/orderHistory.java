@@ -22,6 +22,8 @@ import shop.model.Order;
 @WebServlet(name = "orderHistory", urlPatterns = {"/orderHistory"})
 public class orderHistory extends HttpServlet {
 
+    orderDAO dao = new orderDAO();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -77,7 +79,18 @@ public class orderHistory extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            String name = request.getParameter("cus_name");
+            if (name == null) {
+                name = "";
+            }
+            List<Order> orders = dao.searchDeliveredAndCanceledByCustomerName(name);
+            request.setAttribute("historyDeli", orders);
+            request.setAttribute("name", name);
+            request.getRequestDispatcher("jsp/shiper/historyOrder.jsp").forward(request, response);
+
+        } catch (Exception e) {
+        }
     }
 
     /**

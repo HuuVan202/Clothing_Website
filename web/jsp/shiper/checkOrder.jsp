@@ -9,6 +9,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet"/>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
         <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/admin/managerLayout.css"/>
         <style>
             .shipper-card {
@@ -52,6 +53,8 @@
         </style>
     </head>
     <body>
+
+
         <div class="d-flex h-100">
             <jsp:include page="../common/layout/manageSibarShiper.jsp"></jsp:include>
 
@@ -64,12 +67,20 @@
                         </div>
                     </header>
                     <hr>
-                    <div class="container-fluid p-3">
-                        <div class="card">
-                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0"><i class="bi bi-list-task me-2"></i> Current Deliveries</h5>
-                            </div>
-                            <div class="card-body">
+                    <div class="container row">
+                        <form action="orderServlet?action=searchNamePending" method="post" class="d-flex">
+                            <input class="form-control me-2 w-50"type="text" name="cus_name" placeholder="Enter name" value="${name}">
+                        <button class="btn btn-primary "type="submit">Search</button>
+                    </form> 
+                </div>
+
+                <hr>
+                <div class="container-fluid p-3">
+                    <div class="card">
+                        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-list-task me-2"></i> Order awaiting shipping </h5>
+                        </div>
+                        <div class="card-body">
                             <c:choose>
                                 <c:when test="${empty pendingOrders}">
                                     <div class="alert alert-info">No shipping orders currently</div>
@@ -79,6 +90,7 @@
                                         <table class="table table-hover align-middle">
                                             <thead class="table-light">
                                                 <tr>
+                                                    <th>No</th>
                                                     <th>Order ID</th>
                                                     <th>Name</th>
                                                     <th>Phone</th>
@@ -87,13 +99,14 @@
                                                     <th>Order Date</th>
                                                     <th>Amount</th>
                                                     <th>Status</th>
-                                                    <th colspan="3" class="text-center">Actions</th> 
+                                                    <th>Actions</th> 
 
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <c:forEach var="order" items="${pendingOrders}">
+                                                <c:forEach var="order" items="${pendingOrders}" varStatus="loop">
                                                     <tr>
+                                                        <td>${loop.index+1}</td>
                                                         <td>#${order.order_id}</td>
                                                         <td>${order.customer.cus_name}</td>
                                                         <td>${order.customer.phone}</td>
@@ -102,28 +115,18 @@
                                                         <td><fmt:formatDate value="${order.order_date}" pattern="dd/MM/yyyy"/></td>
                                                         <td><fmt:formatNumber value="${order.total_price}" /> VND</td>
                                                         <td>
-                                                            <span class="badge bg-warning text-dark">
-                                                                <i class="bi bi-truck me-1"></i> Pending Delivery
+                                                            <span class="badge bg-info text-dark">
+                                                                <i class="bi bi-box"></i> Pending Delivery
                                                             </span>
                                                         </td>
                                                         <td class="action-buttons">
                                                             <div class="d-flex gap-2">
-                                                                <a href="orderDetailServlet?id=${order.order_id}" class="btn btn-sm btn-outline-primary">
+                                                                <button type="button" class="btn btn-sm btn-outline-info"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#orderDetailModal"
+                                                                        data-order-id="${order.order_id}">
                                                                     <i class="bi bi-eye"></i> View
-                                                                </a>
-                                                                <form action="${pageContext.request.contextPath}/orderServlet" method="post"
-                                                                      onsubmit="return confirm('Confirm status change for order #${order.order_id}?')">
-                                                                    <input type="hidden" name="action" value="updateStatus">
-                                                                    <input type="hidden" name="order_id" value="${order.order_id}">
-                                                                    <button type="submit" name="tracking" value="shipping" 
-                                                                            class="btn btn-success btn-sm">
-                                                                        <i class="bi bi-check-lg"></i> Shipping
-                                                                    </button>
-                                                                    <button type="submit" name="tracking" value="canceled" 
-                                                                            class="btn btn-danger btn-sm ms-1">
-                                                                        <i class="bi bi-x-lg"></i> Cancel
-                                                                    </button>
-                                                                </form>
+                                                                </button>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -139,5 +142,52 @@
                 <hr>
             </div>
         </div>
+        <!-- Modal Chi tiết đơn hàng -->
+        <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Nội dung AJAX load ở đây -->
+                        <div id="orderDetailContent" class="text-center text-muted">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading order detail...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            var orderDetailModal = document.getElementById('orderDetailModal');
+            orderDetailModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var orderId = button.getAttribute('data-order-id');
+                var contentDiv = document.getElementById('orderDetailContent');
+
+                // Show loading
+                contentDiv.innerHTML = `
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading order detail...</p>
+                `;
+
+                // Gửi AJAX
+                fetch('${pageContext.request.contextPath}/orderDetailServlet?id=' + orderId)
+                        .then(response => response.text())
+                        .then(data => {
+                            contentDiv.innerHTML = data;
+                        })
+                        .catch(error => {
+                            contentDiv.innerHTML = '<div class="alert alert-danger">Failed to load order detail.</div>';
+                            console.error('Error loading detail:', error);
+                        });
+            });
+        </script>
+
     </body>
 </html>

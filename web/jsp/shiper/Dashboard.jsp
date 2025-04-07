@@ -55,7 +55,9 @@
                         <div>
                             <h5 class="mb-0"><i class="bi bi-truck me-2"></i> Shipper Dashboard</h5>
                         </div>
-
+                        <div class="text-end">
+                            <h5 class="mb-0"><i class="bi bi-person-circle"></i> <a  class="text-decoration-none"href="profileController">Profile</a></h5>
+                        </div>
                     </header>
 
                     <!-- Content Area -->   

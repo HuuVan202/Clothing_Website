@@ -18,6 +18,7 @@
         <title>Home</title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/common/layout/layout.css"/>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/guest/home.css"/>
+        <script src="https://cdn.tailwindcss.com"></script>
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -205,17 +206,15 @@
         </div>
 
         <!-- footer -->
+        <jsp:include page="../customer/chat.jsp"/>
         <jsp:include page="../common/layout/footer.jsp"></jsp:include>
-
-            <script>
-                function scrollCards(containerId, direction) {
-                    const container = document.getElementById(containerId);
-                    if (container) {
-                        container.scrollBy({left: direction * 250, behavior: "smooth"});
-                    }
+        <script>
+            function scrollCards(containerId, direction) {
+                const container = document.getElementById(containerId);
+                if (container) {
+                    container.scrollBy({left: direction * 250, behavior: "smooth"});
                 }
-            </script>
-
-            <title>JSP Page</title>
-        </head>
+            }
+        </script>
+    </head>
 </html>

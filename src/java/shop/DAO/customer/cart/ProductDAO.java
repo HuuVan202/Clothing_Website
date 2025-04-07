@@ -120,22 +120,48 @@ public class ProductDAO extends DBcontext {
         return 0;
     }
 
-    public static void main(String[] args) {
-        ProductDAO dao = new ProductDAO();
-        int productId = 10;
-
-        String[] testSizes = {"S", "M", "L", "XL", "XXL", "INVALID_SIZE"};
-
-        for (String size : testSizes) {
-            int stock = dao.getStockBySize(productId, size);
-
-            if (stock > 0) {
-                System.out.println("Size " + size + ": Còn " + stock + " sản phẩm");
-            } else if (stock == 0) {
-                System.out.println("Size " + size + ": Hết hàng hoặc không tồn tại");
-            }
+    public ProductSize getProductSize(int proId, String size) {
+        if (size == null || size.trim().isEmpty()) {
+            throw new IllegalArgumentException("Size cannot be null or empty");
         }
 
+        String sql = "SELECT size_id, pro_id, size, stock FROM ProductSize WHERE pro_id = ? AND size = ?";
+        ProductSize productSize = null;
+
+        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, proId);
+            statement.setString(2, size.trim());
+
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    productSize = new ProductSize(
+                            rs.getInt("size_id"),
+                            rs.getInt("pro_id"),
+                            rs.getString("size"),
+                            rs.getInt("stock")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to retrieve product size", e);
+        }
+
+        return productSize;
+    }
+
+    public static void main(String[] args) {
+        ProductDAO proDAO = new ProductDAO();
+
+        ProductSize productSize = proDAO.getProductSize(12, "M");
+
+        // Kiểm tra và in kết quả
+        if (productSize != null) {
+
+            System.out.println(productSize);
+        } else {
+            System.out.println("No product size found for the given product ID and size.");
+        }
     }
 
 }

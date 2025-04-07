@@ -69,8 +69,22 @@ public class orderDetailServlet extends HttpServlet {
 
         List<OrderDetail> orderDetails = dao.getOrderDetails(orderId);
 
+        Order order = dao.getOrderById(orderId); 
+
         request.setAttribute("orderDetails", orderDetails);
-        request.getRequestDispatcher("jsp/shiper/viewOrderDetail.jsp").forward(request, response);
+        request.setAttribute("order", order);
+
+        String status = order.getTracking();
+        if ("pending_delivery".equals(status)) {
+            request.getRequestDispatcher("jsp/shiper/viewOrderDetail.jsp").forward(request, response);
+        } else if ("shipping".equals(status)) {
+            request.getRequestDispatcher("jsp/shiper/viewOrderDetailShipping.jsp").forward(request, response);
+        } else if ("delivered".equals(status) || "canceled".equals(status)) {
+            request.getRequestDispatcher("jsp/shiper/viewOrderDetailDelivered.jsp").forward(request, response);
+        } else {
+            response.sendRedirect(request.getContextPath() + "/shipperDashboard");
+        }
+
     }
 
     /**
