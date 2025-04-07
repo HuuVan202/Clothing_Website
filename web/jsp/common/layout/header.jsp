@@ -37,6 +37,17 @@
                         </a>
                     </li>
                 </c:if>
+
+                <!-- set điều kiện nếu là staff -->
+                <c:if test="${sessionScope.staff.role.toLowerCase() == 'staff'}">
+                    <li class="nav-item">
+                        <a
+                            class="nav-link px-2 link-dark main-link border rounded-3"
+                            href="DashboardS">
+                            Back to Dashboard
+                        </a>
+                    </li>
+                </c:if>
             </ul>
 
             <div class="cart me-3 position-relative">
@@ -54,7 +65,7 @@
                     </span>
                 </c:if>
             </div>
-                         
+
             <div class="dropdown text-end user-services">
                 <a
                     class="d-block link-dark text-decoration-none"

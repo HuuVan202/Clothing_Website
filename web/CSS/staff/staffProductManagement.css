@@ -1,5 +1,5 @@
 :root {
-    --bg-color: #1a2634;
+    --bg-color: #26bdc7;
     --font-color: #ffffff;
     --hover-color: #2d4b6e;
     --accent-color: #4caf50;
@@ -24,7 +24,7 @@
 }
 
 .table th {
-    background-color: #343a40;
+    background-color: var(--bg-color);
     color: white;
 }
 
@@ -33,7 +33,7 @@
     width: 3%;
 }  /* ID */
 .table th:nth-child(2) {
-    width: 22%;
+    width: 23%;
 } /* Product */
 .table th:nth-child(3) {
     width: 6%;
@@ -146,16 +146,6 @@
     margin-right: 1rem;
 }
 
-.status-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-}
-
-input[type="radio"] {
-    transform: scale(1.5); /* Tăng kích thước của radio button */
-}
 /* Current Image Style */
 .img-fluid.rounded.mb-2 {
     max-height: 100px;
@@ -203,7 +193,7 @@ input[type="radio"] {
 }
 
 .btn {
-    background: #1d2a39;
+    background: #317175;
     color: white;
 }
 
@@ -252,3 +242,9 @@ input[type="radio"] {
 .size-stock-item .form-control-sm {
     width: 100%;
 }
+
+.total-stock {
+    font-weight: bold;
+}
+
+

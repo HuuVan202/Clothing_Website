@@ -8,6 +8,15 @@
         <servlet-name>LogoutServlet</servlet-name>
         <url-pattern>/Logout</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>DashboardS</servlet-name>
+        <servlet-class>shop.controller.staff.dashboard.Dashboard</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DashboardS</servlet-name>
+        <url-pattern>/DashboardS</url-pattern>
+    </servlet-mapping>
        
     <!-- Multipart configuration -->
     <servlet>

@@ -40,6 +40,30 @@ public class ProductDetailsDAO {
         }
         return conn;
     }
+    
+    public List<ProductSize> getSizeByProductId(int proId) {
+        List<ProductSize> sizes = new ArrayList<>();
+        String sql = "SELECT ps.size_id, ps.pro_id, ps.size, ps.stock "
+                + "FROM ProductSize ps "
+                + "WHERE ps.pro_id = ?";
+
+        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, proId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                sizes.add(new ProductSize(
+                        resultSet.getInt("size_id"),
+                        resultSet.getInt("pro_id"),
+                        resultSet.getString("size"),
+                        resultSet.getInt("stock")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return sizes;
+    }
 
     public Product getProductDetails(int pro_id) {
         String sql = "SELECT p.image, p.pro_id, p.pro_name, p.type_id, "
@@ -90,6 +114,7 @@ public class ProductDetailsDAO {
         return null;
     }
 
+    //Display and filter an active product feedback
     public List<Feedback> getFilteredFeedbackOfProduct(int pro_id, String filterType) {
         List<Feedback> feedback = new ArrayList<>();
 
@@ -112,7 +137,9 @@ public class ProductDetailsDAO {
             ) AS purchasedSizes
         FROM Feedback f
         JOIN Customer c ON f.cus_id = c.cus_id
-        WHERE f.pro_id = ?
+        JOIN Product p ON f.pro_id = p.pro_id 
+        WHERE f.pro_id = ? 
+          AND p.status = 'active' 
     """;
 
         switch (filterType) {
@@ -131,10 +158,6 @@ public class ProductDetailsDAO {
             case "1star":
                 baseSql += " AND f.rating = 1 ORDER BY f.feedback_date DESC";
                 break;
-            case "oldest":
-                baseSql += " ORDER BY f.feedback_date ASC";
-                break;
-            case "all":
             default:
                 baseSql += " ORDER BY f.rating DESC, f.feedback_date DESC";
                 break;
@@ -165,37 +188,6 @@ public class ProductDetailsDAO {
         }
         return feedback;
     }
-    
-    public Feedback getFeedbackByCustomer(String customerId, String productId) {
-        String sql = "SELECT f.feedback_id, f.pro_id, f.rating, f.comment, f.feedback_date, "
-                + "(SELECT STRING_AGG(od.size, ', ') FROM [Order] o JOIN OrderDetail od ON o.order_id = od.order_id "
-                + "WHERE o.cus_id = f.cus_id AND od.pro_id = f.pro_id AND o.tracking = 'delivered') AS purchasedSizes "
-                + "FROM Feedback f WHERE f.cus_id = ? AND f.pro_id = ?";
-
-        try {
-            conn = getConnection();
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, customerId);
-            ps.setString(2, productId);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                Feedback fb = new Feedback();
-                fb.setFeedback_id(rs.getInt("feedback_id"));
-                fb.setPro_id(rs.getInt("pro_id"));
-                fb.setRating(rs.getInt("rating"));
-                fb.setComment(rs.getString("comment"));
-                fb.setFeedback_date(rs.getDate("feedback_date"));
-                fb.setPurchasedSizes(rs.getString("purchasedSizes"));
-                return fb;
-            }
-        } catch (SQLException e) {
-            System.out.println("Error retrieving customer feedback: " + e.getMessage());
-        } finally {
-            closeResources();
-        }
-        return null;
-    }
 
     public List<Product> getSuggestProducts(int pro_id) {
         List<Product> list = new ArrayList<>();
@@ -203,9 +195,10 @@ public class ProductDetailsDAO {
                 = "WITH CurrentProduct AS ( "
                 + "    SELECT pro_id, price, discount, "
                 + "           (price * (1 - discount / 100.0)) AS current_discounted_price, "
-                + "           type_id "
+                + "           type_id, status "
                 + "    FROM Product "
                 + "    WHERE pro_id = ? "
+                + "      AND status = 'active' "
                 + "), "
                 + "FilteredProducts AS ( "
                 + "    SELECT TOP 10 p.pro_id, p.pro_name, p.image, p.discount, p.price, "
@@ -256,7 +249,7 @@ public class ProductDetailsDAO {
                 p.setPrice(rs.getBigDecimal("price"));
                 p.setDiscountedPrice(rs.getBigDecimal("discounted_price"));
                 p.setAverageRating(rs.getDouble("averageRating"));
-                p.setSoldProduct(rs.getInt("soldProduct")); // ✅ mới thêm
+                p.setSoldProduct(rs.getInt("soldProduct"));
                 list.add(p);
             }
         } catch (SQLException e) {
@@ -310,8 +303,8 @@ public class ProductDetailsDAO {
         return false;
     }
 
-
-    public boolean addFeedback(String customerId, String productId, int rating, String comment) {
+      
+    public boolean giveFeedback(String customerId, String productId, int rating, String comment) {
         // First check if customer can give feedback
         int cusId = Integer.parseInt(customerId);
         int proId = Integer.parseInt(productId);
@@ -338,8 +331,8 @@ public class ProductDetailsDAO {
         }
         return false;
     }
-    
-    public boolean updateFeedback(int feedbackId, int rating, String comment) {
+
+    public boolean editFeedback(int feedbackId, int rating, String comment) {
         String sql = "UPDATE Feedback SET rating = ?, comment = ?, feedback_date = GETDATE() WHERE feedback_id = ?";
         try {
             conn = getConnection();
@@ -356,27 +349,4 @@ public class ProductDetailsDAO {
         return false;
     }
 
-    public List<ProductSize> getSizeByProductId(int proId) {
-        List<ProductSize> sizes = new ArrayList<>();
-        String sql = "SELECT ps.size_id, ps.pro_id, ps.size, ps.stock "
-                + "FROM ProductSize ps "
-                + "WHERE ps.pro_id = ?";
-
-        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, proId);
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                sizes.add(new ProductSize(
-                        resultSet.getInt("size_id"),
-                        resultSet.getInt("pro_id"),
-                        resultSet.getString("size"),
-                        resultSet.getInt("stock")
-                ));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return sizes;
-    }
 }

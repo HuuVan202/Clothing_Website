@@ -12,16 +12,9 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Study/SWP391/ProjectSWPV21/Clothing_Website/web/jsp/shiper/viewOrderDetailDelivered.jsp</file>
-            <file>file:/D:/Study/SWP391/ProjectSWPV21/Clothing_Website/src/java/shop/controller/shiper/order/orderDetailServlet.java</file>
-            <file>file:/D:/Study/SWP391/ProjectSWPV21/Clothing_Website/src/java/shop/DAO/shiper/order/orderDAO.java</file>
-            <file>file:/D:/Study/SWP391/ProjectSWPV21/Clothing_Website/src/java/shop/controller/customer/orders/OrderServlet.java</file>
-            <file>file:/D:/Study/SWP391/ProjectSWPV21/Clothing_Website/web/jsp/shiper/viewOrderDetailShipping.jsp</file>
-            <file>file:/D:/Study/SWP391/ProjectSWPV21/Clothing_Website/src/java/shop/DAO/customer/orders/MyOrderDAO.java</file>
-            <file>file:/D:/Study/SWP391/ProjectSWPV21/Clothing_Website/web/jsp/shiper/historyOrder.jsp</file>
-            <file>file:/D:/Study/SWP391/ProjectSWPV21/Clothing_Website/web/jsp/shiper/shippingOrder.jsp</file>
-            <file>file:/D:/Study/SWP391/ProjectSWPV21/Clothing_Website/web/jsp/shiper/viewOrderDetail.jsp</file>
-            <file>file:/D:/Study/SWP391/ProjectSWPV21/Clothing_Website/web/jsp/shiper/checkOrder.jsp</file>
+            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/4-7th/Clothing_Website/web/META-INF/context.xml</file>
+            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/4-7th/Clothing_Website/src/java/shop/context/DBcontext.java</file>
+            <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/4-7th/Clothing_Website/web/WEB-INF/web.xml</file>
         </group>
     </open-files>
 </project-private>

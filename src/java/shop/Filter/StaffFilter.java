@@ -20,9 +20,8 @@ import shop.model.Account;
  *
  * @author Admin
  */
-@WebFilter(filterName = "AdminFilter", urlPatterns = {"/Dashboard", "/accountHome",
-    "/productM", "/orderM", "/feedbackHome", "/revenue"})
-public class AdminFilter implements Filter {
+@WebFilter(filterName = "StaffFilter", urlPatterns = {"/DashboardS", "/productMS"})
+public class StaffFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
@@ -32,11 +31,11 @@ public class AdminFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession();
 
-        if (session.getAttribute("admin") == null) {
+        if (session.getAttribute("staff") == null) {
             res.sendRedirect(req.getContextPath() + "/Login");
         } else {
-            Account account = (Account) session.getAttribute("admin");
-            if (!account.getRole().equalsIgnoreCase("admin")) {
+            Account account = (Account) session.getAttribute("staff");
+            if (!account.getRole().equalsIgnoreCase("staff")) {
                 res.sendRedirect(req.getContextPath() + "/Error");
             } else {
                 chain.doFilter(request, response);
