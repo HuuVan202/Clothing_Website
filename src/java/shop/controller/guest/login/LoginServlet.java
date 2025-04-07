@@ -97,11 +97,13 @@ public class LoginServlet extends HttpServlet {
             response.addCookie(remCookie);
 
             if (account.getRole().equalsIgnoreCase("admin")) {
-                response.sendRedirect(request.getContextPath() + "/Dashboard");
+                response.sendRedirect("Dashboard");
             } else if (account.getRole().equalsIgnoreCase("staff")) {
                 response.sendRedirect(request.getContextPath() + "/DashboardS");
+            } else if (account.getRole().equalsIgnoreCase("shipper")) {
+                response.sendRedirect("DashBoardcontroller");
             } else {
-                response.sendRedirect(request.getContextPath() + "/home");
+                response.sendRedirect("/home");
             }
         } else {
             String message;
