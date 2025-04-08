@@ -170,8 +170,6 @@ function openUpdateModal(productId) {
 }
 
 
-
-
 //Handle Delete pendind product
 function deletePendingProduct() {
     const pro_id = document.querySelector('#updateForm input[name="pro_id"]').value;
@@ -197,7 +195,7 @@ function deletePendingProduct() {
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    showMessage('error', 'An error occurred while deleting the product');
+                    showMessage('error', 'An error occurred while deleting the product.');
                 });
     }
 }
@@ -293,7 +291,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (addForm) {
         addForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            if (validateForm(this)) {
                 //Remove any existing hidden size-stock inputs
                 this.querySelectorAll('input[name="sizes"], input[name="stocks"]').forEach(input => input.remove());
 
@@ -360,14 +357,12 @@ document.addEventListener('DOMContentLoaded', function () {
                             console.error('Error:', error);
                             showMessage('error', 'An error occurred while adding the product.');
                         });
-            }
         });
     }
 
     if (updateForm) {
         updateForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            if (validateForm(this)) {
                 const formData = new FormData(this);
 
                 //Add action parameter
@@ -425,9 +420,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            showMessage('error', 'An error occurred while updating the product');
+                            showMessage('error', 'An error occurred while updating the product.');
                         });
-            }
         });
     }
 

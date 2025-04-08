@@ -271,7 +271,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
-                                <form id="addForm" action="${pageContext.request.contextPath}/addProduct" method="post" enctype="multipart/form-data" onsubmit="return validateForm(this)">
+                                <form id="addForm" action="${pageContext.request.contextPath}/addProduct" method="post" enctype="multipart/form-data">
                                     <div class="mb-3">
                                         <label>Name</label>
                                         <input type="text" class="form-control" name="name" required maxlength="255">
@@ -410,7 +410,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
-                                <form id="updateForm" action="${pageContext.request.contextPath}/updateProduct" method="post" enctype="multipart/form-data" onsubmit="return validateForm(this)">
+                                <form id="updateForm" action="${pageContext.request.contextPath}/updateProduct" method="post" enctype="multipart/form-data">
                                     <input type="hidden" id="pro_id" name="pro_id">
                                     <input type="hidden" id="currentImage" name="currentImage">
                                     <input type="hidden" id="productStatus" name="productStatus">
