@@ -24,6 +24,7 @@ public class userProfileServlet extends HttpServlet {
 
     private final String PROFILE = "jsp/customer/userProfile.jsp";
     private final String CHECKOUT = "jsp/customer/checkout.jsp";
+    private final String SHIPPER = "jsp/shiper/Dashboard.jsp";
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -54,19 +55,20 @@ public class userProfileServlet extends HttpServlet {
         UserProfileDAO userProfileDao = new UserProfileDAO();
         LoginDAO loginDao = new LoginDAO();
         String path = "";
-        
+
         String userName = request.getParameter("txtUserName");
         String fullName = request.getParameter("txtFullName");
         String phone = request.getParameter("txtPhone");
         String address = request.getParameter("txtAddress");
         String from = request.getParameter("from");
-        
-        if(from.equalsIgnoreCase("profile")){
+
+        if (from.equalsIgnoreCase("profile")) {
             path = PROFILE;
-        }else if (from.equalsIgnoreCase("checkout")){
+        } else if (from.equalsIgnoreCase("checkout")) {
             path = CHECKOUT;
+        } else if (from.equalsIgnoreCase("dashboardcontroller")) {
+            path = SHIPPER;
         }
-        
         if (fullName == null || fullName.trim().isEmpty()
                 || userName == null || userName.trim().isEmpty()
                 || phone == null || phone.trim().isEmpty()

@@ -94,6 +94,7 @@
                                                     <th>Address</th>
                                                     <th>Order Date</th>
                                                     <th>Amount</th>
+                                                    <th>Payment</th>
                                                     <th>Status</th>
                                                     <th colspan="3" class="text-center">Actions</th> 
 
@@ -110,6 +111,8 @@
                                                         <td>${order.customer.address}</td>
                                                         <td><fmt:formatDate value="${order.order_date}" pattern="dd/MM/yyyy"/></td>
                                                         <td><fmt:formatNumber value="${order.total_price}" /> VND</td>
+                                                        <td>${order.payment_method}</td>
+
                                                         <td>
                                                             <span class="badge bg-warning text-dark">
                                                                 <i class="bi bi-truck me-1"></i> ${order.tracking}
