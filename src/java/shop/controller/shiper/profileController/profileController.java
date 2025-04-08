@@ -9,8 +9,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import shop.DAO.shipper.profile.profileDAO;
+import shop.model.Customer;
 
 /**
  *
@@ -18,6 +22,8 @@ import java.io.PrintWriter;
  */
 @WebServlet(name = "profileController", urlPatterns = {"/profileController"})
 public class profileController extends HttpServlet {
+
+    profileDAO dao = new profileDAO();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,7 +42,7 @@ public class profileController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet profileController</title>");            
+            out.println("<title>Servlet profileController</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet profileController at " + request.getContextPath() + "</h1>");
@@ -57,7 +63,18 @@ public class profileController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("jsp/shiper/profileShipper.jsp").forward(request, response);
+
+        HttpSession session = request.getSession();
+
+        Customer customer = (Customer) session.getAttribute("customer");
+        if (customer == null) {
+            response.sendRedirect("Login");
+            return;
+        }
+        List<Customer> customers = dao.getShipper();
+        request.setAttribute("customers", customers);
+        request.getRequestDispatcher("jsp/shiper/profile.jsp").forward(request, response);
+
     }
 
     /**

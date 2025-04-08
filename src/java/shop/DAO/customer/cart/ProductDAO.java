@@ -46,7 +46,7 @@ public class ProductDAO extends DBcontext {
     }
 
     public void updateStock(int productId, String size, int quantitySold) {
-        String sql = "UPDATE productSize SET stock = stock - ? WHERE pro_id = ? AND size = ?";
+        String sql = "UPDATE ProductSize SET stock = stock - ? WHERE pro_id = ? AND size = ?";
         try (Connection connection = new DBcontext().getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, quantitySold);
@@ -56,7 +56,6 @@ public class ProductDAO extends DBcontext {
 
             int rowsUpdated = statement.executeUpdate();
 
-            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

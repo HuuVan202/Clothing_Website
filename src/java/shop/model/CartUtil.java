@@ -32,8 +32,23 @@ public class CartUtil {
     }
 
     public void addItemToCart(CartItem item) {
-        CartDAO.addCartItem(customerId, item);
-        items.add(item);
+        boolean found = false;
+
+        for (CartItem i : items) {
+            if (i.getProduct().getPro_id() == item.getProduct().getPro_id()
+                    && i.getSize().equals(item.getSize())) {
+                int newQuantity = i.getQuantity() + item.getQuantity();
+                i.setQuantity(newQuantity);
+                CartDAO.updateCartItem(customerId, item.getProduct().getPro_id(), item.getSize(), newQuantity);
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            items.add(item);
+            CartDAO.addCartItem(customerId, item);
+        }
     }
 
     public void removeItemToCart(int productId, String size) {
@@ -69,5 +84,3 @@ public class CartUtil {
         return items;
     }
 }
-
-

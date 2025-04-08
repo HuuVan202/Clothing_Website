@@ -9,9 +9,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import shop.DAO.guest.login.LoginDAO;
 import shop.DAO.shiper.order.orderDAO;
+import shop.DAO.shipper.profile.profileDAO;
+import shop.model.Customer;
 
 /**
  *
@@ -21,6 +26,9 @@ import shop.DAO.shiper.order.orderDAO;
 public class DashBoardcontroller extends HttpServlet {
 
     private final String DASHBOARD = "jsp/shiper/Dashboard.jsp";
+    orderDAO dAO = new orderDAO();
+    profileDAO profile = new profileDAO();
+    LoginDAO loginDao = new LoginDAO();
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -34,8 +42,14 @@ public class DashBoardcontroller extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
 
-        orderDAO dAO = new orderDAO();
+        Customer customer = (Customer) session.getAttribute("customer");
+        if (customer == null) {
+            response.sendRedirect("Login");
+            return;
+        }
+
         int shippingCount = dAO.getShippingOrdersCount();
 
         int deleveriedCount = dAO.getCountDelivered();
@@ -48,6 +62,9 @@ public class DashBoardcontroller extends HttpServlet {
         request.setAttribute("deleveriedCount", deleveriedCount);
         request.setAttribute("shippingCount", shippingCount);
         request.setAttribute("pendingCount", pendingCount);
+
+        List<Customer> customers = profile.getShipper();
+        request.setAttribute("customers", customers);
 
         request.getRequestDispatcher(DASHBOARD).forward(request, response);
     }

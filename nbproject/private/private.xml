@@ -14,6 +14,23 @@
         <group>
             <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/4-7th/Clothing_Website/src/java/shop/Filter/StaffFilter.java</file>
             <file>file:/D:/Study%20Files/Semester%205/SWP391/GIT/4-7th/Clothing_Website/src/java/shop/controller/guest/login/LoginServlet.java</file>
+            <file>file:/D:/Study/SWP391/ProjectSWPV22/Clothing_Website/src/java/shop/controller/customer/cart/CartServlet.java</file>
+            <file>file:/D:/Study/SWP391/ProjectSWPV22/Clothing_Website/web/jsp/shiper/Dashboard.jsp</file>
+            <file>file:/D:/Study/SWP391/ProjectSWPV22/Clothing_Website/src/java/shop/DAO/shipper/profile/NewClass.java</file>
+            <file>file:/D:/Study/SWP391/ProjectSWPV22/Clothing_Website/src/java/shop/controller/shiper/order/orderServlet.java</file>
+            <file>file:/D:/Study/SWP391/ProjectSWPV22/Clothing_Website/src/java/shop/DAO/customer/cart/ProductDAO.java</file>
+            <file>file:/D:/Study/SWP391/ProjectSWPV22/Clothing_Website/src/java/shop/DAO/chat/ChatDAO.java</file>
+            <file>file:/D:/Study/SWP391/ProjectSWPV22/Clothing_Website/src/java/shop/controller/shiper/profileController/profileController.java</file>
+            <file>file:/D:/Study/SWP391/ProjectSWPV22/Clothing_Website/web/jsp/shiper/checkOrder.jsp</file>
+            <file>file:/D:/Study/SWP391/ProjectSWPV22/Clothing_Website/src/java/shop/controller/shiper/dashboard/DashBoardcontroller.java</file>
+            <file>file:/D:/Study/SWP391/ProjectSWPV22/Clothing_Website/src/java/shop/model/CartUtil.java</file>
+            <file>file:/D:/Study/SWP391/ProjectSWPV22/Clothing_Website/src/java/shop/DAO/customer/checkout/OrderDetailDAO.java</file>
+            <file>file:/D:/Study/SWP391/ProjectSWPV22/Clothing_Website/src/java/shop/controller/customer/userProfile/userProfileServlet.java</file>
+            <file>file:/D:/Study/SWP391/ProjectSWPV22/Clothing_Website/src/java/shop/DAO/shiper/order/orderDAO.java</file>
+            <file>file:/D:/Study/SWP391/ProjectSWPV22/Clothing_Website/web/jsp/shiper/profile.jsp</file>
+            <file>file:/D:/Study/SWP391/ProjectSWPV22/Clothing_Website/src/java/shop/controller/customer/checkout/CheckoutServlet.java</file>
+            <file>file:/D:/Study/SWP391/ProjectSWPV22/Clothing_Website/web/jsp/customer/checkout.jsp</file>
+            <file>file:/D:/Study/SWP391/ProjectSWPV22/Clothing_Website/src/java/shop/DAO/customer/checkout/OrderDAO.java</file>
         </group>
     </open-files>
 </project-private>

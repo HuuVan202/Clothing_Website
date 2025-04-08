@@ -55,7 +55,7 @@ public class ChatServlet extends HttpServlet {
                     for (int customerID : customerIDs) {
                         customerNames.put(customerID, chatDAO.getCustomerName(customerID));
                     }
-                }
+                }   
                 request.setAttribute("customerNames", customerNames);
 
                 String customerIDParam = request.getParameter("customerID");

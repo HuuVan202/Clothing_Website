@@ -153,9 +153,11 @@ public class CheckoutServlet extends HttpServlet {
                 for (CartItem item : cart) {
                     OrderDetail orderDetail = new OrderDetail(0, orderId, item.getProduct().getPro_id(), item.getQuantity(), item.getSize(), item.getProduct().getSalePrice());
                     orderDetailDAO.insertOrderDetail(orderDetail);
-
+                    
                     productDAO.updateStock(item.getProduct().getPro_id(), item.getSize(), item.getQuantity());
+
                 }
+
                 EmailService.sendMultiProductPaymentConfirmationCOD(customer.getEmail(), customer.getCus_name(), customer.getAddress(), totalPrice, cart);
 
                 CartDAO cartDAO = new CartDAO();
