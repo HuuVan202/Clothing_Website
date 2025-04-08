@@ -118,6 +118,7 @@
                                         </p>
                                         <p><strong>Quantity:</strong> 
                                             <input class="form-control w-50" type="number" id="quantityInput" name="quantity" min="1" disabled/>
+
                                         </p>               
                                         <div class="d-flex flex-column gap-2 w-100">
                                             <button type="submit" class="btn btn-success w-50">Add to Cart</button>
@@ -329,6 +330,36 @@
                             if (document.getElementById("size").value) {
                                 updateMaxQuantity();
                             }
+
+                            const cartForm = document.querySelector("form[action='Cart']");
+                            cartForm.addEventListener("submit", function (event) {
+                                const quantityInput = document.getElementById("quantityInput");
+                                const sizeSelect = document.getElementById("size");
+
+                                if (sizeSelect.value && (!quantityInput.value || quantityInput.value <= 0)) {
+                                    event.preventDefault(); 
+
+                                    let errorMessage = document.createElement("div");
+                                    errorMessage.className = "alert alert-danger mt-2";
+                                    errorMessage.textContent = "Please enter quantity !";
+                                    errorMessage.id = "quantity-error";
+
+                                    const oldError = document.getElementById("quantity-error");
+                                    if (oldError) {
+                                        oldError.remove();
+                                    }
+
+                                    quantityInput.parentElement.appendChild(errorMessage);
+
+                                    setTimeout(function () {
+                                        if (document.getElementById("quantity-error")) {
+                                            document.getElementById("quantity-error").style.display = "none";
+                                        }
+                                    }, 3000);
+
+                                    quantityInput.focus();
+                                }
+                            });
                         });
 
                         function scrollCards(containerId, direction) {
