@@ -94,6 +94,7 @@
                                                     <th>Address</th>
                                                     <th>Order Date</th>
                                                     <th>Amount</th>
+                                                    <th>Payment</th>
                                                     <th colspan="3" class="text-center">Status</th> 
 
 
@@ -110,6 +111,7 @@
                                                         <td>${order.customer.address}</td>
                                                         <td><fmt:formatDate value="${order.order_date}" pattern="dd/MM/yyyy"/></td>
                                                         <td><fmt:formatNumber value="${order.total_price}" /> VND</td>
+                                                        <td>${order.payment_method}</td>
                                                         <td>
                                                             <c:if test="${order.tracking=='delivered'}">
                                                                 <span class="badge bg-success text-white">

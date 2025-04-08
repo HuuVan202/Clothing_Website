@@ -98,6 +98,7 @@
                                                     <th>Address</th>
                                                     <th>Order Date</th>
                                                     <th>Amount</th>
+                                                    <th>Payment</th>
                                                     <th>Status</th>
                                                     <th>Actions</th> 
 
@@ -114,6 +115,8 @@
                                                         <td>${order.customer.address}</td>
                                                         <td><fmt:formatDate value="${order.order_date}" pattern="dd/MM/yyyy"/></td>
                                                         <td><fmt:formatNumber value="${order.total_price}" /> VND</td>
+                                                        <td>${order.payment_method}</td>
+
                                                         <td>
                                                             <span class="badge bg-info text-dark">
                                                                 <i class="bi bi-box"></i> Pending Delivery
