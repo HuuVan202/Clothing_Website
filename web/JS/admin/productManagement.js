@@ -222,7 +222,7 @@ function deletePendingProduct() {
             })
             .catch(error => {
                 console.error('Error:', error);
-                showMessage('error', 'Đã xảy ra lỗi khi xóa sản phẩm');
+                showMessage('error', 'Error during product delete.');
             });
     }
 }

@@ -20,7 +20,7 @@ public class ProductManagementController extends HttpServlet {
         try {
             ProductManagementDAO productDAO = new ProductManagementDAO();
 
-            // Lấy các filter
+            //Filter
             String typeFilter = request.getParameter("type");
             String genderFilter = request.getParameter("gender");
             String brandFilter = request.getParameter("brand");
@@ -28,13 +28,6 @@ public class ProductManagementController extends HttpServlet {
             String stockFilter = request.getParameter("stock");
             String searchQuery = request.getParameter("search");
             String sortBy = request.getParameter("sortBy");
-
-            // Chuyển "All" thành null
-            if ("All Gender".equals(genderFilter)) genderFilter = null;
-            if ("All Type".equals(typeFilter)) typeFilter = null;
-            if ("All Brand".equals(brandFilter)) brandFilter = null;
-            if ("All Status".equals(statusFilter)) statusFilter = null;
-            if ("All Stock".equals(stockFilter)) stockFilter = null;
 
             //Pagination
             int page = 1;

@@ -130,7 +130,7 @@
                             <tbody>
                                 <c:if test="${empty productList}">
                                     <tr>
-                                        <td colspan="11" class="text-center">No products found</td>
+                                        <td colspan="11" class="text-center">No products found.</td>
                                     </tr>
                                 </c:if>
                                 <c:if test="${not empty productList}">
