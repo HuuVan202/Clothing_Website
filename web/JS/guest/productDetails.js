@@ -65,6 +65,7 @@ function filterFeedback(filterType) {
             });
 }
 
+//Change modal Feedback if customer clicked on the edit button on their feedback
 function attachEditListeners() {
     document.querySelectorAll('.edit-feedback-btn').forEach(button => {
         button.addEventListener('click', function () {
@@ -133,7 +134,7 @@ async function submitFeedback() {
         formData.append("feedback_id", editingFeedbackId);
     }
 
-    const url = isEditMode ? 'editFeedback' : 'addFeedback';
+    const url = isEditMode ? 'editFeedback' : 'giveFeedback';
 
     try {
         const response = await fetch(url, {

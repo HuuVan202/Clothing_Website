@@ -1,4 +1,4 @@
-package shop.DAO.admin.productManagement;
+package shop.DAO.staff.productManagement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +12,7 @@ import shop.model.Product;
 import shop.model.Type;
 import shop.model.ProductSize;
 
-public class ProductManagementDAO {
+public class StaffProductManagementDAO {
 
     Connection conn = null;
     PreparedStatement ps = null;
@@ -96,7 +96,7 @@ public class ProductManagementDAO {
 
         List<Object> params = new ArrayList<>();
 
-        //Add filter
+        // Add filter conditions
         if (genderFilter != null && !genderFilter.isEmpty()) {
             sql.append("AND LOWER(p.gender) = LOWER(?) ");
             params.add(genderFilter);
@@ -125,7 +125,7 @@ public class ProductManagementDAO {
             params.add("%" + searchQuery + "%");
         }
 
-        //Add sorting
+        // Add sorting
         if (sortBy != null && !sortBy.isEmpty()) {
             switch (sortBy) {
                 case "price_asc":
@@ -147,7 +147,7 @@ public class ProductManagementDAO {
             sql.append("ORDER BY p.pro_id DESC ");
         }
 
-        //Add pagination
+        // Add pagination
         int offset = (page - 1) * itemsPerPage;
         sql.append("OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
         params.add(offset);
@@ -252,7 +252,8 @@ public class ProductManagementDAO {
         return 0;
     }
 
-    public boolean addProduct(Product product) {
+    //Request admin by adding a pending status product for Admin to handle
+    public boolean addProductByStaff(Product product) {
         Connection conn = null;
         PreparedStatement psProduct = null;
         PreparedStatement psProductSize = null;
@@ -265,7 +266,7 @@ public class ProductManagementDAO {
 
             // Insert into Product table
             String sqlProduct = "INSERT INTO Product (pro_name, image, gender, brand, type_id, price, discount, status) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')";
             psProduct = conn.prepareStatement(sqlProduct, PreparedStatement.RETURN_GENERATED_KEYS);
             psProduct.setString(1, product.getPro_name());
             psProduct.setString(2, product.getImage());
@@ -274,7 +275,6 @@ public class ProductManagementDAO {
             psProduct.setInt(5, product.getType().getType_id());
             psProduct.setBigDecimal(6, product.getPrice());
             psProduct.setInt(7, product.getDiscount());
-            psProduct.setString(8, product.getStatus());
 
             int rowsAffected = psProduct.executeUpdate();
             if (rowsAffected == 0) {
@@ -334,45 +334,37 @@ public class ProductManagementDAO {
         return success;
     }
 
-    public boolean updateProduct(Product product) {
+    public boolean updateProductByStaff(Product product) {
         Connection conn = null;
         PreparedStatement ps = null;
         boolean success = false;
 
         try {
             conn = new DBcontext().getConnection();
-            conn.setAutoCommit(false);  // Bắt đầu transaction
-
-            // 1. Cập nhật thông tin sản phẩm trong bảng Product
-            String updateProductSql = "UPDATE Product "
-                    + "SET pro_name=?, image=?, gender=?, brand=?, type_id=?, "
-                    + "price=?, discount=?, status=? "
-                    + "WHERE pro_id=?";
+            conn.setAutoCommit(false);  
+            
+            String updateProductSql = "UPDATE Product SET type_id=?, "
+                    + "price=?, discount=? WHERE pro_id=?";
 
             ps = conn.prepareStatement(updateProductSql);
-            ps.setString(1, product.getPro_name());
-            ps.setString(2, product.getImage());
-            ps.setString(3, product.getGender());
-            ps.setString(4, product.getBrand());
-            ps.setInt(5, product.getType().getType_id());
-            ps.setBigDecimal(6, product.getPrice());
-            ps.setInt(7, product.getDiscount());
-            ps.setString(8, product.getStatus());
-            ps.setInt(9, product.getPro_id());
+            ps.setInt(1, product.getType().getType_id());
+            ps.setBigDecimal(2, product.getPrice());
+            ps.setInt(3, product.getDiscount());
+            ps.setInt(4, product.getPro_id());
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
                 throw new SQLException("Updating product failed, no rows affected.");
             }
 
-            // Delete all sizes and stocks value in ProductSize table first
-            ps.close();  
+            // Delete all sizes and stocks first
+            ps.close();  //Close ps first
             String deleteSizeSql = "DELETE FROM ProductSize WHERE pro_id = ?";
             ps = conn.prepareStatement(deleteSizeSql);
             ps.setInt(1, product.getPro_id());
             ps.executeUpdate();
 
-            // Add new sizes and stocks value
+            // Add new sizes and stock
             ps.close(); 
             String insertSizeSql = "INSERT INTO ProductSize (pro_id, size, stock) VALUES (?, ?, ?)";
             ps = conn.prepareStatement(insertSizeSql);
@@ -384,15 +376,15 @@ public class ProductManagementDAO {
                 ps.addBatch(); 
             }
 
-            ps.executeBatch();  
+            ps.executeBatch(); 
 
-            conn.commit();  // Commit transaction
+            conn.commit();  
             success = true;
 
         } catch (Exception e) {
             if (conn != null) {
                 try {
-                    conn.rollback();  // Rollback if error
+                    conn.rollback(); 
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -404,7 +396,7 @@ public class ProductManagementDAO {
                     ps.close();
                 }
                 if (conn != null) {
-                    conn.setAutoCommit(true);  
+                    conn.setAutoCommit(true); 
                     conn.close();
                 }
             } catch (SQLException e) {
@@ -423,7 +415,7 @@ public class ProductManagementDAO {
             conn = new DBcontext().getConnection();
             conn.setAutoCommit(false);  // Start transaction
 
-            // 1. Delete from ProductSize table first (due to foreign key constraint)
+            // 1. Delete from ProductSize table first (due to FK constraint)
             String deleteSizeSql = "DELETE FROM ProductSize WHERE pro_id = ?";
             ps = conn.prepareStatement(deleteSizeSql);
             ps.setInt(1, productId);
@@ -463,7 +455,7 @@ public class ProductManagementDAO {
         }
         return success;
     }
-
+    
     private void closeResources() {
         try {
             if (rs != null) {
@@ -479,4 +471,6 @@ public class ProductManagementDAO {
             e.printStackTrace();
         }
     }
+    
+    
 }

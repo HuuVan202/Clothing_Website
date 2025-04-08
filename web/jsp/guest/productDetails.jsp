@@ -79,6 +79,8 @@
                                         </span>
                                         <span class="rating-divider">|</span>
                                         <span class="feedback-count"><span class="text-decoration-underline fw-bold">${pd.feedbackCount}</span> Feedback</span>
+                                        <span class="rating-divider">|</span>
+                                        <span class="sold-count fw-bold">${pd.soldProduct}</span> Sold
                                     </div>
 
                                     <c:if test="${pd.discount > 0}">
@@ -138,7 +140,7 @@
 
         <!-- Feedback Section -->
         <div class="container mt-5 product-wrapper">
-            <h2 class="mb-4">Feedbacks:</h2>
+            <h2 class="mb-4">Feedback</h2>
 
             <input type="hidden" name="pro_id" value="${pd.pro_id}">
 
@@ -185,106 +187,106 @@
                     </c:if>
                 </div>
             </div>
+        </div>
 
-            <!-- Feedback Modal -->
-            <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="feedbackModalLabel">Give Feedback</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="feedbackForm">
-                                <input type="hidden" name="pro_id" value="${pd.pro_id}">
-                                <div class="mb-3">
-                                    <label class="form-label">Rating:</label>
-                                    <div class="rating d-flex justify-content-center">
-                                        <input type="radio" name="rating" value="5" id="star5"><label for="star5">★</label>
-                                        <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
-                                        <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
-                                        <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
-                                        <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
-                                    </div>
-                                    <div id="ratingWarning" class="feedback-warning text-danger fw-bold" style="display: none;"></div>
+        <!-- Feedback Modal -->
+        <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="feedbackModalLabel">Give Feedback</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="feedbackForm">
+                            <input type="hidden" name="pro_id" value="${pd.pro_id}">
+                            <div class="mb-3">
+                                <label class="form-label">Rating:</label>
+                                <div class="rating d-flex justify-content-center">
+                                    <input type="radio" name="rating" value="5" id="star5"><label for="star5">★</label>
+                                    <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
+                                    <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
+                                    <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
+                                    <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="comment" class="form-label">Comment:</label>
-                                    <textarea class="form-control" id="comment" name="comment" rows="3" maxlength="500"></textarea>
-                                    <div class="d-flex justify-content-between">
-                                        <div id="commentWarning" class="feedback-warning text-danger fw-bold" style="display: none;"></div>
-                                        <small class="text-muted">Characters remaining: <span id="charCount">500</span></small>
-                                    </div>
+                                <div id="ratingWarning" class="feedback-warning text-danger fw-bold" style="display: none;"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="comment" class="form-label">Comment:</label>
+                                <textarea class="form-control" id="comment" name="comment" rows="3" maxlength="500"></textarea>
+                                <div class="d-flex justify-content-between">
+                                    <div id="commentWarning" class="feedback-warning text-danger fw-bold" style="display: none;"></div>
+                                    <small class="text-muted">Characters remaining: <span id="charCount">500</span></small>
                                 </div>
+                            </div>
 
-                                <!-- Error Message -->
-                                <div id="feedbackError" class="alert alert-danger d-none"></div>
-                                <div id="successMessage" class="alert alert-success" style="display: none;"></div>
+                            <!-- Error Message -->
+                            <div id="feedbackError" class="alert alert-danger d-none"></div>
+                            <div id="successMessage" class="alert alert-success" style="display: none;"></div>
 
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Submit Feedback</button>
-                                </div>
-                            </form>
-                        </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Suggest Products -->
-            <div class="container mt-5 product-wrapper">
-                <h2 class="container mt-5">Suggest Products</h2>
-                <c:choose>
-                    <c:when test="${not empty suggestProducts}">
-                        <button class="scroll-btn scroll-left d-none d-md-flex" onclick="scrollCards('suggestProducts', -1)">
-                            &#8249;
-                        </button>
-                        <div class="product-container" id="suggestProducts">
-                            <c:forEach items="${suggestProducts}" var="p">
-                                <div class="product-card position-relative">
-                                    <c:if test="${p.discount > 0}">
-                                        <span class="discount-badge">${p.discount}%</span>
-                                    </c:if>
-                                    <img src="${p.image}" class="product-img" alt="${p.pro_name}" />
-                                    <div class="card-body">
-                                        <div>
-                                            <a class="text-decoration-none text-dark" href="detail?id=${p.pro_id}">
-                                                <h5 class="card-title">${p.pro_name}</h5>
-                                            </a>
-                                        </div>
-                                        <div class="mt-1">
-                                            <c:if test="${p.discount > 0}">
-                                                <div class="discount-price">${p.formattedDiscountedPrice} VND</div>
-                                            </c:if>
-                                            <c:if test="${p.discount == 0}">
-                                                <div class="discount-price">${p.formattedPrice} VND</div>
-                                            </c:if>
-                                            <!-- Hiển thị averageRating nếu > 0 -->
-                                            <c:if test="${p.averageRating > 0}">
-                                                <div class="mt-1">
-                                                    <span class="text-warning">★</span>
-                                                    <span class="text-muted">${p.averageRating}</span>
-                                                </div>
-                                            </c:if>
-                                        </div>
-                                        <!--  Hiển thị tổng số đơn hàng (total_order) -->
-                                        <div class="text-muted small">
-                                            <strong>Sold: ${p.soldProduct}</strong>
-                                        </div>
-
+        <!-- Suggest Products -->
+        <div class="container mt-5 product-wrapper">
+            <h2 class="container mt-5">Suggest Products</h2>
+            <c:choose>
+                <c:when test="${not empty suggestProducts}">
+                    <button class="scroll-btn scroll-left d-none d-md-flex" onclick="scrollCards('suggestProducts', -1)">
+                        &#8249;
+                    </button>
+                    <div class="product-container" id="suggestProducts">
+                        <c:forEach items="${suggestProducts}" var="p">
+                            <div class="product-card position-relative">
+                                <c:if test="${p.discount > 0}">
+                                    <span class="discount-badge">${p.discount}%</span>
+                                </c:if>
+                                <img src="${p.image}" class="product-img" alt="${p.pro_name}" />
+                                <div class="card-body">
+                                    <div>
+                                        <a class="text-decoration-none text-dark" href="detail?id=${p.pro_id}">
+                                            <h5 class="card-title">${p.pro_name}</h5>
+                                        </a>
                                     </div>
+                                    <div class="mt-1">
+                                        <c:if test="${p.discount > 0}">
+                                            <div class="discount-price">${p.formattedDiscountedPrice} VND</div>
+                                        </c:if>
+                                        <c:if test="${p.discount == 0}">
+                                            <div class="discount-price">${p.formattedPrice} VND</div>
+                                        </c:if>
+                                        <!-- Show Average Rating if > 0 -->
+                                        <c:if test="${p.averageRating > 0}">
+                                            <div class="mt-1">
+                                                <span class="text-warning">★</span>
+                                                <span class="text-muted">${p.averageRating}</span>
+                                            </div>
+                                        </c:if>
+                                    </div>
+                                    <!--  Total Order -->
+                                    <div class="text-muted small">
+                                        <strong>Sold: ${p.soldProduct}</strong>
+                                    </div>
+
                                 </div>
-                            </c:forEach>
-                        </div>
-                        <button class="scroll-btn scroll-right" onclick="scrollCards('suggestProducts', 1)">
-                            &#8250;
-                        </button>
-                    </c:when>
-                    <c:otherwise>
-                        <p class="text-muted">${suggestProductsMessage}</p>
-                    </c:otherwise>
-                </c:choose>
-            </div>
+                            </div>
+                        </c:forEach>
+                    </div>
+                    <button class="scroll-btn scroll-right" onclick="scrollCards('suggestProducts', 1)">
+                        &#8250;
+                    </button>
+                </c:when>
+                <c:otherwise>
+                    <p class="text-muted" style="text-align: center;">${suggestProductsMessage}</p>
+                </c:otherwise>
+            </c:choose>
         </div>
 
 
@@ -294,94 +296,47 @@
 
         <script src="${pageContext.request.contextPath}/JS/guest/productDetails.js" defer></script>
         <script>
-                            function updateMaxQuantity() {
-                                const sizeSelect = document.getElementById("size");
-                                const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
-                                const quantityInput = document.getElementById("quantityInput");
+                        function updateMaxQuantity() {
+                            const sizeSelect = document.getElementById("size");
+                            const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
+                            const quantityInput = document.getElementById("quantityInput");
 
-                                quantityInput.value = "";
+                            quantityInput.value = "";
 
-                                if (selectedOption.value) {
-                                    const stock = parseInt(selectedOption.getAttribute("data-stock"));
-                                    const cartQuantity = parseInt(selectedOption.getAttribute("data-cart-quantity")) || 0;
-                                    const availableQuantity = stock - cartQuantity;
+                            if (selectedOption.value) {
+                                const stock = parseInt(selectedOption.getAttribute("data-stock"));
+                                const cartQuantity = parseInt(selectedOption.getAttribute("data-cart-quantity")) || 0;
+                                const availableQuantity = stock - cartQuantity;
 
-                                    if (availableQuantity > 0) {
-                                        quantityInput.disabled = false;
-                                        quantityInput.min = 1;
-                                        quantityInput.max = availableQuantity;
-                                        quantityInput.value = 1;
-                                    } else {
-                                        quantityInput.disabled = true;
-                                        quantityInput.value = "";
-                                    }
+                                if (availableQuantity > 0) {
+                                    quantityInput.disabled = false;
+                                    quantityInput.min = 1;
+                                    quantityInput.max = availableQuantity;
+                                    quantityInput.value = 1;
                                 } else {
                                     quantityInput.disabled = true;
                                     quantityInput.value = "";
                                 }
+                            } else {
+                                quantityInput.disabled = true;
+                                quantityInput.value = "";
                             }
+                        }
 
-                            document.addEventListener("DOMContentLoaded", function () {
-                                const sizeSelect = document.getElementById("size");
-                                if (sizeSelect) {
-                                    sizeSelect.addEventListener("change", updateMaxQuantity);
-                                    updateMaxQuantity();
-                                }
+                        document.addEventListener("DOMContentLoaded", function () {
+                            document.getElementById("size").addEventListener("change", updateMaxQuantity);
 
-                                function scrollCards(containerId, direction) {
-                                    const container = document.getElementById(containerId);
-                                    if (container) {
-                                        container.scrollBy({left: direction * 250, behavior: "smooth"});
-                                    }
-                                }
+                            if (document.getElementById("size").value) {
+                                updateMaxQuantity();
+                            }
+                        });
 
-                                document.querySelectorAll('.feedback-btn').forEach(button => {
-                                    button.addEventListener('click', async function (e) {
-                                        e.preventDefault();
-                                        const productId = this.dataset.productId;
-                                        const warningDiv = this.parentElement.querySelector('.feedback-warning');
-
-                                        try {
-                                            const response = await fetch(`checkPurchase?pro_id=${productId}`, {
-                                                method: 'GET',
-                                                headers: {'Accept': 'application/json'}
-                                            });
-
-                                            if (!response.ok)
-                                                throw new Error('Network response was not ok');
-
-                                            const data = await response.json();
-
-                                            this.classList.remove('btn-danger');
-                                            this.classList.add('btn-primary');
-                                            warningDiv.style.display = 'none';
-
-                                            if (data.status === 'error') {
-                                                this.classList.remove('btn-primary');
-                                                this.classList.add('btn-danger');
-
-                                                if (data.message === 'not_logged_in') {
-                                                    window.location.href = 'Login';
-                                                    return;
-                                                }
-
-                                                warningDiv.textContent = data.message === 'already_reviewed'
-                                                        ? 'Sorry, you can only feedback once for this product.'
-                                                        : 'Sorry, you must have ordered and received this product to be able to give feedback.';
-                                                warningDiv.style.display = 'block';
-                                                return;
-                                            }
-
-                                            const modal = new bootstrap.Modal(document.getElementById('feedbackModal'));
-                                            modal.show();
-                                        } catch (error) {
-                                            const errorDiv = document.getElementById('feedbackError');
-                                            errorDiv.style.display = 'block';
-                                            errorDiv.textContent = 'An error occurred. Please try again later.';
-                                        }
-                                    });
-                                });
-                            });
+                        function scrollCards(containerId, direction) {
+                            const container = document.getElementById(containerId);
+                            if (container) {
+                                container.scrollBy({left: direction * 250, behavior: "smooth"});
+                            }
+                        }
         </script>
     </body>
 </html>

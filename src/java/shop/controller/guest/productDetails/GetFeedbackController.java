@@ -15,7 +15,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import shop.DAO.guest.productDetails.ProductDetailsDAO;
 import shop.model.Feedback;
-import shop.model.Customer;
 import com.google.gson.Gson;
 
 /**

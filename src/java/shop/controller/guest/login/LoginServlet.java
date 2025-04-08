@@ -66,9 +66,18 @@ public class LoginServlet extends HttpServlet {
 
             //Set customer to session
             HttpSession session = request.getSession();
+            //Set basic session as admin
             session.setAttribute("admin", account);
+            
+            if (account.getRole().equalsIgnoreCase("admin")) {
+                session.setAttribute("admin", account);
+            } else if (account.getRole().equalsIgnoreCase("staff")) {
+                session.setAttribute("staff", account);
+            } else if (account.getRole().equalsIgnoreCase("shipper")) {
+                session.setAttribute("shipper", account);
+            }
+            
             session.setAttribute("customer", customer);
-
             //lay gio hang tu db
             CartUtil cart = CartDAO.getCartByCustomerId(customer.getCus_id());
             session.setAttribute("cart", cart);
@@ -93,6 +102,8 @@ public class LoginServlet extends HttpServlet {
 
             if (account.getRole().equalsIgnoreCase("admin")) {
                 response.sendRedirect("Dashboard");
+            } else if (account.getRole().equalsIgnoreCase("staff")) {
+                response.sendRedirect("DashboardS");
             } else if (account.getRole().equalsIgnoreCase("shipper")) {
                 response.sendRedirect("DashBoardcontroller");
             } else {
