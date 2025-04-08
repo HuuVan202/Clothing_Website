@@ -1,26 +1,4 @@
 let originalImagePath = '';
-function validateForm(form) {
-    const price = parseFloat(form.querySelector('input[name="price"]').value);
-    const discount = parseInt(form.querySelector('input[name="discount"]').value);
-    const typeId = parseInt(form.querySelector('select[name="type_id"]').value);
-
-    //Stock validation
-    if (typeId >= 1 && typeId <= 5) {
-        //For clothing items
-        const checkedSizes = form.querySelectorAll('input[type="checkbox"][name^="size_"]:checked');
-
-        for (const sizeCheckbox of checkedSizes) {
-            const size = sizeCheckbox.value;
-            const stockInput = form.querySelector(`input[name="stock_${size}"]`);
-            const stock = parseInt(stockInput.value) || 0;
-
-        }
-    } else {
-        //For accessories
-        const oneSizeStock = parseInt(form.querySelector('input[name="stock_one_size"]').value) || 0;
-    }
-    return true;
-}
 
 function previewImage(input) {
     if (input.files && input.files[0]) {

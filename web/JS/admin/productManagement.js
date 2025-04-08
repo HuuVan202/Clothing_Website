@@ -11,7 +11,7 @@ function previewImage(input) {
             const imageUrl = URL.createObjectURL(input.files[0]);
             image.src = imageUrl;
             image.style.display = 'block';
-            currentImageInput.value = ''; // Clear the current image path as we're using a new file
+            currentImageInput.value = ''; //Clear the current image path
         }
     }
 }
@@ -32,6 +32,58 @@ function resetImage() {
         previewImage.style.display = 'block';
     }
 }
+
+//To show Total Stock for Clothing items
+function updateTotalStock(form) {
+    let total = 0;
+    const typeId = parseInt(form.querySelector('select[name="type_id"]').value);
+
+    // For clothing items
+    const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
+    sizes.forEach(size => {
+        const checkbox = form.querySelector(`input[type="checkbox"][name="size_${size}"]`);
+        const stockInput = form.querySelector(`input[name="stock_${size}"]`);
+        if (checkbox && checkbox.checked && stockInput && stockInput.value) {
+            total += parseInt(stockInput.value) || 0;
+        }
+    });
+
+    // Update display
+    const totalStockElement = form.querySelector('.total-stock');
+    if (totalStockElement) {
+        totalStockElement.textContent = total;
+    }
+
+    // Update hidden input for total stock
+    let stockInput = form.querySelector('input[name="stock"]');
+    if (!stockInput) {
+        stockInput = document.createElement('input');
+        stockInput.type = 'hidden';
+        stockInput.name = 'stock';
+        form.appendChild(stockInput);
+    }
+    stockInput.value = total;
+}
+
+//Add event listeners for stock inputs
+document.addEventListener('input', function (e) {
+    if (e.target.matches('input[name^="stock_"]')) {
+        const form = e.target.closest('form');
+        if (form) {
+            updateTotalStock(form);
+        }
+    }
+});
+
+//Add event listeners for size checkboxes
+document.addEventListener('change', function (e) {
+    if (e.target.matches('input[type="checkbox"][name^="size_"]')) {
+        const form = e.target.closest('form');
+        if (form) {
+            updateTotalStock(form);
+        }
+    }
+});
 
 function openUpdateModal(productId) {
     // Find product by ID
@@ -447,63 +499,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-//To show Total Stock for Clothing items
-function updateTotalStock(form) {
-    let total = 0;
-    const typeId = parseInt(form.querySelector('select[name="type_id"]').value);
-
-    // For clothing items
-    const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
-    sizes.forEach(size => {
-        const checkbox = form.querySelector(`input[type="checkbox"][name="size_${size}"]`);
-        const stockInput = form.querySelector(`input[name="stock_${size}"]`);
-        if (checkbox && checkbox.checked && stockInput && stockInput.value) {
-            total += parseInt(stockInput.value) || 0;
-        }
-    });
-
-    // Update display
-    const totalStockElement = form.querySelector('.total-stock');
-    if (totalStockElement) {
-        totalStockElement.textContent = total;
-    }
-
-    // Update hidden input for total stock
-    let stockInput = form.querySelector('input[name="stock"]');
-    if (!stockInput) {
-        stockInput = document.createElement('input');
-        stockInput.type = 'hidden';
-        stockInput.name = 'stock';
-        form.appendChild(stockInput);
-    }
-    stockInput.value = total;
-}
-
+//
 function goToPage(page) {
     const params = new URLSearchParams(window.location.search);
     params.set('page', page);
     window.location.href = window.location.pathname + '?' + params.toString();
 }
-
-//Add event listeners for stock inputs
-document.addEventListener('input', function (e) {
-    if (e.target.matches('input[name^="stock_"]')) {
-        const form = e.target.closest('form');
-        if (form) {
-            updateTotalStock(form);
-        }
-    }
-});
-
-//Add event listeners for size checkboxes
-document.addEventListener('change', function (e) {
-    if (e.target.matches('input[type="checkbox"][name^="size_"]')) {
-        const form = e.target.closest('form');
-        if (form) {
-            updateTotalStock(form);
-        }
-    }
-});
 
 //Product notify message when add/update/delete
 function showMessage(status, message) {
